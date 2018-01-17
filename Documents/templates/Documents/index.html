@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
 
-</body>
-</html>
+<ul>
+    {% for doc in documents %}
+        <a href="{{ doc.id }}/"> {{doc.title}} </a> <br>
+    {% endfor %}
+</ul>
