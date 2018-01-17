@@ -1,3 +1,7 @@
 from django.contrib import admin
+from .models import FacultyCard, UserCard
 
-# Register your models here.
+admin.site.register(FacultyCard)
+admin.site.register(UserCard)
+
+
