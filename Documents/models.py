@@ -36,7 +36,6 @@ class AVFile(Document):
 
 
 class Copy(Document):
-    document = models.ForeignObject(Document)
-
-
+    #document = models.ForeignObject(Document)
+    pass
 
