@@ -1,1 +1,0 @@
-print("hello innopolka world")
