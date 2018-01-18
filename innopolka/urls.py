@@ -21,5 +21,3 @@ urlpatterns = [
     path('documents/', include("Documents.urls"))
 
 ]
-
-#trying commit
