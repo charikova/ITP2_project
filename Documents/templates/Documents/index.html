@@ -1,4 +1,5 @@
 <h2><strong>Documents available:</strong> </h2>
+ <link rel="stylesheet" href="pages_style.css">
 <form action="" method="post">
     <ul>
         {% for doc in documents %}
@@ -14,3 +15,23 @@
     <input type="reset" value="Reset">
     {% csrf_token %}
 </form>
+
+<div class="paginator">
+     <span class="step-links">
+        {% if documents.has_previous %}
+            <a href="?page={{ documents.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ documents.number }} of {{ documents.paginator.num_pages }}.
+        </span>
+
+        {% if documents.has_next %}
+            <a href="?page={{ documents.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+
+</div>
+
+
+<a href="/user/">User Card Information</a>

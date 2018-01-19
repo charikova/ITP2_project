@@ -1,6 +1,7 @@
 from django.core.paginator import Paginator, EmptyPage
 from django.shortcuts import render
 from .models import *
+from UserCards import models as user_cards_models
 
 def index(request):
     documents = Paginator(Document.objects.all(), 10)
@@ -11,9 +12,14 @@ def index(request):
             raise EmptyPage
     except (KeyError, EmptyPage):
         page_num = 1
-    print(chosen_docs)
+    if chosen_docs:
+        for doc in chosen_docs:
+            if doc.copies > 0:
+                doc.copies -= 1
+                new_copy = DocumentCopy(doc=doc,
+                    checked_up_by_whom=user_cards_models.UserCard.objects.get(session_id=request.COOKIES['sessionid']))
+                new_copy.save()
     response = render(request, 'Documents/index.html', {'documents': documents.page(page_num)})
-    response.set_cookie()
     return response
 
 

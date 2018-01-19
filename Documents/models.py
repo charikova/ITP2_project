@@ -38,6 +38,9 @@ class DocumentCopy(models.Model):
     doc = models.ForeignKey(Document, null=True, default=None, on_delete=models.CASCADE)
     checked_up_by_whom = models.ForeignKey(user_cards_models.UserCard, null=True, default=None, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return str(self.doc)
+
 
 
 
@@ -77,7 +80,7 @@ class DocumentCopy(models.Model):
 
 '''
 Don't delete this peace of code!!! Otherwise db crashes. 
-Don't ask me why ¯\_(ツ)_/¯
+Don't either ask me why ¯\_(ツ)_/¯
 '''
 class Copy(Document):
     pass

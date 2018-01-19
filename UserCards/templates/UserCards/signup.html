@@ -1,0 +1,11 @@
+<form action="/user/make_user/" method="post">
+
+  <input type="text" name="Name" placeholder="Name"><br>
+  <input type="text" name="Surname" placeholder="Surname"><br>
+  <input type="text" name="Email" placeholder="Email"><br>
+  <input type="text" name="Address" placeholder="Address"><br>
+  <input type="password" name="Password" placeholder="Password">
+  <input type="text" name="Phone" placeholder="Phone"><br>
+    <input type="submit" name="submit" placeholder="Submit">
+    {% csrf_token %}
+</form>

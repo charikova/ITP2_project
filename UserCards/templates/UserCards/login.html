@@ -1,0 +1,10 @@
+
+
+<form action="/user/identify_user/" method="post">
+    Email:<br>
+  <input type="text" name="Email" placeholder="Email"><br>
+  Password:<br>
+  <input type="password" name="Password" placeholder="Password">
+    <input type="submit" name="submit" placeholder="Submit">
+    {% csrf_token %}
+</form>
