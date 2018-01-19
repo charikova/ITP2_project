@@ -22,6 +22,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'y_htv$j&t*#i=b@*930g_hh0rpc@c-)b@zcji6xh(n6b_4e(*y'
 
+# Using cookies based session control
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+
+# It allows to get access to data only through http requests
+SESSION_COOKIE_HTTPONLY = True
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

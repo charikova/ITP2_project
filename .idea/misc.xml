@@ -20,13 +20,6 @@
     </entry>
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.6.1 (/Library/Frameworks/Python.framework/Versions/3.6/bin/python3)" project-jdk-type="Python SDK" />
-  <component name="SvnConfiguration">
-    <configuration>$USER_HOME$/.subversion</configuration>
-    <option name="sshConnectionType" value="PASSWORD" />
-    <option name="sshExecutablePath" value="ssh" />
-    <option name="sshUserName" value="danil" />
-    <option name="sshPort" value="22221" />
-  </component>
   <component name="masterDetails">
     <states>
       <state key="ScopeChooserConfigurable.UI">
