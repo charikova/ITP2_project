@@ -78,6 +78,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'innopolka.wsgi.application'
 
 
+STATIC_URL = '/static/'
+
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 

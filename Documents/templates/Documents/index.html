@@ -1,16 +1,34 @@
-<h2><strong>Documents available:</strong> </h2>
- <link rel="stylesheet" href="pages_style.css">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <meta charset="UTF-8">
+    <title>MainPage</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'css/documents_table_style.css' %}" type="text/css">
+</head>
+<body>
 <form action="" method="post">
-    <ul>
+
+    <p><input>
+        <input type="submit" value="Search"></p>
+
+<table>
+    <tr>
+        <th colspan="2">Document</th>
+        <th>Amount</th>
+        <th>Add</th>
+    </tr>
+    <tr>
         {% for doc in documents %}
-            <li>
-                <label> <a href="{{ doc.id }}/">{{ doc.title }}</a>
-                    Written by {{ doc.authors }}
-                </label>
-                <input type="radio" name="{{ doc.id }}">
-            </li>
-        {% endfor %}
-    </ul>
+        <td><img src={{doc.cover}}></td>
+        <td><a href="{{ doc.id }}/">{{ doc.title }}</a></td>
+        <td>{{doc.copies}}</td>
+        <td><input id="checkBox" type="checkbox"></td>
+    </tr>
+       {% endfor %}
+</table>
     <input type="submit" value="Submit">
     <input type="reset" value="Reset">
     {% csrf_token %}
@@ -30,8 +48,9 @@
             <a href="?page={{ documents.next_page_number }}">next</a>
         {% endif %}
     </span>
-
 </div>
 
-
 <a href="/user/">User Card Information</a>
+</body>
+</html>
+
