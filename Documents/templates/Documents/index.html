@@ -1,6 +1,13 @@
 
-<ul>
-    {% for doc in documents %}
-        <a href="{{ doc.id }}/"> {{doc.title}} </a> <br>
-    {% endfor %}
-</ul>
+<form action="" method="post">
+    <ul>
+        {% for doc in documents %}
+            <li>
+                <label> <a href="{{ doc.id }}/">{{ doc.title }}</a> </label>
+                <input type="radio" name="{{ doc.id }}">
+            </li>
+        {% endfor %}
+    </ul>
+    <input type="submit" value="Submit">
+    {% csrf_token %}
+</form>

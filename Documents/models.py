@@ -6,8 +6,6 @@ class Document(models.Model):
     Base class for all documents
     '''
     title = models.CharField(max_length=250)
-    checked_up = models.BooleanField()
-    checked_up_by_whom = models.ForeignKey(user_cards_models.UserCard, null=True, default=None, on_delete=models.SET_NULL)
     price = models.IntegerField()
     keywords = models.CharField(max_length=250) # the list of keywords stored in string
                                         # splitted by space "k1 k2 k3" (e.g. 'Programming Language')
@@ -36,7 +34,50 @@ class AVFile(Document):
     pass
 
 
-class Copy(Document):
-    #document = models.ForeignObject(Document)
-    pass
+class DocumentCopy(models.Model):
+    doc = models.ForeignKey(Document, null=True, default=None, on_delete=models.CASCADE)
+    checked_up_by_whom = models.ForeignKey(user_cards_models.UserCard, null=True, default=None, on_delete=models.CASCADE)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''
+Don't delete this peace of code!!! Otherwise db crashes. 
+Don't ask me why ¯\_(ツ)_/¯
+'''
+class Copy(Document):
+    pass
