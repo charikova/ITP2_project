@@ -12,7 +12,9 @@ def index(request):
     except (KeyError, EmptyPage):
         page_num = 1
     print(chosen_docs)
-    return render(request, 'Documents/index.html', {'documents': documents.page(page_num)})
+    response = render(request, 'Documents/index.html', {'documents': documents.page(page_num)})
+    response.set_cookie()
+    return response
 
 
 def show_doc_inf(request, doc_id):
