@@ -1,13 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+
+    {% load staticfiles %}
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet' type='text/css'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topNavBar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{% url 'index'%}">Innopolka</a>
+        </div>
+    </div>
+
+</nav>
+
+<head>
     <meta charset="UTF-8">
     <title>MainPage</title>
-    {% load staticfiles %}
-    <link rel="stylesheet" href="{% static 'css/documents_table_style.css' %}" type="text/css">
 </head>
+
 <body>
  <p><a href="/user/signup">SignUp</a></p>
  <p><a href="/user/login">LogIn</a></p>
@@ -23,11 +43,13 @@
 <form action="" method="post">
 
 <table>
+
     <tr>
         <th colspan="2">Document</th>
         <th>Amount</th>
         <th>Add</th>
     </tr>
+
     <tr>
         {% for doc in documents %}
         <td><img src={{doc.cover}}></td>
@@ -36,6 +58,7 @@
         <td><input name="{{ doc.id }}" type="checkbox"></td>
     </tr>
        {% endfor %}
+
 </table>
     <input type="submit" value="Submit">
     <input type="reset" value="Reset">
