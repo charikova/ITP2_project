@@ -3,6 +3,8 @@ from django.shortcuts import render
 from .models import *
 from UserCards import models as user_cards_models
 from django.http import HttpResponse
+
+import datetime
 from django.shortcuts import render_to_response
 
 def index(request):
@@ -21,8 +23,16 @@ def index(request):
                 doc.save()
                 try:
                     holder = user_cards_models.UserCard.objects.get(session_id=request.COOKIES['sessionid'])
-                    new_copy = DocumentCopy(doc=doc,
-                    checked_up_by_whom=holder)
+
+                    if holder.status == 'student':
+                        new_copy = DocumentCopy(doc=doc,
+                                                checked_up_by_whom=holder, returning_date=(
+                                    datetime.date.today() + datetime.timedelta(days=14)).strftime("%Y-%m-%d"))
+                    else:
+                        new_copy = DocumentCopy(doc=doc,
+                                                checked_up_by_whom=holder, returning_date=(
+                                    datetime.date.today() + datetime.timedelta(days=21)).strftime("%Y-%m-%d"))
+
                     new_copy.save()
                 except:
                     return HttpResponse("You are not currently logged in")
@@ -36,6 +46,7 @@ def show_doc_inf(request, doc_id):
     print(type)
     return render(request, 'Documents/doc_inf.html', {'doc': doc, 'type': type})
 
+
 def get_type_of_doc(doc_id):
     for t in Document.__subclasses__():
         try:
@@ -44,4 +55,3 @@ def get_type_of_doc(doc_id):
         except:
             pass
     return 'document'
-

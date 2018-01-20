@@ -1,5 +1,6 @@
 from django.db import models
 from UserCards import models as user_cards_models
+import datetime
 
 class Document(models.Model):
     '''
@@ -39,6 +40,8 @@ class AVFile(Document):
 class DocumentCopy(models.Model):
     doc = models.ForeignKey(Document, null=True, default=None, on_delete=models.CASCADE)
     checked_up_by_whom = models.ForeignKey(user_cards_models.UserCard, null=True, default=None, on_delete=models.CASCADE)
+    date = models.DateField(default=str(datetime.date.today().strftime("%Y-%m-%d")))
+    returning_date = models.DateField(default=str(datetime.date.today().strftime("%Y-%m-%d")))
 
     def __str__(self):
         return str(self.doc)

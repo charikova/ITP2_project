@@ -10,7 +10,7 @@ status: {{ user.status }} <br><br>
 <ul>
     {% for copy in copies %}
         <li>
-            {{ copy }} <br>
+            {{ copy }} {{ copy.returning_date}}<br>
         </li>
     {% endfor %}
 </ul>
