@@ -1,4 +1,6 @@
+{% extends 'Documents/base.html'  %}
 
+{% block body  %}
 
 <form action="/user/identify_user/" method="post">
     Email:<br>
@@ -8,3 +10,6 @@
     <input type="submit" name="submit" placeholder="Submit">
     {% csrf_token %}
 </form>
+
+
+{% endblock  %}
