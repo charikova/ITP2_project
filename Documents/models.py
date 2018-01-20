@@ -10,9 +10,9 @@ class Document(models.Model):
     keywords = models.CharField(max_length=250) # the list of keywords stored in string
                                         # splitted by space "k1 k2 k3" (e.g. 'Programming Language')
     authors = models.CharField(max_length=250) # the list of authors in string format splitted by space
-    cover = models.CharField(max_length=1000)
-    checking_time = models.IntegerField()
+    cover = models.CharField(max_length=1000, default="https://lh3.googleusercontent.com/zqfUbCXdb1oGmsNEzNxTjQU5ZlS3x46nQoB83sFbRSlMnpDTZgdVCe_LvCx-rl7sOA=w300")
     copies = models.PositiveIntegerField(default=1)
+    type = models.CharField(max_length=100, default='document')
 
     def __str__(self):
         return "title: {}; price: {}; authors: {}".format(self.title, self.price, self.authors)
@@ -20,18 +20,20 @@ class Document(models.Model):
 
 class Book(Document):
     publisher = models.CharField(max_length=250)
-    edition = models.IntegerField()
-    publication_date = models.CharField(max_length=250)
+    edition = models.PositiveIntegerField(default=1)
+    publication_date = models.DateField(max_length=250)
+    type = 'book'
 
 
 class JournalArticle(Document):
     publisher_journal = models.CharField(max_length=250)
     editors = models.CharField(max_length=250)
-    publication_date = models.CharField(max_length=250)
+    publication_date = models.DateField(max_length=250)
+    type = 'journal article'
 
 
 class AVFile(Document):
-    pass
+    type = 'av file'
 
 
 class DocumentCopy(models.Model):

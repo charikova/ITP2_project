@@ -41,10 +41,10 @@ def identify_user(request):
     '''
     Processing login step
     '''
-    user = user_modules.UserCard.objects.filter(email=request.POST.get("Email"), password=request.POST.get("Password"))
+    user = user_modules.UserCard.objects.get(email=request.POST.get("Email"), password=request.POST.get("Password"))
     if user:
-        user[0].session_id = request.COOKIES['sessionid']
-        user[0].save()
+        user.session_id = request.COOKIES['sessionid']
+        user.save()
         return render(request, 'Documents/index.html', {'documents': documents_models.Document.objects.all()})
     else:
         return render(request, 'UserCards/login.html', {'error': True})

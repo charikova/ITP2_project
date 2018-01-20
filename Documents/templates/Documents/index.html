@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="{% static 'css/documents_table_style.css' %}" type="text/css">
 </head>
 <body>
+<h1>Welcome to Innopolka</h1><br>
+<h3>Documents available: </h3>
 <p><input>
         <input type="submit" value="Search"></p>
 
@@ -23,7 +25,7 @@
     <tr>
         {% for doc in documents %}
         <td><img src={{doc.cover}}></td>
-        <td><a href="{{ doc.id }}/">{{ doc.title }}</a></td>
+        <td><a href="/{{ doc.id }}/">{{ doc.title }}</a></td>
         <td>{{doc.copies}}</td>
         <td><input name="{{ doc.id }}" type="checkbox"></td>
     </tr>
