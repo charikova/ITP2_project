@@ -7,4 +7,5 @@ urlpatterns = [
     url(r"^$", views.index, name='index'),
     url(r'^make_user/$', views.make_user, name='make_user'),
     url(r'^identify_user/$', views.identify_user, name='identify_user'),
+    url(r'^return_copies/$', views.return_copies, name='return_copies'),
 ]

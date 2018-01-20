@@ -9,13 +9,16 @@ def signup(request):
 
 
 def login(request):
-    return render(request, 'UserCards/login.html', {})
+    return render(request, 'UserCards/login.html', {'error': False})
 
 def index(request):
-    user = user_modules.UserCard.objects.filter(session_id=request.COOKIES['sessionid'])
+    try:
+        user = user_modules.UserCard.objects.get(session_id=request.COOKIES['sessionid'])
+    except:
+        pass
     if user:
-        copies = user[0].documentcopy_set.all()
-        return render(request, 'UserCards/index.html', {'user': user[0], 'copies': copies})
+        copies = user.documentcopy_set.all()
+        return render(request, 'UserCards/index.html', {'user': user, 'copies': copies})
     else:
         return HttpResponse("You are not currently logged in")
 
@@ -49,3 +52,18 @@ def identify_user(request):
     else:
         return render(request, 'UserCards/login.html', {'error': True})
 
+def return_copies(request):
+    print(request.POST.keys())
+    chosen_copies = [documents_models.DocumentCopy.objects.get(id=int(id)) for id in request.POST.keys() if id.isdigit()]
+    if chosen_copies:
+        print(chosen_copies)
+        for copy in chosen_copies:
+            copy.doc.copies += 1
+            copy.doc.save()
+            try:
+                holder = user_modules.UserCard.objects.get(session_id=request.COOKIES['sessionid'])
+                print(holder.documentcopy_set.all())
+                holder.documentcopy_set.get(id=copy.id).delete()
+                return render(request, 'UserCards/index.html', {'user': holder, 'copies': holder.documentcopy_set.all()})
+            except:
+                return HttpResponse("You are not currently logged in")
