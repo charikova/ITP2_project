@@ -1,3 +1,6 @@
+{% extends 'Documents/base.html'  %}
+
+{% block body  %}
 
 <h2>{{ type }} information</h2>
 <img src="{{ doc.cover }}"> <br>
@@ -20,3 +23,7 @@ Available: {{ doc.copies }}<br>
     </li>
 {% endif %}
 </ul>
+
+
+
+{% endblock  %}
