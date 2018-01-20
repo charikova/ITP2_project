@@ -1,67 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'Documents/base.html'  %}
 
-    {% load staticfiles %}
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-    <link href='https://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet' type='text/css'>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+{% block body  %}
 
 
-<nav class="navbar navbar-inverse">
-
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topNavBar">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="{% url 'index'%}">Innopolka</a>
-        </div>
-
-        <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li class="">
-                    <a href="{% url 'index'%}">
-                        Documents
-                    </a>
-                </li>
-
-                <li class="">
-                    <a href="/user/signup">
-                        SignUp
-                    </a>
-                </li>
-                 <li class="">
-                    <a href="/user/login">
-                        LogIn
-                    </a>
-                </li>
-            </ul>
-        </div>
-
-    </div>
-
-</nav>
-
-<head>
-    <meta charset="UTF-8">
-    <title>MainPage</title>
-</head>
-
-<body>
- <p><a href="/user/signup">SignUp</a></p>
- <p><a href="/user/login">LogIn</a></p>
 <h1>Welcome to Innopolka</h1><br>
 
 <h3>Documents available: </h3>
-
-<form action="/search/" method="get">
-        <input type="text" name="q">
-        <input type="submit" value="Search">
-</form>
 
 <form action="" method="post">
 
@@ -105,6 +49,6 @@
 </div>
 
 <a href="/user/">User Card Information</a>
-</body>
-</html>
+
+{% endblock  %}
 
