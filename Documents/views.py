@@ -3,6 +3,7 @@ from django.shortcuts import render
 from .models import *
 from UserCards import models as user_cards_models
 from django.http import HttpResponse
+from django.shortcuts import render_to_response
 
 def index(request):
     documents = Paginator(Document.objects.all(), 2)
@@ -43,3 +44,4 @@ def get_type_of_doc(doc_id):
         except:
             pass
     return 'document'
+
