@@ -34,7 +34,7 @@ def make_user(request):
                                  password=password, phone_number=phone, surname=surname, address=address)
     user.session_id = request.COOKIES['sessionid']
     user.save()
-    response = render(request, 'UserCards/index.html', {})
+    response = render(request, 'UserCards/index.html', {'user': user, 'copies': ''})
     return response
 
 def identify_user(request):
