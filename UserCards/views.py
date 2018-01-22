@@ -3,8 +3,9 @@ from django.http import HttpResponse
 from UserCards import models as user_modules
 import Documents
 from django.contrib.auth import authenticate, login
-from django.views.generic import View
+from django.views.generic import View, DetailView
 from .forms import SignupForm
+from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
 
@@ -23,16 +24,9 @@ class SignupView(View):
             form.save()
             return redirect("/")
         return redirect('/user/signup/')
-        # username = form.cleaned_data['username']
-        # password = form.cleaned_data['password']
-        # user.set_password(password)
-        # user.save()
-        #
-        # user = authenticate(username=username, password=password)
-        # if user is not None:
-        #     if user.is_active:
-        #         login(request, user)
-        #         return redirect('Documents:index')
-        #
-        # return render(request, self.template_name, {'form': form})
+
+
+def user_card_info(request):
+    context = {'user': request.user}
+    return render(request, 'UserCards/index.html', context)
 
