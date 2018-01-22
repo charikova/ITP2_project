@@ -12,13 +12,10 @@ def login(request):
     return render(request, 'UserCards/login.html', {'error': False})
 
 def index(request):
-    try:
-        user = user_modules.UserCard.objects.get(session_id=request.COOKIES['sessionid'])
-    except:
-        pass
-    if user:
-        copies = user.documentcopy_set.all()
-        return render(request, 'UserCards/index.html', {'user': user, 'copies': copies})
+    user = user_modules.UserCard.objects.filter(session_id=request.COOKIES['sessionid'])
+    if len(user) == 1:
+        copies = user[0].documentcopy_set.all()
+        return render(request, 'UserCards/index.html', {'user': user[0], 'copies': copies})
     else:
         return HttpResponse("You are not currently logged in")
 
@@ -44,10 +41,10 @@ def identify_user(request):
     '''
     Processing login step
     '''
-    user = user_modules.UserCard.objects.get(email=request.POST.get("Email"), password=request.POST.get("Password"))
-    if user:
-        user.session_id = request.COOKIES['sessionid']
-        user.save()
+    user = user_modules.UserCard.objects.filter(email=request.POST.get("Email"), password=request.POST.get("Password"))
+    if len(user) == 1:
+        user[0].session_id = request.COOKIES['sessionid']
+        user[0].save()
         return render(request, 'Documents/index.html', {'documents': documents_models.Document.objects.all()})
     else:
         return render(request, 'UserCards/login.html', {'error': True})

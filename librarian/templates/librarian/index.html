@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Library</title>
+    {% extends 'Documents/base.html'  %}
+
+    {% block body  %}
+
+
+<h1>Welcome to Innopolka</h1><br>
+
+<h3>Documents available: </h3>
+
+<form action="" method="post">
+
+<table>
+
+    <tr>
+        <th colspan="2">Document</th>
+        <th>Amount</th>
+        <th>Add</th>
+    </tr>
+
+    <tr>
+        {% for doc in object_list %}
+        <td><img src={{doc.cover}}></td>
+        <td><a href="/{{ doc.id }}/">{{ doc.title }}</a></td>
+        <td>{{doc.copies}}</td>
+        <td><input name="{{ doc.id }}" type="checkbox"></td>
+    </tr>
+       {% endfor %}
+
+</table>
+    <input type="submit" value="Submit">
+    {% csrf_token %}
+</form>
+
+<div class="paginator">
+     <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock  %}
+
+</head>
+<body>
+
+</body>
+</html>

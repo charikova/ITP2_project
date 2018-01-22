@@ -37,6 +37,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'librarian.apps.LibrarianConfig',
     'Documents.apps.DocumentsConfig',
     'UserCards.apps.UsercardsConfig',
     'django.contrib.admin',
