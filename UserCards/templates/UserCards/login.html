@@ -1,0 +1,13 @@
+{% extends 'Documents/base.html'  %}
+
+{% block body  %}
+
+<div class="container">
+<form method="post" >
+    {{ form.as_p }}
+    <input type="submit" name="submit" placeholder="Submit">
+    {% csrf_token %}
+</form>
+</div>
+
+{% endblock  %}

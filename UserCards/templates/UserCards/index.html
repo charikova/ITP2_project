@@ -1,0 +1,29 @@
+{% extends 'Documents/base.html'  %}
+
+{% block body  %}
+<h1>User Card Information</h1>
+
+name: {{ user.name }} <br>
+phone: {{ user.phone_number }} <br>
+email: {{ user.email }} <br>
+address: {{ user.address }} <br>
+status: {{ user.status }} <br><br>
+<strong>documents in used:</strong>
+
+<form action="/user/return_copies/" method="post">
+<ul>
+    {% for copy in copies %}
+        <li>
+            <a href="/{{copy.doc.id}}">{{ copy }}</a>
+            <input type="checkbox" name="{{copy.id}}"> <br>
+            Date to return: {{ copy.returning_date }}<br>
+        </li>
+    {% endfor %}
+</ul>
+    <input type="submit" value="Return back">
+    {% csrf_token %}
+</form>
+
+
+
+{% endblock  %}

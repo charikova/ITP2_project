@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <title>MainPage</title>
+    <meta charset="UTF-8">
+{% extends 'Documents/base.html'  %}
+
+{% block body  %}
+
+
+<h1>Welcome to Innopolka</h1><br>
+
+<h3>Documents available: </h3>
+
+<form action="" method="post">
+
+<table>
+
+    <tr>
+        <th colspan="2">Document</th>
+        <th>Amount</th>
+        <th>Add</th>
+    </tr>
+
+    <tr>
+        {% for doc in documents %}
+        <td><img src={{doc.cover}}></td>
+        <td><a href="/{{ doc.id }}/">{{ doc.title }}</a></td>
+        <td>{{doc.copies}}</td>
+        <td><input name="{{ doc.id }}" type="checkbox"></td>
+    </tr>
+       {% endfor %}
+
+</table>
+    <input type="submit" value="Submit">
+    {% csrf_token %}
+</form>
+
+<div class="paginator">
+     <span class="step-links">
+        {% if documents.has_previous %}
+            <a href="?page={{ documents.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ documents.number }} of {{ documents.paginator.num_pages }}.
+        </span>
+
+        {% if documents.has_next %}
+            <a href="?page={{ documents.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock  %}
+
