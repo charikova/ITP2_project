@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 
 
 class SignupForm(UserCreationForm):
-    password = forms.CharField(widget=forms.PasswordInput)
     email = forms.EmailField(required=True)
     address = forms.CharField(required=True)
     phone_number = forms.IntegerField(required=True)
