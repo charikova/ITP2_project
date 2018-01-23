@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^$', views.user_card_info, name='user_card_info'),
     url(r'^login/$', login, {'template_name': 'UserCards/login.html'}, name='login'),
     url(r'^logout/$', logout, {'next_page': '/user/login/'}, name='logout'),
+    url(r'^edit/$', views.EditCardView.as_view(), name='edit'),
 
 ]
 

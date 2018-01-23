@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
 
 
@@ -16,12 +16,22 @@ class SignupForm(UserCreationForm):
         model = User
 
 
-    # def save(self, commit=True):
-    #     user = super(SignupForm, self).save(commit=False)
-    #     user.address = self.cleaned_data['address']
-    #     user.phone_number = self.cleaned_data['phone_number']
-    #
-    #     if commit:
-    #         user.save(True)
+    def save(self, commit=True):
+        user = super(SignupForm, self).save(commit=False)
+        user.address = self.cleaned_data['address']
+        print(self.cleaned_data)
+        user.phone_number = self.cleaned_data['phone_number']
+
+        if commit:
+            user.save(True)
+
+
+class EditPatronForm(UserChangeForm):
+
+    class Meta:
+        model = User
+        fields = [
+            'first_name', 'last_name', 'email'
+        ]
 
 

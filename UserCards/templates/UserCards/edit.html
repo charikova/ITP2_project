@@ -1,0 +1,14 @@
+{% extends 'Documents/base.html'  %}
+
+{% block body  %}
+<h1>Patron card edit</h1>
+
+<form method="post">
+
+    {{ form.as_p }}
+    <input type="submit" value="Edit">
+    {% csrf_token %}
+</form>
+
+
+{% endblock  %}
