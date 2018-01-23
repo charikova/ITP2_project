@@ -1,7 +1,5 @@
 from django.shortcuts import render, redirect
 from .models import *
-from UserCards import models as user_cards_models
-from django.http import HttpResponse
 from django.views.generic import ListView, DetailView
 
 import datetime
