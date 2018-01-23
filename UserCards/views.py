@@ -5,7 +5,6 @@ import Documents
 from django.contrib.auth import authenticate, login
 from django.views.generic import View, DetailView
 from .forms import *
-from django.contrib.auth.models import User
 
 
 

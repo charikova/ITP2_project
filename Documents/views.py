@@ -1,50 +1,48 @@
-from django.core.paginator import Paginator, EmptyPage
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import *
 from UserCards import models as user_cards_models
 from django.http import HttpResponse
+from django.views.generic import ListView, DetailView
 
 import datetime
 from django.shortcuts import render_to_response
 
-def index(request):
-    documents = Paginator(Document.objects.all(), 2)
-    chosen_docs = [Document.objects.get(id=int(id)) for id in request.POST.keys() if id.isdigit()]
-    try:
-        page_num = request.GET['page']
-        if not documents.page(page_num):
-            raise EmptyPage
-    except (KeyError, EmptyPage):
-        page_num = 1
-    if chosen_docs:
-        for doc in chosen_docs:
-            if doc.copies > 0:
-                doc.copies -= 1
-                doc.save()
-                try:
-                    holder = user_cards_models.UserCard.objects.get(session_id=request.COOKIES['sessionid'])
+class IndexView(ListView):
 
-                    if holder.status == 'student':
-                        new_copy = DocumentCopy(doc=doc,
-                                                checked_up_by_whom=holder, returning_date=(
-                                    datetime.date.today() + datetime.timedelta(days=14)).strftime("%Y-%m-%d"))
+    template_name = 'Documents/index.html'
+    model = Document
+    context_object_name = 'documents'
+    paginate_by = 10
+
+    def post(self, request):
+        chosen_docs = [Document.objects.get(id=int(id)) for id in request.POST.keys() if id.isdigit()]
+        if chosen_docs:
+            for doc in chosen_docs:
+                if doc.copies > 0:
+                    doc.copies -= 1
+                    doc.save()
+                    user = request.user
+
+                    if not user.is_anonymous:
+                        if True or user.status == 'student':
+                            new_copy = DocumentCopy(doc=doc,
+                                                    checked_up_by_whom=user, returning_date=(
+                                        datetime.date.today() + datetime.timedelta(days=14)).strftime("%Y-%m-%d"))
+                        else:
+                            new_copy = DocumentCopy(doc=doc,
+                                                    checked_up_by_whom=user, returning_date=(
+                                        datetime.date.today() + datetime.timedelta(days=21)).strftime("%Y-%m-%d"))
+
+                        new_copy.save()
                     else:
-                        new_copy = DocumentCopy(doc=doc,
-                                                checked_up_by_whom=holder, returning_date=(
-                                    datetime.date.today() + datetime.timedelta(days=21)).strftime("%Y-%m-%d"))
-
-                    new_copy.save()
-                except:
-                    return HttpResponse("You are not currently logged in")
-    response = render(request, 'Documents/index.html', {'documents': documents.page(page_num)})
-    return response
+                        return redirect('/user/login/')
+        return redirect('/')
 
 
-def show_doc_inf(request, doc_id):
-    doc = Document.objects.get(id=doc_id)
-    type = get_type_of_doc(doc_id)
-    print(type)
-    return render(request, 'Documents/doc_inf.html', {'doc': doc, 'type': type})
+class DocumentDetail(DetailView):
+    template_name = 'Documents/doc_inf.html'
+    model = Document
+    context_object_name = 'doc'
 
 
 def get_type_of_doc(doc_id):

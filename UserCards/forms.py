@@ -19,7 +19,6 @@ class SignupForm(UserCreationForm):
     def save(self, commit=True):
         user = super(SignupForm, self).save(commit=False)
         user.address = self.cleaned_data['address']
-        print(self.cleaned_data)
         user.phone_number = self.cleaned_data['phone_number']
 
         if commit:
@@ -27,11 +26,13 @@ class SignupForm(UserCreationForm):
 
 
 class EditPatronForm(UserChangeForm):
+    address = forms.CharField(required=True)
+    phone_number = forms.IntegerField(required=True)
 
     class Meta:
         model = User
         fields = [
-            'first_name', 'last_name', 'email'
+            'first_name', 'last_name', 'email', 'phone_number', 'address'
         ]
 
 
