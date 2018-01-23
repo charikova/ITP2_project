@@ -1,13 +1,16 @@
 {% extends 'Documents/base.html'  %}
 
 {% block body  %}
-<h1>User Card Information</h1>
 
-name: {{ user.name }} <br>
+<h1>user Card Information</h1>
+
+username: {{ user.username }} <br>
+first name: {{ user.first_name }} <br>
+last name: {{ user.last_name }} <br>
 phone: {{ user.phone_number }} <br>
 email: {{ user.email }} <br>
-address: {{ user.address }} <br>
-status: {{ user.status }} <br><br>
+address: {{ user.address }} <br><br>
+
 <strong>documents in used:</strong>
 
 <form action="/user/return_copies/" method="post">
@@ -24,6 +27,7 @@ status: {{ user.status }} <br><br>
     {% csrf_token %}
 </form>
 
+<a href="/user/edit/">Edit profile</a>
 
 
 {% endblock  %}

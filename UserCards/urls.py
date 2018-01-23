@@ -1,11 +1,15 @@
 from django.conf.urls import url
 from . import views
+from django.contrib.auth.views import login, logout
+
 
 urlpatterns = [
-    url(r'^signup/$', views.signup, name='signup'),
-    url(r'^login/$', views.login, name='login'),
-    url(r"^$", views.index, name='index'),
-    url(r'^make_user/$', views.make_user, name='make_user'),
-    url(r'^identify_user/$', views.identify_user, name='identify_user'),
+    url(r'^signup/$', views.SignupView.as_view(), name='signup'),
+    url(r'^$', views.user_card_info, name='user_card_info'),
+    url(r'^login/$', login, {'template_name': 'UserCards/login.html'}, name='login'),
+    url(r'^logout/$', logout, {'next_page': '/user/login/'}, name='logout'),
+    url(r'^edit/$', views.EditCardView.as_view(), name='edit'),
     url(r'^return_copies/$', views.return_copies, name='return_copies'),
+
 ]
+

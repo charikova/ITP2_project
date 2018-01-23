@@ -1,66 +1,65 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-from UserCards import models as user_modules
-from Documents import models as documents_models
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.views.generic import View, DetailView
+from .forms import *
+import Documents.models as documents_models
+
+def need_logged_in(func):
+
+    def inner(request, *args, **kwargs):
+        user = request.user
+        if not user.is_anonymous:
+            return func(request, *args, **kwargs)
+        else:
+            return redirect('/user/login/')
+
+    return inner
 
 
-def signup(request):
-    return render(request, 'UserCards/signup.html', {})
+class SignupView(View):
+
+    template_name = "UserCards/signup.html"
+
+    def get(self, request):
+        form = SignupForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            form.save()
+            login(request, request.user)
+            return redirect("/")
+        return redirect('/user/signup/')
 
 
-def login(request):
-    return render(request, 'UserCards/login.html', {'error': False})
+class EditCardView(View):
 
-def index(request):
-    user = user_modules.UserCard.objects.filter(session_id=request.COOKIES['sessionid'])
-    if len(user) == 1:
-        copies = user[0].documentcopy_set.all()
-        return render(request, 'UserCards/index.html', {'user': user[0], 'copies': copies})
-    else:
-        return HttpResponse("You are not currently logged in")
+    def post(self, request):
+        form = EditPatronForm(request, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('/user/')
+
+    def get(self, request):
+        form = EditPatronForm(instance=request.user)
+        return render(request, 'UserCards/edit.html', {'form': form})
 
 
-def make_user(request):
-    '''
-    Processing signup step
-    '''
-    username = request.POST.get("Name")
-    surname = request.POST.get("Surname")
-    email = request.POST.get("Email")
-    password = request.POST.get("Password")
-    phone = request.POST.get("Phone")
-    address = request.POST.get("Address")
-    user = user_modules.UserCard(name=username, status="student", email=email,
-                                 password=password, phone_number=phone, surname=surname, address=address)
-    user.session_id = request.COOKIES['sessionid']
-    user.save()
-    response = render(request, 'UserCards/index.html', {'user': user, 'copies': ''})
-    return response
+@need_logged_in
+def user_card_info(request):
+    user = request.user
+    context = {'user': user, 'copies': user.documentcopy_set.all()}
+    return render(request, 'UserCards/index.html', context)
 
-def identify_user(request):
-    '''
-    Processing login step
-    '''
-    user = user_modules.UserCard.objects.filter(email=request.POST.get("Email"), password=request.POST.get("Password"))
-    if len(user) == 1:
-        user[0].session_id = request.COOKIES['sessionid']
-        user[0].save()
-        return render(request, 'Documents/index.html', {'documents': documents_models.Document.objects.all()})
-    else:
-        return render(request, 'UserCards/login.html', {'error': True})
 
+@need_logged_in
 def return_copies(request):
-    print(request.POST.keys())
+    user = request.user
     chosen_copies = [documents_models.DocumentCopy.objects.get(id=int(id)) for id in request.POST.keys() if id.isdigit()]
-    if chosen_copies:
-        print(chosen_copies)
-        for copy in chosen_copies:
-            copy.doc.copies += 1
-            copy.doc.save()
-            try:
-                holder = user_modules.UserCard.objects.get(session_id=request.COOKIES['sessionid'])
-                print(holder.documentcopy_set.all())
-                holder.documentcopy_set.get(id=copy.id).delete()
-                return render(request, 'UserCards/index.html', {'user': holder, 'copies': holder.documentcopy_set.all()})
-            except:
-                return HttpResponse("You are not currently logged in")
+    for copy in chosen_copies:
+        copy.doc.copies += 1
+        copy.doc.save()
+        copy.delete()
+    context = {'user': user, 'copies': user.documentcopy_set.all()}
+    return render(request, 'UserCards/index.html', context)
