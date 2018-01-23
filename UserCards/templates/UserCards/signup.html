@@ -2,31 +2,13 @@
 
 {% block body  %}
 
-<<<<<<< HEAD
+
 
 <div class="container">
 <form action="" method="post" role="form">
     {{ form.as_p }}
     <input type="submit">
-=======
-<link rel="stylesheet" href="login_signup_style.css">
-<div>
-  <p>Enter the following information:</p>
-<form action="/user/make_user/" method="post">
 
-  <input type="text" name="Name" placeholder="Name"><br>
-  <input type="text" name="Surname" placeholder="Surname"><br>
-  <input type="text" name="Email" placeholder="Email"><br>
-  <input type="text" name="Address" placeholder="Address"><br>
-  <input type="text" name="Phone" placeholder="Phone"><br> <br>
-
-  <input type="password" name="Password" placeholder="Password"> <br>
-  <input type="password" name="RepeatPassword" placeholder="Repeat password"> <br><br>
-  Status:<br>
-  <input type="radio" name="Status" value="Student" checked> Student <br>
-  <input type="radio" name="Status" value="Faculty"> Faculty <br>
-  <input type="submit" name="submit" placeholder="Sign up">
->>>>>>> d850fdb4cf1748a0c4787e813aa09b88b59e21d7
     {% csrf_token %}
 </form>
 </div>

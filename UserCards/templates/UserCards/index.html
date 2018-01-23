@@ -2,8 +2,8 @@
 <link rel="stylesheet" href="usercards_style.css">
 {% block body  %}
 
-<<<<<<< HEAD
-<h1>user Card Information</h1>
+
+<h1>Patron card information</h1>
 
 username: {{ user.username }} <br>
 first name: {{ user.first_name }} <br>
@@ -13,14 +13,7 @@ email: {{ user.email }} <br>
 address: {{ user.address }} <br><br>
 
 <strong>documents in used:</strong>
-=======
-Name: {{ user.name }} <br>
-Phone: {{ user.phone_number }} <br>
-Email: {{ user.email }} <br>
-Address: {{ user.address }} <br>
-Status: {{ user.status }} <br><br>
-<strong>Documents in used:</strong>
->>>>>>> d850fdb4cf1748a0c4787e813aa09b88b59e21d7
+
 
 <form action="/user/return_copies/" method="post">
 <ul>
