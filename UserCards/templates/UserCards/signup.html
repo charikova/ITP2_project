@@ -2,15 +2,19 @@
 
 {% block body  %}
 
+<link rel="stylesheet" href="login_signup_style.css">
+<div>
+  <p>Enter the following information:</p>
 <form action="/user/make_user/" method="post">
 
-  <input type="text" name="Name" placeholder="Name">
+  <input type="text" name="Name" placeholder="Name"><br>
   <input type="text" name="Surname" placeholder="Surname"><br>
   <input type="text" name="Email" placeholder="Email"><br>
   <input type="text" name="Address" placeholder="Address"><br>
+  <input type="text" name="Phone" placeholder="Phone"><br> <br>
+
   <input type="password" name="Password" placeholder="Password"> <br>
-  <input type="password" name="RepeatPassword" placeholder="Repeat password"> <br>
-  <input type="text" name="Phone" placeholder="Phone"><br>
+  <input type="password" name="RepeatPassword" placeholder="Repeat password"> <br><br>
   Status:<br>
   <input type="radio" name="Status" value="Student" checked> Student <br>
   <input type="radio" name="Status" value="Faculty"> Faculty <br>
@@ -18,6 +22,7 @@
     {% csrf_token %}
 
 </form>
+</div>
 
 
 {% endblock  %}

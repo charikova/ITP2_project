@@ -1,14 +1,14 @@
 {% extends 'Documents/base.html'  %}
-
+<link rel="stylesheet" href="usercards_style.css">
 {% block body  %}
 <h1>User Card Information</h1>
 
-name: {{ user.name }} <br>
-phone: {{ user.phone_number }} <br>
-email: {{ user.email }} <br>
-address: {{ user.address }} <br>
-status: {{ user.status }} <br><br>
-<strong>documents in used:</strong>
+Name: {{ user.name }} <br>
+Phone: {{ user.phone_number }} <br>
+Email: {{ user.email }} <br>
+Address: {{ user.address }} <br>
+Status: {{ user.status }} <br><br>
+<strong>Documents in used:</strong>
 
 <form action="/user/return_copies/" method="post">
 <ul>
