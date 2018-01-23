@@ -1,6 +1,8 @@
 {% extends 'Documents/base.html'  %}
-
+{% load staticfiles %}
 {% block body  %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'UserCards/edit_style.css' %}" />
 <h1>Patron card edit</h1>
 
 <form method="post">

@@ -1,6 +1,8 @@
 {% extends 'Documents/base.html'  %}
 
+{% load staticfiles %}
 {% block body  %}
+<link rel="stylesheet" type="text/css" href="{% static 'Documents/doc_inf_style.css' %}" />
 
 <h2>{{ type }} information</h2>
 <img src="{{ doc.cover }}"> <br>
