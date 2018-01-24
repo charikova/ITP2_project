@@ -44,6 +44,11 @@ class DocumentDetail(DetailView):
     model = Document
     context_object_name = 'doc'
 
+    def get_context_data(self, **kwargs):
+        context = super(DocumentDetail, self).get_context_data(**kwargs)
+        print(context)
+        return context
+
 
 
 def get_type_of_doc(doc_id):
