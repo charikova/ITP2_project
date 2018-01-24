@@ -7,14 +7,14 @@
 <style>
     .container {
         background-color: rgba(214, 184, 150, 0.8);
+        width: 60%;
         color: saddlebrown;
         font-size: 15px;
-        display: inline-block;
         margin:0 auto;
         overflow:visible;
         position:absolute;
-        left: 7%;
-        top: 20%;
+        left: 20%;
+        top: 10%;
     }
 
     form {
@@ -28,18 +28,28 @@
         background-color: floralwhite;
         border: 2px solid saddlebrown;
         border-radius: 5px;
-        margin: 0;
-        margin-left: 10px;
+        margin: 0 0 0 10px;
         left: 50%;
     }
 
+    h2 {
+        color: black;
+        font-size: 40px;
+        text-align: center;
+    }
 
+    .button {
+        width: 15%;
+        font-size: 25px;
+        margin: 15px 15px 15px 40%;
+    }
 </style>
 
 <div class="container">
+    <h2>Sign up</h2><br>
 <form action="" method="post" role="form">
     {{ form.as_p }}
-    <input type="submit" value="Submit">
+    <input class="button" type="submit" value="Submit">
     {% csrf_token %}
 </form>
 </div>
