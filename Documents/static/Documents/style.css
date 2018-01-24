@@ -1,5 +1,28 @@
 body {
-    background-color: #0a0a1f;
+    background-color: #122b40;
     font-family: Futura;
     color: white;
+}
+
+table {
+    border: 3px solid blue;
+    border-radius: 5px;
+    width: 80%;
+    background-color: lightblue;
+    opacity: 0.7;
+    color: white;
+
+}
+
+tr {
+    border: 1px solid lightblue;
+}
+
+td {
+    border: 1px solid lightblue;
+}
+
+img {
+    height: 100px;
+    position: center;
 }
