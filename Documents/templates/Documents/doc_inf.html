@@ -27,7 +27,9 @@ Available: {{ doc.copies }}<br>
 {% endif %}
 </ul>
 
-<a href="update/">Update</a> <br>
-<a href="delete/">Delete</a>
+{% if user.is_staff %}
+    <a href="update/">Update</a> <br>
+    <a href="delete/">Delete</a>
+{% endif %}
 
 {% endblock  %}

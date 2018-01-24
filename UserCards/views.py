@@ -50,6 +50,7 @@ class EditCardView(View):
 @need_logged_in
 def user_card_info(request):
     user = request.user
+    print(dir(user))
     context = {'user': user, 'copies': user.documentcopy_set.all()}
     return render(request, 'UserCards/index.html', context)
 
