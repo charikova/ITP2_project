@@ -36,13 +36,18 @@
         <td><img src={{doc.cover}}></td>
         <td><a href="/{{ doc.id }}/">{{ doc.title }}</a></td>
         <td>{{doc.copies}}</td>
-        <td><input name="{{ doc.id }}" type="checkbox"></td>
+        {% if not user.is_staff %}
+            <td><input name="{{ doc.id }}" type="checkbox"></td>
+        {% endif %}
     </tr>
        {% endfor %}
 
 </table>
 
-    <input type="submit" value="Submit">
+    {% if not user.is_staff %}
+        <input type="submit" value="Submit">
+    {% endif %}
+
     {% csrf_token %}
 </form>
 

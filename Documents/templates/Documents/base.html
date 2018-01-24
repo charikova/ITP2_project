@@ -27,7 +27,11 @@
       </button>
       <a class="navbar-brand" href="/">Innopolka</a>
         <ul class="nav navbar-nav navbar-right">
-        <li><a href="/user/">Patron Card</a></li>
+            {% if user.is_staff %}
+                <li><a href="/create/">Add document</a></li>
+            {% else %}
+                <li><a href="/user/">Patron Card</a></li>
+            {% endif %}
       </ul>
     </div>
 
