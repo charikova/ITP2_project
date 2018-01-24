@@ -6,16 +6,6 @@ body {
 
 }
 
-div {
-    background-color: white;
-    opacity: 0.7;
-    color: #122b40;
-    width: auto;
-    padding: auto;
-    display: inline-block;
-
-}
-
 input {
     padding: 5px;
     margin: 5px;
@@ -31,4 +21,13 @@ form {
 
 p {
     padding: 10px;
+}
+
+#container {
+    background-color: black;
+    opacity: 0.7;
+    color: #122b40;
+    width: auto;
+    padding: auto;
+    display: inline-block;
 }
