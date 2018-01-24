@@ -1,3 +1,5 @@
+
+
 {% extends 'Documents/base.html'  %}
 
 {% load staticfiles %}
@@ -10,7 +12,7 @@
     <h2>Log In</h2><br>
 <form method="post" >
     {{ form.as_p }}
-    <input type="submit" name="submit" placeholder="Submit">
+    <input type="submit" name="submit" value="Submit" placeholder="Submit">
     {% csrf_token %}
 </form>
 </div>

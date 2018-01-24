@@ -1,28 +1,39 @@
 body {
-    background-color: #122b40;
+    background-image: url("../../static/Documents/background.jpg");
     font-family: Futura;
     color: white;
 }
 
 table {
-    border: 3px solid blue;
+    border: 3px solid saddlebrown;
     border-radius: 5px;
     width: 80%;
-    background-color: lightblue;
+    background-color: lightyellow;
     opacity: 0.7;
-    color: white;
+    color: black;
+    empty-cells: hide;
+    text-align: center;
 
 }
 
 tr {
-    border: 1px solid lightblue;
+    border: 1px solid saddlebrown;
+    text-align: center;
 }
 
 td {
-    border: 1px solid lightblue;
+    border: 1px solid saddlebrown;
+    padding: 10px;
+    font-size: 20px;
+    color: black;
 }
 
 img {
     height: 100px;
     position: center;
+    opacity: 1;
+}
+
+href {
+    color: black;
 }
