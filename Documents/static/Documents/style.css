@@ -8,11 +8,11 @@ table {
     border: 3px solid saddlebrown;
     border-radius: 5px;
     width: 80%;
-    background-color: lightyellow;
-    opacity: 0.7;
+    background-color: rgba(214, 184, 150, 0.8);
     color: black;
     empty-cells: hide;
     text-align: center;
+    margin: 10px;
 
 }
 
@@ -36,4 +36,10 @@ img {
 
 href {
     color: black;
+}
+
+
+.container {
+    background-color: rgba(214, 184, 150, 0.8);
+    color: saddlebrown;
 }
