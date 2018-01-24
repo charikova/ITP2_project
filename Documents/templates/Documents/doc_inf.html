@@ -1,6 +1,8 @@
 {% extends 'Documents/base.html'  %}
 
+{% load staticfiles %}
 {% block body  %}
+<link rel="stylesheet" type="text/css" href="{% static 'Documents/doc_inf_style.css' %}" />
 
 <h2>{{ type }} information</h2>
 <img src="{{ doc.cover }}"> <br>
@@ -8,6 +10,7 @@ Title: {{ doc.title }}<br>
 Authors: {{ doc.authors }}<br>
 Price for fine: {{ doc.price }}<br>
 Available: {{ doc.copies }}<br>
+
 <ul>
 {% if type == "book" %}
     <li>
@@ -24,6 +27,7 @@ Available: {{ doc.copies }}<br>
 {% endif %}
 </ul>
 
-
+<a href="update/">Update</a> <br>
+<a href="delete/">Delete</a>
 
 {% endblock  %}

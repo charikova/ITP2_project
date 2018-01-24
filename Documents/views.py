@@ -4,7 +4,7 @@ from .models import *
 from django.views.generic import ListView, DetailView
 
 import datetime
-from django.shortcuts import render_to_response
+from Documents.librarian_view import *
 
 
 class IndexView(ListView):

@@ -1,8 +1,10 @@
 {% extends 'Documents/base.html'  %}
 
-{% block body  %}
-<link rel="stylesheet" href="login_signup_style.css">
+{% load staticfiles %}
 
+
+{% block body  %}
+<link rel="stylesheet" type="text/css" href="{% static 'UserCards/login_signup_style.css' %}" />
 
 <div class="container">
     <h2>Log In</h2><br>
@@ -15,3 +17,4 @@
 
 
 {% endblock  %}
+

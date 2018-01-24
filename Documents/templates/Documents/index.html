@@ -1,17 +1,25 @@
-<!DOCTYPE html>
+<!doctype html>
 
 <html lang="en">
 <head>
     <title>MainPage</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
 {% extends 'Documents/base.html'  %}
 
+{% load staticfiles %}
+
+
 {% block body  %}
+ <link rel="stylesheet" type="text/css" href="{% static 'Documents/style.css' %}" />
 
 
 <h1>Welcome to Innopolka</h1><br>
 
 <h3>Documents available: </h3>
+
+
 
 <form action="" method="post">
 
@@ -33,6 +41,7 @@
        {% endfor %}
 
 </table>
+
     <input type="submit" value="Submit">
     {% csrf_token %}
 </form>
@@ -52,6 +61,7 @@
         {% endif %}
     </span>
 </div>
+
 
 {% endblock  %}
 

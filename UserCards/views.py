@@ -1,8 +1,9 @@
+from django.contrib.auth import login
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from django.views.generic import View, DetailView
-from .forms import *
+from django.views.generic import View
 import Documents.models as documents_models
+from .forms import *
+
 
 def need_logged_in(func):
 
