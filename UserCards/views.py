@@ -3,10 +3,10 @@ from django.shortcuts import render, redirect
 from django.views.generic import View
 import Documents.models as documents_models
 from .forms import *
+import datetime
 
 
 def need_logged_in(func):
-
     def inner(request, *args, **kwargs):
         user = request.user
         if not user.is_anonymous:
@@ -18,7 +18,6 @@ def need_logged_in(func):
 
 
 class SignupView(View):
-
     template_name = "UserCards/signup.html"
 
     def get(self, request):
@@ -51,6 +50,31 @@ class EditCardView(View):
 def user_card_info(request):
     user = request.user
     print(dir(user))
+    documents_copy = user.documentcopy_set.all()
+
+    ZERO = datetime.timedelta(0)
+    class UTC(datetime.tzinfo):
+        def utcoffset(self, dt):
+            return ZERO
+
+        def tzname(self, dt):
+            return "UTC"
+
+        def dst(self, dt):
+            return ZERO
+
+    for document_copy in documents_copy:
+        temp = (document_copy.returning_date - datetime.datetime.now(UTC())).days*24*3600 + (document_copy.returning_date - datetime.datetime.now(UTC())).seconds
+        print(temp)
+        if temp >= 3600:
+            document_copy.time_left = str(int(temp / 3600)) + "h:" + str(int(temp % 3600 / 60))+"m"
+        elif 3600 > temp >= 60:
+            document_copy.time_left = str(int(temp / 60))
+        else:
+            document_copy.time_left = '0'
+
+        document_copy.save()
+
     context = {'user': user, 'copies': user.documentcopy_set.all()}
     return render(request, 'UserCards/index.html', context)
 
@@ -58,7 +82,8 @@ def user_card_info(request):
 @need_logged_in
 def return_copies(request):
     user = request.user
-    chosen_copies = [documents_models.DocumentCopy.objects.get(id=int(id)) for id in request.POST.keys() if id.isdigit()]
+    chosen_copies = [documents_models.DocumentCopy.objects.get(id=int(id)) for id in request.POST.keys() if
+                     id.isdigit()]
     for copy in chosen_copies:
         copy.doc.copies += 1
         copy.doc.save()

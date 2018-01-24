@@ -23,7 +23,7 @@ address: {{ user.address }} <br><br>
         <li>
             <a href="/{{copy.doc.id}}">{{ copy }}</a>
             <input type="checkbox" name="{{copy.id}}"> <br>
-            Date to return: {{ copy.returning_date }}<br>
+            Time to return: {{ copy.time_left }}<br>
         </li>
     {% endfor %}
 </ul>
