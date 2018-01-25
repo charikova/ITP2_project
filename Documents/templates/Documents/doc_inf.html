@@ -4,32 +4,33 @@
 {% block body  %}
 <link rel="stylesheet" type="text/css" href="{% static 'Documents/doc_inf_style.css' %}" />
 
-<h2>{{ type }} information</h2>
+<h2>{{ doc.type }} information</h2>
 <img src="{{ doc.cover }}"> <br>
 Title: {{ doc.title }}<br>
 Authors: {{ doc.authors }}<br>
 Price for fine: {{ doc.price }}<br>
 Available: {{ doc.copies }}<br>
 
-<ul>
-{% if type == "book" %}
-    <li>
+{% if doc.type == "book" %}
     Publication date: {{ doc.publication_date }}<br>
     Edition: {{ doc.edition }}<br>
     Publisher: {{ doc.publisher }}<br>
-    </li>
-{% elif type == "journal article" %}
-    <li>
+{% elif doc.type == "journal article" %}
     Publication date: {{ doc.publication_date }}<br>
     Editors: {{ doc.editors }}<br>
     Journal publisher: {{ doc.publisher_journal }}<br>
-    </li>
 {% endif %}
-</ul>
 
 {% if user.is_staff %}
     <a href="update/">Update</a> <br>
     <a href="delete/">Delete</a>
+{% else %}
+    <button onclick="
+        if (confirm('Check out {{ doc.title }}?')) {
+            window.location = 'http://localhost:8000/{{ doc.id }}/checkout';
+         }
+
+">Check out</button>
 {% endif %}
 
 {% endblock  %}

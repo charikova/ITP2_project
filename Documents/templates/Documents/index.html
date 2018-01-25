@@ -27,26 +27,20 @@
 
     <tr>
         <th colspan="2">Document</th>
+        <th>Authors</th>
         <th>Amount</th>
-        <th class="delete">Add</th>
     </tr>
 
     <tr>
         {% for doc in documents %}
         <td><img src={{doc.cover}}></td>
         <td><a href="/{{ doc.id }}/">{{ doc.title }}</a></td>
+        <td>{{doc.authors}}</td>
         <td>{{doc.copies}}</td>
-        {% if not user.is_staff %}
-            <td><input name="{{ doc.id }}" type="checkbox"></td>
-        {% endif %}
     </tr>
        {% endfor %}
 
 </table>
-
-    {% if not user.is_staff %}
-        <input type="submit" value="Submit">
-    {% endif %}
 
     {% csrf_token %}
 </form>

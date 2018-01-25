@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^(?P<pk>\d+)/update/$', views.UpdateDocument.as_view(), name='update_doc'),
     url(r'^(?P<pk>\d+)/delete/$', views.DeleteDocument.as_view(), name='delete_doc'),
     url(r'^create/$', views.CreateDocument.as_view(), name='create_doc'),
+    url(r'^(?P<pk>\d+)/checkout/$', views.checkout, name='checkout'),
 ]

@@ -1,4 +1,4 @@
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 from django.views.generic import View
 import Documents.models as documents_models
@@ -28,7 +28,11 @@ class SignupView(View):
         form = SignupForm(request.POST)
         if form.is_valid():
             form.save()
-            login(request, request.user)
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+            user = authenticate(username=username, password=password)
+            user.save()
+            login(request, user)
             return redirect("/")
         return redirect('/user/signup/')
 

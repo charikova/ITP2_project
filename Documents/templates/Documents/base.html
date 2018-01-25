@@ -44,9 +44,13 @@
         <button type="submit" class="btn btn-default">Submit</button>
       </form>
         <ul class="nav navbar-nav navbar-right">
-        <li class="active"><a href="/user/signup">Sign up <span class="sr-only">(current)</span></a></li>
-        <li><a href="/user/login">Log In</a></li>
-        <li><a href="/user/logout">Log Out</a></li>
+            {% if user.is_anonymous %}
+            <li class="active"><a href="/user/signup">Sign up <span class="sr-only">(current)</span></a></li>
+            <li><a href="/user/login">Log In</a></li>
+            {% else %}
+            <li><a href="/user/">{{user.username}}</a></li>
+            <li><a href="/user/logout">Log Out</a></li>
+            {% endif %}
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->

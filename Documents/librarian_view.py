@@ -8,9 +8,17 @@ def need_to_be_staff(func):
     the decorator that wrap "get" method to limit non-staff users
     """
     def inner(self, request, *args, **kwargs):
-        print(request.user.get_group_permissions())
         if request.user.is_staff:
             return func(self, request, *args, **kwargs)
+        return redirect('/')
+
+    return inner
+
+def need_logged_in(func):
+
+    def inner(request, *args, **kwargs):
+        if not request.user.is_anonymous:
+            return func(request, *args, **kwargs)
         return redirect('/')
 
     return inner
