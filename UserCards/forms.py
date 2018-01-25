@@ -7,10 +7,11 @@ class SignupForm(UserCreationForm):
     email = forms.EmailField(required=True)
     address = forms.CharField(required=True)
     phone_number = forms.IntegerField(required=True)
+    password1 = forms.PasswordInput()
 
     class Meta:
         fields = [
-            'username', 'first_name', 'last_name', 'email', 'address', 'phone_number',
+            'username', 'first_name', 'last_name', 'email', 'address', 'phone_number'
         ]
         model = User
 

@@ -40,10 +40,12 @@ class SignupView(View):
 class EditCardView(View):
 
     def post(self, request):
-        form = EditPatronForm(request, instance=request.user)
+        form = EditPatronForm(request.POST, instance=request.user)
         if form.is_valid():
+            print('form is alright')
             form.save()
             return redirect('/user/')
+        print('wrong form')
 
     def get(self, request):
         form = EditPatronForm(instance=request.user)

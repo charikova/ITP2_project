@@ -1,4 +1,4 @@
-{% extends 'Documents/base.html'  %}
+{% extends 'Documents/base.html' %}
 {% load staticfiles %}
 {% block body  %}
 
@@ -16,21 +16,22 @@ address: {{ user.address }} <br><br>
 
 <strong>documents in used:</strong>
 
-
-<form action="/user/return_copies/" method="post">
-<ul>
-    {% for copy in copies %}
-        <li>
-            <a href="/{{copy.doc.id}}">{{ copy }}</a>
-            <input type="checkbox" name="{{copy.id}}"> <br>
-            Time to return: {{ copy.time_left }}<br>
-        </li>
-    {% endfor %}
-</ul>
-    <input type="submit" value="Return back">
-    {% csrf_token %}
-</form>
-
+{% if not user.is_staff %}
+    <form action="/user/return_copies/" method="post">
+    <ul>
+        {% for copy in copies %}
+            <li>
+                <a href="/{{copy.doc.id}}">{{ copy }}</a>
+                <input type="checkbox" name="{{copy.id}}"> <br>
+                Time to return: {{ copy.time_left }}<br>
+            </li>
+        {% endfor %}
+    </ul>
+        <input type="submit" value="Return back">
+        {% csrf_token %}
+    </form>
+{% endif %}
+<br>
 <a href="/user/edit/">Edit profile</a>
 
 

@@ -24,7 +24,7 @@ Available: {{ doc.copies }}<br>
 {% if user.is_staff %}
     <a href="update/">Update</a> <br>
     <a href="delete/">Delete</a>
-{% else %}
+{% elif not user.is_anonymous %}
     <button onclick="
         if (confirm('Check out {{ doc.title }}?')) {
             window.location = 'http://localhost:8000/{{ doc.id }}/checkout';
