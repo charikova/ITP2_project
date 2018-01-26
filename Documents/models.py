@@ -14,6 +14,8 @@ class Document(models.Model):
     authors = models.CharField(max_length=250) # the list of authors in string format splitted by space
     cover = models.CharField(max_length=1000, default="https://lh3.googleusercontent.com/zqfUbCXdb1oGmsNEzNxTjQU5ZlS3x46nQoB83sFbRSlMnpDTZgdVCe_LvCx-rl7sOA=w300")
     copies = models.PositiveIntegerField(default=1)
+    room = models.PositiveIntegerField(default=1)
+    level = models.PositiveIntegerField(default=1)
     type = models.CharField(max_length=100, default='document')
 
     def __str__(self):
