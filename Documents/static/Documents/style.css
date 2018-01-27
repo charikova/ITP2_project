@@ -1,7 +1,8 @@
 body {
-    background-image: url("../../static/Documents/background.jpg");
     font-family: Futura;
     color: white;
+    background: url("../../static/Documents/background.jpg") no-repeat fixed center center;
+    background-size: cover;
 }
 
 table {
