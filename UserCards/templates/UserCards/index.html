@@ -2,21 +2,96 @@
 {% load staticfiles %}
 {% block body  %}
 
-<!--<link rel="stylesheet" type="text/css" href="{% static 'UserCards/usercards_style.css' %}" />-->
+<link rel="stylesheet" type="text/css" href="{% static 'UserCards/usercards_style.css' %}" />
 
+<style>
+    .container {
+        background-color: rgba(214, 184, 150, 0.8);
+        color: saddlebrown;
+        font-size: 15px;
+        overflow:visible;
+        position:absolute;
+        left: 25%;
+        top: 18%;
+        width: 50%;
+        border: 0;
+        border-radius: 10px;
+        margin: 0 auto 60px;
+    }
 
-<h1>Card information</h1>
+    h2 {
+        color: black;
+        font-size: 40px;
+        text-align: center;
+    }
 
-username: {{ user.username }} <br>
-first name: {{ user.first_name }} <br>
-last name: {{ user.last_name }} <br>
-phone: {{ user.phone_number }} <br>
-email: {{ user.email }} <br>
-address: {{ user.address }} <br><br>
+    form {
+        padding: 5px;
+        color: black;
+        font-size: 15px;
+        margin: 5px;
+    }
 
+    input {
+        background-color: floralwhite;
+        border: 2px solid saddlebrown;
+        border-radius: 5px;
+        margin: 0 0 0 10px;
+        left: 50%;
+    }
+
+    .button {
+        width: 40%;
+        font-size: 25px;
+        margin: 15px 15px 15px 30%;
+    }
+
+    p {
+        color: black;
+        margin: 15px;
+        font-size: 20px;
+    }
+
+    .edit {
+        text-decoration: none;
+        display: inline-block;
+        letter-spacing: 1px;
+        margin: 10px;
+        font-size: 24px;
+        font-family: Futura;
+        transition: .3s ease-in-out;
+    }
+
+    .edit {
+        color: saddlebrown;
+        text-shadow: 1px 0 black;
+    }
+
+    .edit:hover {
+        transform: rotate(-5deg);
+    }
+
+    a {
+        color: black;
+    }
+
+</style>
+<div class="container">
+    <h2>Patron card information</h2>
+
+    <p>
+        Username: {{ user.username }} <br>
+        First name: {{ user.first_name }} <br>
+        Last name: {{ user.last_name }} <br>
+        Phone: {{ user.phone_number }} <br>
+        Email: {{ user.email }} <br>
+        Address: {{ user.address }} <br><br>
+    </p>
 
 {% if not user.is_staff and not user.is_anonymous %}
-    <strong>documents in used:</strong>
+    <p>
+        <strong>Documents in used:</strong>
+    </p>
     <form action="/user/return_copies/" method="post">
     <ul>
         {% for copy in copies %}
@@ -27,12 +102,16 @@ address: {{ user.address }} <br><br>
             </li>
         {% endfor %}
     </ul>
-        <input type="submit" value="Return back">
+        <input class="button" type="submit" value="Return back">
+        {% csrf_token %}
+    </form>
+
+    <a class="edit" href="/user/edit/">Edit profile</a>
+
+
         {% csrf_token %}
     </form>
 {% endif %}
 <br>
-<a href="/user/edit/">Edit profile</a>
-
-
+    
 {% endblock  %}
