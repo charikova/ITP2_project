@@ -89,6 +89,7 @@
 <div class="container">
 
     <table>
+        <h3>Document information</h3>
         <img src="{{cover}}"><br>
 
         {% for key, value in fields %}
@@ -98,10 +99,10 @@
         {%endfor%}
 
         {% if user.is_staff %}
-        <a href="update/">Update</a> <br>
-        <a href="delete/">Delete</a>
+            <a href="update/">Update</a> <br>
+            <a href="delete/">Delete</a>
         {% elif not user.is_anonymous %}
-        <button class="button" onclick="
+            <button class="button" onclick="
         if (confirm('Check out {{ doc.title }}?')) {
              var user_has_doc = {{user_has_doc}};
              if (user_has_doc)

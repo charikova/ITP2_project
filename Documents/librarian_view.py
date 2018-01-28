@@ -7,9 +7,9 @@ def need_to_be_staff(func):
     """
     the decorator that wrap "get" method to limit non-staff users
     """
-    def inner(self, request, *args, **kwargs):
+    def inner(request, *args, **kwargs):
         if request.user.is_staff:
-            return func(self, request, *args, **kwargs)
+            return func(request, *args, **kwargs)
         return redirect('/')
 
     return inner
@@ -37,21 +37,53 @@ class ModifyDocument:
         'cover', 'title', 'authors', 'price', 'copies', 'keywords'
     ]
 
-    @need_to_be_staff
     def get(self, request, *args, **kwargs):
-        return super(ModifyDocument, self).get(request, *args, **kwargs)
+        if request.user.is_staff:
+            return super().get(request, *args, **kwargs)
+        else:
+            return redirect('/')
 
 
 class DeleteDocument(ModifyDocument, DeleteView):
     pass
 
 
-class UpdateDocument(ModifyDocument, UpdateView):
-    success_url = '../'
+@need_to_be_staff
+def update_doc(request, pk):
+    doc = get_doc(request, pk)
+    fields = get_fields_of(doc)
+    if request.method == "GET":
+        return render(request, 'Documents/update_doc.html', 
+                      {'doc': doc, 'cover': doc.__dict__['cover'], 'fields': fields})
+    elif request.method == "POST":
+        print(request.POST)
+        for field in fields:
+            exec('doc.{0} = request.POST["{0}"]'.format(field[0]))
+        doc.save()
+        print(doc)
+        return redirect('../')
+
+
+def get_fields_of(doc, excess_fields=['document_ptr_id', '_state', 'id']):
+    fields = dict()
+    for key, value in doc.__dict__.items():
+        if key not in excess_fields:
+            fields[key] = value
+    fields = list(
+        map(lambda key: (key, str(fields[key])), fields))
+    print(fields)
+    return fields
+
+
+def get_doc(request, pk):
+    doc = None
+    for Type in Document.__subclasses__():
+        if Type.objects.filter(pk=pk):
+            doc = Type.objects.get(pk=pk)
+    return doc
 
 
 class CreateDocument(ModifyDocument, CreateView):
-
 
     def get(self, request, *args, **kwargs):
         self.fields = list(map(lambda x: x.replace(' ', '').replace(')', ''), self.model.__dict__['__doc__'].split(',')))[1:]
@@ -60,7 +92,7 @@ class CreateDocument(ModifyDocument, CreateView):
         return super(CreateDocument, self).get(request, *args, **kwargs)
 
 
+@need_to_be_staff
 def add_doc(request):
-    print(list(map(lambda x: x.type, Document.__subclasses__())))
     return render(request, 'Documents/add_doc.html', {'clss': list(map(lambda x: x.type, Document.__subclasses__()))})
 

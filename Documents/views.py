@@ -25,11 +25,11 @@ def document_detail(request, pk):
     context['doc'] = doc
     context['cover'] = doc.__dict__['cover']
     context['fields'] = dict()
-    excess_fields = ['document_ptr_id', '_state', 'id', 'cover']
+    excess_fields = ['document_ptr_id', '_state', 'id', 'cover', 'keywords', 'room', 'level']
     for key, value in doc.__dict__.items():
         if key not in excess_fields:
             context['fields'][key] = value
-    context['fields'] = list(map(lambda key: (key, context['fields'][key]), context['fields']))
+    context['fields'] = list(map(lambda key: (key.replace('_', ' '), context['fields'][key]), context['fields']))
     return render(request, 'Documents/doc_inf.html', context)
 
 
