@@ -15,27 +15,22 @@ class IndexView(ListView):
     paginate_by = 10
 
 
-class DocumentDetail(DetailView):
-    template_name = 'Documents/doc_inf.html'
-    context_object_name = 'doc'
-    model = Document
-
-    def get(self, request, *args, **kwargs):
-        print('get')
-        self.extra_context = {'user_has_doc':
-                                  len(request.user.documentcopy_set.all().filter(
-                                      doc=Document.objects.get(id=int(request.path.replace('/', '')))))}
-        return super().get(request, *args, **kwargs)
-
-
 def document_detail(request, pk):
     doc = None
     for Type in Document.__subclasses__():
         if Type.objects.filter(pk=pk):
             doc = Type.objects.get(pk=pk)
-    return render(request, 'Documents/doc_inf.html', {'doc': doc, 'user_has_doc':
-                                  len(request.user.documentcopy_set.all().filter(
-                                      doc=Document.objects.get(id=int(request.path.replace('/', '')))))})
+    context = {'user_has_doc':len(request.user.documentcopy_set.all().filter(
+                                    doc=Document.objects.get(id=int(request.path.replace('/', '')))))}
+    context['doc'] = doc
+    context['cover'] = doc.__dict__['cover']
+    context['fields'] = dict()
+    excess_fields = ['document_ptr_id', '_state', 'id', 'cover']
+    for key, value in doc.__dict__.items():
+        if key not in excess_fields:
+            context['fields'][key] = value
+    context['fields'] = list(map(lambda key: (key, context['fields'][key]), context['fields']))
+    return render(request, 'Documents/doc_inf.html', context)
 
 
 @need_logged_in

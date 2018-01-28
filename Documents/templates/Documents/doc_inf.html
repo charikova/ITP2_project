@@ -2,9 +2,9 @@
 
 {% load staticfiles %}
 {% block body  %}
-<link rel="stylesheet" type="text/css" href="{% static 'Documents/doc_inf_style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'Documents/doc_inf_style.css' %}"/>
 
-    <style>
+<style>
     .container {
         background-color: rgba(214, 184, 150, 0.8);
         color: saddlebrown;
@@ -83,44 +83,25 @@
         margin: auto;
     }
 
+
+
 </style>
 <div class="container">
-<h2>{{ doc.type }} Information</h2>
+
     <table>
-        <tr>
-            <td>
-                <p>
-                    Title: {{ doc.title }}<br>
-                    Authors: {{ doc.authors }}<br>
-                    Price for fine: {{ doc.price }}<br>
-                    Available: {{ doc.copies }}<br>
-                </p>
+        <img src="{{cover}}"><br>
 
-                {% if doc.type == "book" %}
-                    <p>
-                        Publication date: {{ doc.publication_date }}<br>
-                        Edition: {{ doc.edition }}<br>
-                        Publisher: {{ doc.publisher }}<br>
-                    </p>
-                {% elif doc.type == "journal article" %}
-                    <p>
-                        Publication date: {{ doc.publication_date }}<br>
-                        Editors: {{ doc.editors }}<br>
-                        Journal publisher: {{ doc.publisher_journal }}<br>
-                    </p>
-                {% endif %}
-            </td>
-            <td>
-                <img src="{{ doc.cover }}"> <br>
-            </td>
-        </tr>
-    </table>
+        {% for key, value in fields %}
+        <p>
+            {{key}}: {{value}}
+        </p>
+        {%endfor%}
 
-{% if user.is_staff %}
-    <a href="update/">Update</a> <br>
-    <a href="delete/">Delete</a>
-{% elif not user.is_anonymous %}
-    <button class="button" onclick="
+        {% if user.is_staff %}
+        <a href="update/">Update</a> <br>
+        <a href="delete/">Delete</a>
+        {% elif not user.is_anonymous %}
+        <button class="button" onclick="
         if (confirm('Check out {{ doc.title }}?')) {
              var user_has_doc = {{user_has_doc}};
              if (user_has_doc)
@@ -129,8 +110,9 @@
                  window.location = 'http://localhost:8000/{{doc.id}}/checkout';
          }
 
-">Check out</button>
-{% endif %}
-
-{% endblock  %}
+">Check out
+        </button>
+        {% endif %}
+    </table>
+    {% endblock %}
 </div>
