@@ -17,18 +17,25 @@ class IndexView(ListView):
 
 class DocumentDetail(DetailView):
     template_name = 'Documents/doc_inf.html'
-    model = Document
     context_object_name = 'doc'
+    model = Document
 
     def get(self, request, *args, **kwargs):
-        print(request.user.documentcopy_set.all().filter())
+        print('get')
         self.extra_context = {'user_has_doc':
                                   len(request.user.documentcopy_set.all().filter(
                                       doc=Document.objects.get(id=int(request.path.replace('/', '')))))}
         return super().get(request, *args, **kwargs)
 
 
-
+def document_detail(request, pk):
+    doc = None
+    for Type in Document.__subclasses__():
+        if Type.objects.filter(pk=pk):
+            doc = Type.objects.get(pk=pk)
+    return render(request, 'Documents/doc_inf.html', {'doc': doc, 'user_has_doc':
+                                  len(request.user.documentcopy_set.all().filter(
+                                      doc=Document.objects.get(id=int(request.path.replace('/', '')))))})
 
 
 @need_logged_in
@@ -36,7 +43,7 @@ def checkout(request, pk):
     doc = get_object_or_404(Document, pk=pk)
     user = request.user
     if user.is_staff:
-        return Http404
+        raise Http404('staff can not take documents')
     if user.documentcopy_set.filter(doc=doc):
         return redirect('/{0}/'.format(pk))
     if doc.copies > 0:
@@ -53,3 +60,4 @@ def checkout(request, pk):
 
         new_copy.save()
     return redirect('/{0}/'.format(pk))
+

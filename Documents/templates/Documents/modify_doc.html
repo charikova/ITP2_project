@@ -49,6 +49,8 @@
     <div class="container">
 <form action="" method="post">
     {{ form.as_p }}
+    <strong>Type:<br></strong>
+    <input type="text" value="{{model}}" readonly="readonly">
     <input class="button" type="submit" value="Submit">
     {% csrf_token %}
 </form>

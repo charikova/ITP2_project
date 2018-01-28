@@ -37,10 +37,13 @@ class SignupView(View):
         return redirect('/user/signup/')
 
 
+
 class EditCardView(View):
 
     def post(self, request):
+        print(request.POST)
         form = EditPatronForm(request.POST, instance=request.user)
+        print(form)
         if form.is_valid():
             print('form is alright')
             form.save()
@@ -50,6 +53,7 @@ class EditCardView(View):
     def get(self, request):
         form = EditPatronForm(instance=request.user)
         return render(request, 'UserCards/edit.html', {'form': form})
+
 
 
 @need_logged_in

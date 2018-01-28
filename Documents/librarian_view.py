@@ -1,5 +1,5 @@
 from django.views.generic.edit import DeleteView, CreateView, UpdateView
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from Documents.models import *
 
 
@@ -50,21 +50,17 @@ class UpdateDocument(ModifyDocument, UpdateView):
     success_url = '../'
 
 
-class CreateDocument(CreateView):
-    template_name = 'Documents/modify_doc.html'  # base template which includes
-    # expression {{ form.as_p }} for default html paragraph
-    success_url = '/'
-    fields = [
-        'cover', 'title', 'authors', 'price', 'copies', 'keywords'
-    ]
+class CreateDocument(ModifyDocument, CreateView):
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        print(kwargs)
-        self.model = Book
 
-    @need_to_be_staff
     def get(self, request, *args, **kwargs):
-        print(request)
-        self.fields += ['publisher', 'edition', 'publication_date']
+        self.fields = list(map(lambda x: x.replace(' ', '').replace(')', ''), self.model.__dict__['__doc__'].split(',')))[1:]
+        self.fields.remove('type')
+        self.extra_context = {'model': self.model.type}
         return super(CreateDocument, self).get(request, *args, **kwargs)
+
+
+def add_doc(request):
+    print(list(map(lambda x: x.type, Document.__subclasses__())))
+    return render(request, 'Documents/add_doc.html', {'clss': list(map(lambda x: x.type, Document.__subclasses__()))})
+

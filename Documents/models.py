@@ -16,7 +16,7 @@ class Document(models.Model):
     copies = models.PositiveIntegerField(default=1)
     room = models.PositiveIntegerField(default=1)
     level = models.PositiveIntegerField(default=1)
-    type = models.CharField(max_length=100, default='document')
+    type = models.CharField(max_length=100, default='Document')
 
     def __str__(self):
         return "title: {}; price: {}; authors: {}".format(self.title, self.price, self.authors)
@@ -26,18 +26,18 @@ class Book(Document):
     publisher = models.CharField(max_length=250)
     edition = models.PositiveIntegerField(default=1)
     publication_date = models.DateField(max_length=250)
-    type = 'book'
+    type = 'Book'
 
 
 class JournalArticle(Document):
     publisher_journal = models.CharField(max_length=250)
     editors = models.CharField(max_length=250)
     publication_date = models.DateField(max_length=250)
-    type = 'journal article'
+    type = 'JournalArticle'
 
 
 class AVFile(Document):
-    type = 'av file'
+    type = 'AVFile'
 
 
 class DocumentCopy(models.Model):

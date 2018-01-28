@@ -1,0 +1,98 @@
+
+{% extends 'Documents/base.html'  %}
+
+{% load staticfiles %}
+{% block body  %}
+<link rel="stylesheet" type="text/css" href="{% static 'Documents/doc_inf_style.css' %}" />
+
+    <style>
+    .container {
+        background-color: rgba(214, 184, 150, 0.8);
+        color: saddlebrown;
+        font-size: 15px;
+        overflow:visible;
+        position:absolute;
+        left: 25%;
+        top: 18%;
+        width: 50%;
+        border: 0;
+        border-radius: 10px;
+        margin: 0 auto 60px;
+    }
+
+    h2 {
+        color: black;
+        font-size: 40px;
+        text-align: center;
+    }
+
+    form {
+        padding: 5px;
+        color: black;
+        font-size: 15px;
+        margin: 5px;
+    }
+
+    input {
+        background-color: floralwhite;
+        border: 2px solid saddlebrown;
+        border-radius: 5px;
+        margin: 0 0 0 10px;
+        left: 50%;
+    }
+
+    .button {
+        width: 30%;
+        font-size: 25px;
+        margin: 15px 15px 15px 35%;
+        border: 3px solid saddlebrown;
+        border-radius: 10px;
+    }
+
+
+    p {
+        color: black;
+        margin: 15px;
+        font-size: 20px;
+    }
+
+
+    a {
+        color: black;
+    }
+
+    table {
+        background: none;
+        border: none;
+        table-layout: fixed;
+        width: 100%;
+    }
+
+    tr {
+        border: none;
+        text-align: left;
+    }
+
+    td {
+        border: none;
+        text-align: left;
+        width: 50%;
+    }
+
+    img {
+        height: 300px;
+        margin: auto;
+    }
+
+</style>
+<div class="container">
+
+    <h3>Select the type of document you wish to add:<br></h3>
+    <ul>
+    {% for cls in clss %}
+        <li><a href="/create/{{cls}}">{{cls}}</a><br></li>
+    {% endfor %}
+    </ul>
+
+{% endblock  %}
+</div>

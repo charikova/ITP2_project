@@ -76,6 +76,7 @@
     }
 
 
+
 </style>
 <div class="container">
     {% if not user.is_staff %}
@@ -93,31 +94,32 @@
         Address: {{ user.address }} <br><br>
     </p>
 
-{% if not user.is_staff and not user.is_anonymous %}
-<p>
-    <strong>Documents in used:</strong>
-</p>
-<form action="/user/return_copies/" method="post">
-    <ul>
-        {% for copy in copies %}
-        <li>
-            <a href="/{{copy.doc.id}}">{{ copy }}</a>
-            <input type="checkbox" name="{{copy.id}}"> <br>
-            Time to return: {{ copy.time_left }}<br>
-        </li>
-        {% endfor %}
-    </ul>
-    <input class="button" type="submit" value="Return back">
+    {% if not user.is_staff and not user.is_anonymous %}
+    <p>
+        <strong>Documents in used:</strong>
+    </p>
+    <form action="/user/return_copies/" method="post">
+        <ul>
+            {% for copy in copies %}
+            <li>
+                <a href="/{{copy.doc.id}}">{{ copy }}</a>
+                <input type="checkbox" name="{{copy.id}}"> <br>
+                Time to return: {{ copy.time_left }}<br>
+            </li>
+            {% endfor %}
+        </ul>
+        <input class="button" type="submit" value="Return back">
+        {% csrf_token %}
+    </form>
     {% csrf_token %}
-</form>
-
-<a class="edit" href="/user/edit/">Edit profile</a>
+    {% endif %}
 
 
-{% csrf_token %}
-{% endif %}
-<br>
-    </div>
+    <a class="edit" href="/user/edit/">Edit profile</a>
+
+
+    <br>
+</div>
 
 
 {% endblock  %}

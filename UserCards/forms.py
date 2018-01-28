@@ -3,11 +3,11 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
 
 
+
 class SignupForm(UserCreationForm):
     email = forms.EmailField(required=True)
     address = forms.CharField(required=True)
     phone_number = forms.IntegerField(required=True)
-    password1 = forms.PasswordInput()
 
     class Meta:
         fields = [
@@ -34,5 +34,4 @@ class EditPatronForm(UserChangeForm):
         fields = [
             'first_name', 'last_name', 'email', 'phone_number', 'address'
         ]
-
 
