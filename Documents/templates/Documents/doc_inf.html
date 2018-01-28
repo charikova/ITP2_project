@@ -116,15 +116,17 @@
         </tr>
     </table>
 
-
-
 {% if user.is_staff %}
     <a href="update/">Update</a> <br>
     <a href="delete/">Delete</a>
 {% elif not user.is_anonymous %}
     <button class="button" onclick="
         if (confirm('Check out {{ doc.title }}?')) {
-            window.location = 'http://localhost:8000/{{ doc.id }}/checkout';
+             var user_has_doc = {{user_has_doc}};
+             if (user_has_doc)
+                alert('You already have this document');
+             else
+                 window.location = 'http://localhost:8000/{{doc.id}}/checkout';
          }
 
 ">Check out</button>

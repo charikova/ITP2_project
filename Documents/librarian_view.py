@@ -17,7 +17,7 @@ def need_to_be_staff(func):
 def need_logged_in(func):
 
     def inner(request, *args, **kwargs):
-        if not request.user.is_anonymous:
+        if request.user.is_authenticated:
             return func(request, *args, **kwargs)
         return redirect('/')
 
@@ -68,9 +68,3 @@ class CreateDocument(CreateView):
         print(request)
         self.fields += ['publisher', 'edition', 'publication_date']
         return super(CreateDocument, self).get(request, *args, **kwargs)
-
-
-def create_doc(request):
-    type = request.GET['type']
-    cd = CreateDocument(type=type)
-    return CreateDocument.as_view()
