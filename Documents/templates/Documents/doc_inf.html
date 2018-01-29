@@ -85,6 +85,9 @@
 
 
 
+
+
+
 </style>
 <div class="container">
 
@@ -99,20 +102,16 @@
         {%endfor%}
 
         {% if user.is_staff %}
-            <a href="update/">Update</a> <br>
-            <a href="delete/">Delete</a>
-        {% elif not user.is_anonymous %}
-            <button class="button" onclick="
-        if (confirm('Check out {{ doc.title }}?')) {
-             var user_has_doc = {{user_has_doc}};
-             if (user_has_doc)
-                alert('You already have this document');
-             else
-                 window.location = 'http://localhost:8000/{{doc.id}}/checkout';
-         }
+        <a href="update/">Update</a> <br>
+        <a href="delete/">Delete</a>
+        {% elif user.is_authenticated %}
+        <a class="button" href="/{{doc.id}}/checkout" onclick="
+        if ({{user_has_doc}})
+            alert('You already have this document');
+        else
+            return confirm('Sure you want to check out {{doc.title}}?');
 
-">Check out
-        </button>
+        ">Check out</a>
         {% endif %}
     </table>
     {% endblock %}

@@ -1,14 +1,13 @@
 
 from django.shortcuts import render, redirect
 from .models import *
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView
 from django.shortcuts import get_object_or_404, Http404
 import datetime
 from Documents.librarian_view import *
 
 
 class IndexView(ListView):
-
     template_name = 'Documents/index.html'
     model = Document
     context_object_name = 'documents'
@@ -16,6 +15,7 @@ class IndexView(ListView):
 
 
 def document_detail(request, pk):
+    print(request.user)
     doc = None
     for Type in Document.__subclasses__():
         if Type.objects.filter(pk=pk):
@@ -55,4 +55,3 @@ def checkout(request, pk):
 
         new_copy.save()
     return redirect('/{0}/'.format(pk))
-
