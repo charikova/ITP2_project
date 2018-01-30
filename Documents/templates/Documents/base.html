@@ -46,9 +46,12 @@
             </form>
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_anonymous %}
-                <li class="active"><a href="/user/signup">Sign up <span class="sr-only">(current)</span></a></li>
                 <li><a href="/user/login">Log In</a></li>
-                {% else %}
+                {% elif user.is_staff %}
+                <li class="active"><a href="/user/create_user/">Create User<span class="sr-only">(current)</span></a>
+                </li>
+                {% endif %}
+                {% if user.is_authenticated %}
                 <li><a href="/user/">{{user.username}}</a></li>
                 <li><a href="/user/logout">Log Out</a></li>
                 {% endif %}

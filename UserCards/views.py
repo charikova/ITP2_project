@@ -17,31 +17,32 @@ def need_logged_in(func):
     return inner
 
 
-class SignupView(View):
+class CreateUserView(View):
     template_name = "UserCards/signup.html"
 
     def get(self, request):
-        form = SignupForm()
-        return render(request, self.template_name, {'form': form})
+        if request.user.is_staff:
+            form = SignupForm()
+            return render(request, self.template_name, {'form': form})
 
     def post(self, request):
-        form = SignupForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password1']
-            user = authenticate(username=username, password=password)
-            user.save()
-            login(request, user)
-            return redirect("/")
-        return redirect('/user/signup/')
+        if request.user.is_staff:
+            form = SignupForm(request.POST)
+            if form.is_valid():
+                form.save()
+                username = form.cleaned_data['username']
+                password = form.cleaned_data['password1']
+                user = authenticate(username=username, password=password)
+                user.save()
+                login(request, user)
+                return redirect("/")
+            return redirect('/user/create_user/')
 
 
 
 class EditCardView(View):
 
     def post(self, request):
-        print(request.POST)
         form = EditPatronForm(request.POST, instance=request.user)
         print(form)
         if form.is_valid():
@@ -59,7 +60,7 @@ class EditCardView(View):
 @need_logged_in
 def user_card_info(request):
     user = request.user
-    print(dir(user))
+    print(user.username)
     documents_copy = user.documentcopy_set.all()
 
     ZERO = datetime.timedelta(0)
