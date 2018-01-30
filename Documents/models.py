@@ -3,6 +3,7 @@ import uuid
 from UserCards import models as user_cards_models
 from django.contrib.auth.models import User
 import datetime
+from django.urls import reverse
 
 class Document(models.Model):
     '''
