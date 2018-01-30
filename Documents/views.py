@@ -54,4 +54,7 @@ def checkout(request, pk):
                     datetime.date.today() + datetime.timedelta(days=21)).strftime("%Y-%m-%d"))
 
         new_copy.save()
+    else:
+        new_request = BookRequest(doc=doc, checked_up_by_whom=user, )
+        new_request.save()
     return redirect('/{0}/'.format(pk))
