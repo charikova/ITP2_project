@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, User
 
 class UserCard(models.Model):
     name = models.CharField(default='', max_length=250)
@@ -34,6 +34,11 @@ class CustomUser(AbstractBaseUser):
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ['email', 'password', 'name', 'surname', 'address', 'phone_number']
+
+class MyUser(User):
+    address = models.CharField(max_length=250, default='Universitetskya 1')
+    phone_number = models.IntegerField(default=11111)
+    status = models.CharField(max_length=250, default='student')
 
 
     def __str__(self):

@@ -22,12 +22,12 @@ class CreateUserView(View):
 
     def get(self, request):
         if request.user.is_staff:
-            form = SignupForm()
+            form = CreateUserForm()
             return render(request, self.template_name, {'form': form})
 
     def post(self, request):
         if request.user.is_staff:
-            form = SignupForm(request.POST)
+            form = CreateUserForm(request.POST)
             if form.is_valid():
                 form.save()
                 username = form.cleaned_data['username']
@@ -46,10 +46,8 @@ class EditCardView(View):
         form = EditPatronForm(request.POST, instance=request.user)
         print(form)
         if form.is_valid():
-            print('form is alright')
             form.save()
             return redirect('/user/')
-        print('wrong form')
 
     def get(self, request):
         form = EditPatronForm(instance=request.user)
@@ -60,7 +58,6 @@ class EditCardView(View):
 @need_logged_in
 def user_card_info(request):
     user = request.user
-    print(user.username)
     documents_copy = user.documentcopy_set.all()
 
     ZERO = datetime.timedelta(0)
@@ -76,7 +73,6 @@ def user_card_info(request):
 
     for document_copy in documents_copy:
         temp = (document_copy.returning_date - datetime.datetime.now(UTC())).days*24*3600 + (document_copy.returning_date - datetime.datetime.now(UTC())).seconds
-        print(temp)
         if temp >= 3600:
             document_copy.time_left = str(int(temp / 3600)) + "h:" + str(int(temp % 3600 / 60))+"m"
         elif 3600 > temp >= 60:
@@ -89,15 +85,12 @@ def user_card_info(request):
     context = {'user': user, 'copies': user.documentcopy_set.all()}
     return render(request, 'UserCards/index.html', context)
 
-
 @need_logged_in
 def return_copies(request):
-    user = request.user
     chosen_copies = [documents_models.DocumentCopy.objects.get(id=int(id)) for id in request.POST.keys() if
                      id.isdigit()]
     for copy in chosen_copies:
         copy.doc.copies += 1
         copy.doc.save()
         copy.delete()
-    context = {'user': user, 'copies': user.documentcopy_set.all()}
-    return render(request, 'UserCards/index.html', context)
+    return redirect('/user/')

@@ -19,7 +19,7 @@ class Document(models.Model):
     type = models.CharField(max_length=100, default='Document')
 
     def __str__(self):
-        return "title: {}; price: {}; authors: {}".format(self.title, self.price, self.authors)
+        return "{}; authors: {}".format(self.title, self.price, self.authors)
 
 
 class Book(Document):
