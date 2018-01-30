@@ -1,5 +1,4 @@
 from django.db import models
-import uuid
 from UserCards import models as user_cards_models
 from django.contrib.auth.models import User
 import datetime
@@ -57,8 +56,9 @@ class BookRequest(models.Model):
     doc = models.ForeignKey(Document, null=True, default=None, on_delete=models.CASCADE)
     checked_up_by_whom = models.ForeignKey(User, null=True, default=None, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4,
-                          help_text="Unique ID for this particular book_request")
+
+    def __str__(self):
+        return str(self.doc)
 
     def get_absolute_url(self):
         return reverse('request-detail', args=[str(self.id)])
