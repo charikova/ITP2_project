@@ -51,6 +51,11 @@ class DocumentCopy(models.Model):
         return str(self.doc)
 
 
+class BookRequest(models.Model):
+    doc = models.ForeignKey(Document, null=True, default=None, on_delete=models.CASCADE)
+    checked_up_by_whom = models.ForeignKey(User, null=True, default=None, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
 
 
 
