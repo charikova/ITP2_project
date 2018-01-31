@@ -35,30 +35,17 @@ class CustomUser(AbstractBaseUser):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ['email', 'password', 'name', 'surname', 'address', 'phone_number']
 
+
 class MyUser(User):
     address = models.CharField(max_length=250, default='Universitetskya 1')
     phone_number = models.IntegerField(default=11111)
     status = models.CharField(max_length=250, default='student')
 
+    REQUIRED_FIELDS = ['email', 'password', 'name', 'surname', 'address', 'phone_number']
 
-    def __str__(self):
-        return self.email
 
-    def get_full_name(self):
-        return self.email
-
-    def get_short_name(self):
-        return self.email
-
-    @property
-    def is_staff(self):
-        return self.staff
-
-    @property
-    def is_admin(self):
-        return self.admin
-
-    @property
-    def is_staff(self):
-        return self.staff
-
+class UserCardProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    address = models.CharField(max_length=250, default='Universitetskya 1')
+    phone_number = models.IntegerField(default=11111)
+    status = models.CharField(max_length=250, default='student')

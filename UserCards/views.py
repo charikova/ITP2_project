@@ -34,7 +34,6 @@ class CreateUserView(View):
                 password = form.cleaned_data['password1']
                 user = authenticate(username=username, password=password)
                 user.save()
-                login(request, user)
                 return redirect("/")
             return redirect('/user/create_user/')
 
