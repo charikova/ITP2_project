@@ -1,4 +1,4 @@
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import authenticate
 from django.shortcuts import render, redirect
 from django.views.generic import View
 import Documents.models as documents_models

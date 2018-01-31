@@ -1,5 +1,4 @@
 from django.db import models
-from UserCards import models as user_cards_models
 from django.contrib.auth.models import User
 import datetime
 
@@ -23,16 +22,16 @@ class Document(models.Model):
 
 
 class Book(Document):
-    publisher = models.CharField(max_length=250)
+    publisher = models.CharField(max_length=250, blank=True)
     edition = models.PositiveIntegerField(default=1)
-    publication_date = models.DateField(max_length=250)
+    publication_date = models.DateField(max_length=250, blank=True)
     type = 'Book'
 
 
 class JournalArticle(Document):
-    publisher_journal = models.CharField(max_length=250)
-    editors = models.CharField(max_length=250)
-    publication_date = models.DateField(max_length=250)
+    publisher_journal = models.CharField(max_length=250, blank=True)
+    editors = models.CharField(max_length=250, blank=True)
+    publication_date = models.DateField(max_length=250, blank=True)
     type = 'JournalArticle'
 
 
@@ -41,8 +40,8 @@ class AVFile(Document):
 
 
 class DocumentCopy(models.Model):
-    doc = models.ForeignKey(Document, null=True, default=None, on_delete=models.CASCADE)
-    checked_up_by_whom = models.ForeignKey(User, null=True, default=None, on_delete=models.CASCADE)
+    doc = models.ForeignKey(Document, blank=True, default=None, on_delete=models.CASCADE)
+    checked_up_by_whom = models.ForeignKey(User, blank=True, default=None, on_delete=models.CASCADE)
     date = models.DateTimeField(default=str(datetime.datetime.today().strftime("%Y-%m-%d %H:%M")))
     returning_date = models.DateTimeField(default=str(datetime.datetime.today().strftime("%Y-%m-%d %H:%M")))
     time_left = models.CharField(null=True, max_length=250)
@@ -50,49 +49,3 @@ class DocumentCopy(models.Model):
     def __str__(self):
         return str(self.doc)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'''
-Don't delete this peace of code!!! Otherwise db crashes. 
-Don't either ask me why ¯\_(ツ)_/¯
-'''
-class Copy(Document):
-    pass

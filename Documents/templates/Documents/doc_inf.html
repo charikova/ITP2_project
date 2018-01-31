@@ -102,8 +102,8 @@
         {%endfor%}
 
         {% if user.is_staff %}
-        <a href="update/">Update</a> <br>
-        <a href="delete/">Delete</a>
+        <a type="btn" href="update/">Update</a> <br>
+        <a type="btn" href="delete/" onclick="return confirm('Delete {{doc.title}}?')">Delete</a>
         {% elif user.is_authenticated %}
         <a class="button" href="/{{doc.id}}/checkout" onclick="
         if ({{user_has_doc}})

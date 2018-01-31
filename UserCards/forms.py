@@ -1,8 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import UserCardProfile
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
 
 
 USER_STATUSES = [
