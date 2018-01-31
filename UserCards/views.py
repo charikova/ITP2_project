@@ -2,22 +2,15 @@ from django.contrib.auth import authenticate
 from django.shortcuts import render, redirect
 from django.views.generic import View
 import Documents.models as documents_models
+from Documents.librarian_view import need_logged_in
 from .forms import *
 import datetime
 
 
-def need_logged_in(func):
-    def inner(request, *args, **kwargs):
-        user = request.user
-        if not user.is_anonymous:
-            return func(request, *args, **kwargs)
-        else:
-            return redirect('/user/login/')
-
-    return inner
-
-
 class CreateUserView(View):
+    """
+    User creation view
+    """
     template_name = "UserCards/signup.html"
 
     def get(self, request):
@@ -53,9 +46,11 @@ class EditCardView(View):
         return render(request, 'UserCards/edit.html', {'form': form})
 
 
-
 @need_logged_in
 def user_card_info(request):
+    """
+    shows users their information and docs they currently checking out with time left to return them back
+    """
     user = request.user
     documents_copy = user.documentcopy_set.all()
 
@@ -84,10 +79,14 @@ def user_card_info(request):
     context = {'user': user, 'copies': user.documentcopy_set.all()}
     return render(request, 'UserCards/index.html', context)
 
+
 @need_logged_in
 def return_copies(request):
+    """
+    returns copies back. Increases size of copies of document.
+    """
     chosen_copies = [documents_models.DocumentCopy.objects.get(id=int(id)) for id in request.POST.keys() if
-                     id.isdigit()]
+                     id.isdigit()] # get copies user chose via checkboxes
     for copy in chosen_copies:
         copy.doc.copies += 1
         copy.doc.save()

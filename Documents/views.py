@@ -8,6 +8,9 @@ from Documents.librarian_view import *
 
 
 class IndexView(ListView):
+    """
+    main page for browsing documents
+    """
     template_name = 'Documents/index.html'
     model = Document
     context_object_name = 'documents'
@@ -15,31 +18,36 @@ class IndexView(ListView):
 
 
 def document_detail(request, pk):
-    print(request.user)
+    """
+    document details page. Find document via pk(id). Get all fields of the doc and show rendered doc_inf.html
+    """
     doc = None
     for Type in Document.__subclasses__():
         if Type.objects.filter(pk=pk):
             doc = Type.objects.get(pk=pk)
-    context = {'user_has_doc':len(request.user.documentcopy_set.all().filter(
-                                    doc=Document.objects.get(id=int(request.path.replace('/', '')))))}
+    context = {'user_has_doc': len(request.user.documentcopy_set.all().filter(
+                doc=Document.objects.get(id=int(request.path.replace('/', '')))))} # args that will be sent to doc_inf.html
     context['doc'] = doc
     context['cover'] = doc.__dict__['cover']
-    context['fields'] = dict()
-    excess_fields = ['document_ptr_id', '_state', 'id', 'cover', 'keywords', 'room', 'level']
+    context['fields'] = list() # rest of fields
+    excess_fields = ['document_ptr_id', '_state', 'id', 'cover', 'keywords']
     for key, value in doc.__dict__.items():
         if key not in excess_fields:
-            context['fields'][key] = value
-    context['fields'] = list(map(lambda key: (key.replace('_', ' '), context['fields'][key]), context['fields']))
+            context['fields'].append((key, value))
     return render(request, 'Documents/doc_inf.html', context)
 
 
 @need_logged_in
 def checkout(request, pk):
+    """
+    when user check out doc -> find this doc via pk(id), create an instance of document_copy
+    which will be linked to this document and to user
+    """
     doc = get_object_or_404(Document, pk=pk)
     user = request.user
     if user.is_staff:
         raise Http404('staff can not take documents')
-    if user.documentcopy_set.filter(doc=doc):
+    if user.documentcopy_set.filter(doc=doc): # if user already has this doc
         return redirect('/{0}/'.format(pk))
     if doc.copies > 0:
         doc.copies -= 1
@@ -54,4 +62,4 @@ def checkout(request, pk):
                     datetime.date.today() + datetime.timedelta(days=21)).strftime("%Y-%m-%d"))
 
         new_copy.save()
-    return redirect('/{0}/'.format(pk))
+    return redirect('/{0}/'.format(pk)) # go back to doc page
