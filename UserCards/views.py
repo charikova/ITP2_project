@@ -128,8 +128,7 @@ def givebook(request, pk,  booktaker):
                         datetime.date.today() + datetime.timedelta(days=21)).strftime("%Y-%m-%d"))
 
         new_copy.save()
-
-
+        br.delete()
 
 
     return redirect('bookrequests')
