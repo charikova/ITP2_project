@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView
 from django.views.generic import View
 import Documents.models as documents_models
+from django.shortcuts import get_object_or_404, Http404
 import UserCards.models as usercard_models
 from .forms import *
 import datetime
@@ -109,7 +110,26 @@ class BookRequestsView(ListView):
         paginate_by = 10
 
 
-def givebook(request, pk):
+def givebook(request, pk,  booktaker):
+
+    user = User.objects.get(pk=booktaker)
+    br = documents_models.BookRequest.objects.get(pk=pk)
+    doc = br.doc
+    if doc.copies > 0:
+        doc.copies -= 1
+        doc.save()
+        if True or user.status == 'student':
+            new_copy = documents_models.DocumentCopy(doc=doc,
+                                    checked_up_by_whom=user, returning_date=(
+                        datetime.date.today() + datetime.timedelta(days=14)).strftime("%Y-%m-%d"))
+        else:
+            new_copy = documents_models.DocumentCopy(doc=doc,
+                                    checked_up_by_whom=user, returning_date=(
+                        datetime.date.today() + datetime.timedelta(days=21)).strftime("%Y-%m-%d"))
+
+        new_copy.save()
+
+
 
 
     return redirect('bookrequests')
