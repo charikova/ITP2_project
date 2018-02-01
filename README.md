@@ -33,7 +33,7 @@ patron's requests list on /requests url
 # Architecture of the website
 ![alt text](https://github.com/charikova/innopolka/blob/master/architecture%20project.png)
 # Implementation
-# Documents
+## Documents
 We store all documents in sqlite3 db provided by default by django framework. 
 Table 
 
@@ -49,17 +49,17 @@ Table
           copies = models.PositiveIntegerField(default=1)
           type = models.CharField(max_length=100, default='Document')
 
-which is typicly abstract class for all documnet. It has default fields for documents which are 
-required to fill when librarian is creating new document.
+which is typicly the abstract class for all documents. It has necessary fields for all document types which are 
+required to fill out when librarian is creating new document.
 Bellow in innopolka/Documents/models.py we have other document types which are inhereted from 
-Document model class. In from like
+Document model class. It look like this: 
 
      class YourType(Document):
           type = "Your Type"
           field1 = models.CharField(max_length=255)
           filed2 = models.IntegerField()
           
-Notice, that each inherited document should have "type" attribute that will be used a name for 
+Notice, that each inherited document should have "type" attribute that will be used as a name for 
 creation this type of document. The thing is when document's type is created in db, the name of 
 class disappears.
 <strong>Important!</strong> when you will modify models.py code you should run
@@ -67,7 +67,7 @@ class disappears.
      python manage.py makemigrations & python manage.py migrate
      
 in order to apply your changes into database.
-# Document Copy
+## Document Copy
      class DocumentCopy(models.Model):
           """
           copy object which is created when user check out document
@@ -80,5 +80,5 @@ in order to apply your changes into database.
 Every time user check out document - new copy object is created. Basicly it is not a document, it is
 an object that keeps links to particluar document and to holder of this document. Also DocumentCopy
 keeps other data like level, room, time it was checked out, etc.
-# Users(Patons)
+## Users(Patons)
 We are using <a href="https://docs.djangoproject.com/en/2.0/topics/auth/">built-in user authentication</a> provied by django framework
