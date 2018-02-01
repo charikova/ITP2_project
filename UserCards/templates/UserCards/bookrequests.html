@@ -64,7 +64,8 @@
 
             <tr>
                 {% for req in requests %}
-                <td>{{req.doc.title}}</td>
+
+               <td><a href="/{{ req.doc.id }}/">{{ req.doc.title }}</a></td>
                 <td>{{req.checked_up_by_whom.username}}</td>
                 <td>{{req.timestamp}}</td>
             </tr>
