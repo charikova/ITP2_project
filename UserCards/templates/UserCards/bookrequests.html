@@ -1,0 +1,99 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <title>MainPage</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+{% extends 'Documents/base.html'  %}
+
+{% load staticfiles %}
+
+
+{% block body  %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'Documents/style.css' %}" />
+
+    <style>
+        h1 {
+            font-size: 50px;
+        }
+
+    .cen {
+        text-align: center;
+        font-size: 20px;
+    }
+
+    table {
+        border: none;
+        border-radius: 10px;
+    }
+
+    tr {
+        border: none;
+        text-align: left;
+    }
+
+    td {
+        border: none;
+        text-align: center;
+        border-top: 1px solid saddlebrown;
+    }
+
+    a {
+        color: black;
+    }
+
+
+    </style>
+
+<h3 align="center">Book Requests for now:</h3>
+
+
+
+<form action="" method="post">
+    <div align="center">
+        <table>
+
+            <tr>
+                <th class="cen" colspan="1">Document</th>
+                <th class="cen">User</th>
+                <th class="cen">Date</th>
+            </tr>
+
+            <tr>
+                {% for req in requests %}
+                <td>{{req.doc.title}}</td>
+                <td>{{req.checked_up_by_whom.username}}</td>
+                <td>{{req.timestamp}}</td>
+            </tr>
+               {% endfor %}
+
+        </table>
+    {% csrf_token %}
+    </div>
+</form>
+
+
+<div align="center">
+    <div class="paginator">
+         <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+
+
+{% endblock  %}
+

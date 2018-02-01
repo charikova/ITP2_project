@@ -71,6 +71,25 @@
         transform: rotate(-5deg);
     }
 
+    .bookreq {
+        text-decoration: none;
+        display: inline-block;
+        letter-spacing: 1px;
+        margin: 10px;
+        font-size: 24px;
+        font-family: Futura;
+        transition: .3s ease-in-out;
+    }
+
+    .bookreq {
+        color: saddlebrown;
+        text-shadow: 1px 0 black;
+    }
+
+    .bookreq:hover {
+        transform: rotate(-5deg);
+    }
+
     a {
         color: black;
     }
@@ -114,8 +133,13 @@
     {% csrf_token %}
     {% endif %}
 
+    {% if user.is_staff %}
+    <a class="bookreq" href="/user/bookrequests/">Book Requests</a>
 
-    <a class="edit" href="/user/edit/">Edit profile</a>
+    {% endif %}
+
+     <a class="edit" href="/user/edit/">Edit profile</a>
+
 
 
     <br>

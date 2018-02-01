@@ -1,7 +1,9 @@
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
+from django.views.generic import ListView
 from django.views.generic import View
 import Documents.models as documents_models
+import UserCards.models as usercard_models
 from .forms import *
 import datetime
 
@@ -37,7 +39,6 @@ class SignupView(View):
         return redirect('/user/signup/')
 
 
-
 class EditCardView(View):
 
     def post(self, request):
@@ -53,6 +54,13 @@ class EditCardView(View):
     def get(self, request):
         form = EditPatronForm(instance=request.user)
         return render(request, 'UserCards/edit.html', {'form': form})
+
+
+class BookRequestsView(ListView):
+        template_name = 'UserCards/bookrequests.html'
+        model = documents_models.BookRequest
+        context_object_name = 'requests'
+        paginate_by = 10
 
 
 
