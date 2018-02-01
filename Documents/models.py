@@ -48,6 +48,7 @@ class DocumentCopy(models.Model):
     time_left = models.CharField(null=True, max_length=250)
     level = models.PositiveIntegerField(default=1)
     room = models.PositiveIntegerField(default=1)
+    price = models.IntegerField(null=False)
 
     def __str__(self):
         return str(self.doc)
