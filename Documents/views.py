@@ -25,8 +25,10 @@ def document_detail(request, pk):
     for Type in Document.__subclasses__():
         if Type.objects.filter(pk=pk):
             doc = Type.objects.get(pk=pk)
-    context = {'user_has_doc': len(request.user.documentcopy_set.all().filter(
-                doc=Document.objects.get(id=int(request.path.replace('/', '')))))} # args that will be sent to doc_inf.html
+    context = dict()
+    if not request.user.is_anonymous:
+        context['user_has_doc'] = len(request.user.documentcopy_set.all().filter(
+                doc=Document.objects.get(id=int(request.path.replace('/', ''))))) # args that will be sent to doc_inf.html
     context['doc'] = doc
     context['cover'] = doc.__dict__['cover']
     context['fields'] = list() # rest of fields
