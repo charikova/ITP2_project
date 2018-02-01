@@ -56,14 +56,6 @@ class EditCardView(View):
         return render(request, 'UserCards/edit.html', {'form': form})
 
 
-class BookRequestsView(ListView):
-        template_name = 'UserCards/bookrequests.html'
-        model = documents_models.BookRequest
-        context_object_name = 'requests'
-        paginate_by = 10
-
-
-
 @need_logged_in
 def user_card_info(request):
     user = request.user
@@ -108,3 +100,19 @@ def return_copies(request):
         copy.delete()
     context = {'user': user, 'copies': user.documentcopy_set.all()}
     return render(request, 'UserCards/index.html', context)
+
+
+class BookRequestsView(ListView):
+        template_name = 'UserCards/bookrequests.html'
+        model = documents_models.BookRequest
+        context_object_name = 'requests'
+        paginate_by = 10
+
+
+def givebook(request, pk):
+
+
+    return redirect('bookrequests')
+
+
+

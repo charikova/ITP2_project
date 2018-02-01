@@ -11,7 +11,6 @@ urlpatterns = [
     url(r'^edit/$', views.EditCardView.as_view(), name='edit'),
     url(r'^return_copies/$', views.return_copies, name='return_copies'),
     url(r'^bookrequests/$', views.BookRequestsView.as_view(), name='bookrequests'),
-
-
+    url(r'^bookrequests/(?P<pk>[0-9]/)$', views.givebook, name='givebook'),
 ]
 
