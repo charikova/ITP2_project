@@ -1,23 +1,16 @@
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import authenticate
 from django.shortcuts import render, redirect
 from django.views.generic import View
 import Documents.models as documents_models
+from Documents.librarian_view import need_logged_in
 from .forms import *
 import datetime
 
 
-def need_logged_in(func):
-    def inner(request, *args, **kwargs):
-        user = request.user
-        if not user.is_anonymous:
-            return func(request, *args, **kwargs)
-        else:
-            return redirect('/user/login/')
-
-    return inner
-
-
 class CreateUserView(View):
+    """
+    User creation view
+    """
     template_name = "UserCards/signup.html"
 
     def get(self, request):
@@ -34,7 +27,6 @@ class CreateUserView(View):
                 password = form.cleaned_data['password1']
                 user = authenticate(username=username, password=password)
                 user.save()
-                login(request, user)
                 return redirect("/")
             return redirect('/user/create_user/')
 
@@ -54,9 +46,11 @@ class EditCardView(View):
         return render(request, 'UserCards/edit.html', {'form': form})
 
 
-
 @need_logged_in
 def user_card_info(request):
+    """
+    shows users their information and docs they currently checking out with time left to return them back
+    """
     user = request.user
     documents_copy = user.documentcopy_set.all()
 
@@ -74,21 +68,25 @@ def user_card_info(request):
     for document_copy in documents_copy:
         temp = (document_copy.returning_date - datetime.datetime.now(UTC())).days*24*3600 + (document_copy.returning_date - datetime.datetime.now(UTC())).seconds
         if temp >= 3600:
-            document_copy.time_left = str(int(temp / 3600)) + "h:" + str(int(temp % 3600 / 60))+"m"
+            document_copy.time_left = "Time to return: " + str(int(temp / 3600)) + "h:" + str(int(temp % 3600 / 60))+"m"
         elif 3600 > temp >= 60:
-            document_copy.time_left = str(int(temp / 60))
+            document_copy.time_left = "Time to return: " + str(int(temp / 60))
         else:
-            document_copy.time_left = '0'
+            document_copy.time_left = 'You need to pay: ' + document_copy.price
 
         document_copy.save()
 
     context = {'user': user, 'copies': user.documentcopy_set.all()}
     return render(request, 'UserCards/index.html', context)
 
+
 @need_logged_in
 def return_copies(request):
+    """
+    returns copies back. Increases size of copies of document.
+    """
     chosen_copies = [documents_models.DocumentCopy.objects.get(id=int(id)) for id in request.POST.keys() if
-                     id.isdigit()]
+                     id.isdigit()] # get copies user chose via checkboxes
     for copy in chosen_copies:
         copy.doc.copies += 1
         copy.doc.save()

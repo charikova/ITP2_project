@@ -46,19 +46,31 @@
 
 
 
+
+
+
+
+
 </style>
 
-<div class="container">
-    <h3>{{model}} Creation</h3>
+<form action="" method="post">
+    <div class="container">
+        <h3>{{model}} Creation</h3>
 
-    {% for field in fields %}
-    {{field}}:
-    <p>
-        <input type="text" name="{{key}}" >
-    </p>
-    {%endfor%}
-    <input type="submit" name="submit">
-    {% csrf_token %}
+        {% for field in fields %}
+        {% if field == 'type' %}
+        <input type="text" name='type' value='{{model}}' hidden="hidden">
+        {% else %}
+        {{field}}:
+        <p>
+            <input type="text" name="{{field}}">
+        </p>
+        {% endif %}
+        {%endfor%}
+        <input type="submit" name="submit">
+        {% csrf_token %}
+    </div>
 
-    {% endblock %}
-</div>
+</form>
+
+{% endblock %}

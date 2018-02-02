@@ -31,13 +31,12 @@ SESSION_COOKIE_HTTPONLY = True
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.0.100']
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'librarian.apps.LibrarianConfig',
     'Documents.apps.DocumentsConfig',
     'UserCards.apps.UsercardsConfig',
     'django.contrib.admin',

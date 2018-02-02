@@ -10,8 +10,6 @@ USER_STATUSES = [
 ]
 
 
-
-
 class CreateUserForm(UserCreationForm):
     email = forms.EmailField(required=True)
     address = forms.CharField(required=True)

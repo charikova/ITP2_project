@@ -45,6 +45,7 @@
     }
 
 
+
 </style>
 
 <div class="container">
@@ -52,17 +53,20 @@
         <img src="{{cover}}"><br>
 
         {% for key, value in fields %}
-        {{key}}:
         {% if key == 'publication_date' %}
-            <input type="date" name="{{key}}" value="{{value}}" placeholder="YYYY-MM-DD">
+        {{key}}:
+        <p><input type="date" name="{{key}}" value="{{value}}" placeholder="YYYY-MM-DD"></p>
+        {% elif key == 'type' %}
+        <input type="text" hidden="hidden" name="{{key}}" value="{{value}}">
         {% else %}
+        {{key}}:
         <p>
             <input type="text" name="{{key}}" value="{{value}}">
         </p>
         {% endif %}
         {%endfor%}
-    <input type="submit" name="submit">
-    {% csrf_token %}
+        <input type="submit" name="submit">
+        {% csrf_token %}
     </form>
 
     {% endblock %}
