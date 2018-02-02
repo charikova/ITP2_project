@@ -1,10 +1,9 @@
 {% extends 'Documents/base.html'  %}
+
 {% load staticfiles %}
 {% block body  %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'UserCards/edit_style.css' %}" />
-
-    <style>
+<style>
     .container {
         background-color: rgba(214, 184, 150, 0.8);
         color: saddlebrown;
@@ -12,9 +11,9 @@
         margin:0 auto;
         overflow:visible;
         position:absolute;
-        left: 30%;
-        top: 20%;
-        width: 40%;
+        left: 38%;
+        top: 25%;
+        width: 24%;
         border-radius: 10px;
     }
 
@@ -44,16 +43,27 @@
         font-size: 25px;
         margin: 15px 15px 15px 30%;
     }
+
+
 </style>
 
 <div class="container">
-<h2>Card edit</h2>
+    <form action="" method="post">
+        <img src="{{cover}}"><br>
 
-<form action="" method="post">
-    {{ form.as_p }}
-    <input class="button" type="submit" value="Edit">
+        {% for key, value in fields %}
+        {{key}}:
+        {% if key == 'publication_date' %}
+            <input type="date" name="{{key}}" value="{{value}}" placeholder="YYYY-MM-DD">
+        {% else %}
+        <p>
+            <input type="text" name="{{key}}" value="{{value}}">
+        </p>
+        {% endif %}
+        {%endfor%}
+    <input type="submit" name="submit">
     {% csrf_token %}
-</form>
-</div>
+    </form>
 
-{% endblock  %}
+    {% endblock %}
+</div>

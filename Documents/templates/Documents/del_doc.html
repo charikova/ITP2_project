@@ -1,8 +1,7 @@
 {% extends 'Documents/base.html'  %}
+
 {% load staticfiles %}
 {% block body  %}
-
-<link rel="stylesheet" type="text/css" href="{% static 'UserCards/edit_style.css' %}" />
 
     <style>
     .container {
@@ -12,9 +11,9 @@
         margin:0 auto;
         overflow:visible;
         position:absolute;
-        left: 30%;
-        top: 20%;
-        width: 40%;
+        left: 38%;
+        top: 25%;
+        width: 24%;
         border-radius: 10px;
     }
 
@@ -44,16 +43,15 @@
         font-size: 25px;
         margin: 15px 15px 15px 30%;
     }
+
 </style>
 
-<div class="container">
-<h2>Card edit</h2>
-
+    <div class="container">
 <form action="" method="post">
-    {{ form.as_p }}
-    <input class="button" type="submit" value="Edit">
+    <strong>Are you sure you want delete this document?<br></strong>
+    <input class="button" type="submit" value="Submit">
     {% csrf_token %}
 </form>
-</div>
 
 {% endblock  %}
+</div>

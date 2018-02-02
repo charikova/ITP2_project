@@ -1,10 +1,11 @@
+
 {% extends 'Documents/base.html'  %}
 
 {% load staticfiles %}
 {% block body  %}
-<link rel="stylesheet" type="text/css" href="{% static 'Documents/doc_inf_style.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'Documents/doc_inf_style.css' %}" />
 
-<style>
+    <style>
     .container {
         background-color: rgba(214, 184, 150, 0.8);
         color: saddlebrown;
@@ -83,36 +84,15 @@
         margin: auto;
     }
 
-
-
-
-
-
 </style>
 <div class="container">
 
-    <table>
-        <h3>Document information</h3>
-        <img src="{{cover}}"><br>
+    <h3>Select the type of document you wish to add:<br></h3>
+    <ul>
+    {% for cls in clss %}
+        <li><a href="/create/{{cls}}">{{cls}}</a><br></li>
+    {% endfor %}
+    </ul>
 
-        {% for key, value in fields %}
-        <p>
-            {{key}}: {{value}}
-        </p>
-        {%endfor%}
-
-        {% if user.is_staff %}
-        <a href="update/">Update</a> <br>
-        <a href="delete/">Delete</a>
-        {% elif user.is_authenticated %}
-        <a class="button" href="/{{doc.id}}/checkout" onclick="
-        if ({{user_has_doc}})
-            alert('You already have this document');
-        else
-            return confirm('Sure you want to check out {{doc.title}}?');
-
-        ">Check out</a>
-        {% endif %}
-    </table>
-    {% endblock %}
+{% endblock  %}
 </div>

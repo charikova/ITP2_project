@@ -2,7 +2,7 @@
 {% load staticfiles %}
 {% block body  %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'UserCards/usercards_style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'UserCards/usercards_style.css' %}"/>
 
 <style>
     .container {
@@ -75,9 +75,15 @@
         color: black;
     }
 
+
+
 </style>
 <div class="container">
+    {% if not user.is_staff %}
     <h2>Patron card information</h2>
+    {% elif user.is_staff %}
+    <h2>Librarian information</h2>
+    {% endif %}
 
     <p>
         Username: {{ user.username }} <br>
@@ -88,30 +94,32 @@
         Address: {{ user.address }} <br><br>
     </p>
 
-{% if not user.is_staff and not user.is_anonymous %}
+    {% if not user.is_staff and not user.is_anonymous %}
     <p>
         <strong>Documents in used:</strong>
     </p>
     <form action="/user/return_copies/" method="post">
-    <ul>
-        {% for copy in copies %}
+        <ul>
+            {% for copy in copies %}
             <li>
                 <a href="/{{copy.doc.id}}">{{ copy }}</a>
                 <input type="checkbox" name="{{copy.id}}"> <br>
                 Time to return: {{ copy.time_left }}<br>
             </li>
-        {% endfor %}
-    </ul>
+            {% endfor %}
+        </ul>
         <input class="button" type="submit" value="Return back">
         {% csrf_token %}
     </form>
+    {% csrf_token %}
+    {% endif %}
+
 
     <a class="edit" href="/user/edit/">Edit profile</a>
 
 
-        {% csrf_token %}
-    </form>
-{% endif %}
-<br>
+    <br>
+</div>
+
 
 {% endblock  %}

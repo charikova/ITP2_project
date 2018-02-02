@@ -47,9 +47,10 @@
 </style>
 
     <div class="container">
-    <h2>Edit document</h2>
 <form action="" method="post">
-    {{ form.as_p }}
+    {{ form.as_table }}
+    <strong>Type:<br></strong>
+    <input type="text" value="{{model}}" readonly="readonly">
     <input class="button" type="submit" value="Submit">
     {% csrf_token %}
 </form>
