@@ -14,6 +14,7 @@ class Document(models.Model):
     cover = models.CharField(max_length=1000, default="https://lh3.googleusercontent.com/zqfUbCXdb1oGmsNEzNxTjQU5ZlS3x46nQoB83sFbRSlMnpDTZgdVCe_LvCx-rl7sOA=w300")
     copies = models.PositiveIntegerField(default=1)
     type = models.CharField(max_length=100, default='Document')
+    price = models.IntegerField(null=False)
 
     def __str__(self):
         return "{}; authors: {}".format(self.title, self.price, self.authors)
@@ -48,7 +49,7 @@ class DocumentCopy(models.Model):
     time_left = models.CharField(null=True, max_length=250)
     level = models.PositiveIntegerField(default=1)
     room = models.PositiveIntegerField(default=1)
-    price = models.IntegerField(null=False)
+    fine_price = models.IntegerField(null=False)
 
     def __str__(self):
         return str(self.doc)
