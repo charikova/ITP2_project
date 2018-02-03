@@ -4,13 +4,10 @@ from django.contrib.auth.views import login, logout
 
 
 urlpatterns = [
-    url(r'^signup/$', views.SignupView.as_view(), name='signup'),
+    url(r'^create_user/$', views.CreateUserView.as_view(), name='create_user'),
     url(r'^$', views.user_card_info, name='user_card_info'),
+    url(r'^all/$', views.AllUsersView.as_view(), name='all_users'),
     url(r'^login/$', login, {'template_name': 'UserCards/login.html'}, name='login'),
     url(r'^logout/$', logout, {'next_page': '/user/login/'}, name='logout'),
     url(r'^edit/$', views.EditCardView.as_view(), name='edit'),
-    url(r'^bookrequests/(?P<pk>[0-9]+)/$', views.booktaker_view, name='booktaker_view'),
-    url(r'^bookrequests/$', views.BookRequestsView.as_view(), name='bookrequests'),
-    url(r'^bookrequests/(?P<reqid>[0-9]+)/(?P<booktaker>[0-9]+)/$', views.givebook, name='givebook'),
-    # url(r'^bookrequests/(?P<pk>[0-9]+)/takebook/(?P<userid>[0-9]+)/(?P<copyid>[0-9]+)$', views.takebook, name='takebook'),
 ]

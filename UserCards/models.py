@@ -1,20 +1,20 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-class UserCard(models.Model):
-    name = models.CharField(default='', max_length=250)
-    surname = models.CharField(max_length=250, default='')
-    status = models.CharField(max_length=7)
-    address = models.CharField(max_length=250)
-    phone_number = models.CharField(max_length=250)
-    email = models.EmailField(default='')
-    password = models.CharField(default='123456', max_length=250)
-    session_id = models.CharField(default='', max_length=500)
+USER_PROFILE_DATA = [
+    'phone_number',
+    'address',
+    'status'
+]
 
+class UserProfile(models.Model):
+    """
+    Extra data for user. (Adding new filed here make sure that you added its
+    name to USER_PROFILE_DATA)
+    """
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone_number = models.CharField(max_length=15, null=True, blank=True)
+    address = models.CharField(max_length=250, null=True, blank=True)
+    status = models.CharField(max_length=250, default='student')
 
-class FacultyCard(UserCard):
-    status = 'faculty'
-
-
-class StudentCard(UserCard):
-    status = 'student'
 

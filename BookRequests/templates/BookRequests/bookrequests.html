@@ -48,7 +48,7 @@
 
     </style>
 
-<h3 align="center">Book Requests for now:</h3>
+<h3 align="center">Document's requests for now:</h3>
 
 
 
@@ -66,9 +66,10 @@
                 {% for req in requests %}
 
                 <td><a href="/{{ req.doc.id }}/">{{ req.doc.title }}</a></td>
-                <td><a href="{{ req.checked_up_by_whom.id }}/">{{req.checked_up_by_whom.username}}</a></td>
+                <td><a href="/user/?id={{ req.checked_up_by_whom.id }}">{{req.checked_up_by_whom.username}}</a></td>
                 <td>{{req.timestamp}}</td>
-                <td><a class="givebook" href="{{ req.id }}/{{req.checked_up_by_whom.id}}">give book</a></td>
+                <td><a href="/requests/givebook/?user_id={{req.checked_up_by_whom.id}}&req_id={{req.id}}">give book</a></td>
+                <td><a href="/requests/refuse/?req_id={{req.id}}">refuse</a></td>
 
 
             </tr>

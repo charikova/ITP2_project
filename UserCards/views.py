@@ -1,56 +1,44 @@
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import authenticate
 from django.shortcuts import render, redirect
-from django.views.generic import ListView
-from django.views.generic import View
+from django.views.generic import View, ListView
 import Documents.models as documents_models
-from django.shortcuts import get_object_or_404, Http404
-import UserCards.models as usercard_models
+from Documents.librarian_view import need_logged_in, required_staff
 from .forms import *
 import datetime
 
 
-def need_logged_in(func):
-    def inner(request, *args, **kwargs):
-        user = request.user
-        if not user.is_anonymous:
-            return func(request, *args, **kwargs)
-        else:
-            return redirect('/user/login/')
-
-    return inner
-
-
-class SignupView(View):
+class CreateUserView(View):
+    """
+    User creation view
+    """
     template_name = "UserCards/signup.html"
 
     def get(self, request):
-        form = SignupForm()
-        return render(request, self.template_name, {'form': form})
+        if request.user.is_staff:
+            form = CreateUserForm()
+            return render(request, self.template_name, {'form': form})
 
     def post(self, request):
-        form = SignupForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password1']
-            user = authenticate(username=username, password=password)
-            user.save()
-            login(request, user)
-            return redirect("/")
-        return redirect('/user/signup/')
+        if request.user.is_staff:
+            form = CreateUserForm(request.POST)
+            if form.is_valid():
+                form.save()
+                username = form.cleaned_data['username']
+                password = form.cleaned_data['password1']
+                user = authenticate(username=username, password=password)
+                user.save()
+                return redirect("/")
+            return redirect('/user/create_user/')
 
 
 class EditCardView(View):
 
     def post(self, request):
-        print(request.POST)
         form = EditPatronForm(request.POST, instance=request.user)
         print(form)
         if form.is_valid():
-            print('form is alright')
             form.save()
             return redirect('/user/')
-        print('wrong form')
 
     def get(self, request):
         form = EditPatronForm(instance=request.user)
@@ -59,8 +47,23 @@ class EditCardView(View):
 
 @need_logged_in
 def user_card_info(request):
+    """
+    shows users their information and docs they currently checking out with time left to return them back
+    """
     user = request.user
-    print(dir(user))
+    if request.GET.get('id') is not None:
+        if request.user.is_staff:
+            user = User.objects.get(id=request.GET.get('id'))
+        else:
+            return redirect('/')
+
+    for profile_field in USER_PROFILE_DATA: # take all data from user's profile and put into user object
+        exec('user.{0} = user.userprofile.{0}'.format(profile_field))
+
+    fields = list()
+    for field in CreateUserForm.Meta.fields: # take all fields from "user creation form" which should be displayed
+        fields.append((field.replace('_', ' ').capitalize(), eval('user.{}'.format(field))))
+
     documents_copy = user.documentcopy_set.all()
 
     ZERO = datetime.timedelta(0)
@@ -77,96 +80,39 @@ def user_card_info(request):
 
     for document_copy in documents_copy:
         temp = (document_copy.returning_date - datetime.datetime.now(UTC())).days*24*3600 + (document_copy.returning_date - datetime.datetime.now(UTC())).seconds
-        print(temp)
+
         if temp >= 3600:
-            document_copy.time_left = str(int(temp / 3600)) + "h:" + str(int(temp % 3600 / 60))+"m"
+            document_copy.time_left = "Time to return: " + str(int(temp / 3600)) + "h:" + str(int(temp % 3600 / 60))+"m"
         elif 3600 > temp >= 60:
-            document_copy.time_left = str(int(temp / 60))
+            document_copy.time_left = "Time to return: " + str(int(temp / 60))
+        elif 60 > temp > 0:
+            document_copy.time_left = "Time to return: " + str(int(temp))
         else:
-            document_copy.time_left = '0'
+            day = (datetime.datetime.now(UTC())-document_copy.returning_date).days
+
+            print(day)
+            if 100*int(day) <= document_copy.doc.price:
+                document_copy.fine_price = 100*int(day)
+            else:
+                document_copy.fine_price = document_copy.doc.price
+
+            document_copy.time_left = 'You need to pay: ' + str(document_copy.fine_price)
 
         document_copy.save()
 
-    context = {'user': user, 'copies': user.documentcopy_set.all()}
+    context = {'fields': fields, 'copies': user.documentcopy_set.all()}
     return render(request, 'UserCards/index.html', context)
 
-class BookRequestsView(ListView):
-        template_name = 'UserCards/bookrequests.html'
-        model = documents_models.BookRequest
-        context_object_name = 'requests'
-        paginate_by = 10
 
+class AllUsersView(ListView):
+    model = User
+    template_name = 'UserCards/all_users.html'
+    paginate_by = 15
+    context_object_name = 'users'
 
-def booktaker_view(request, pk):
-
-    user = User.objects.get(pk=pk)
-    documents_copy = user.documentcopy_set.all()
-
-    ZERO = datetime.timedelta(0)
-
-    class UTC(datetime.tzinfo):
-        def utcoffset(self, dt):
-            return ZERO
-
-        def tzname(self, dt):
-            return "UTC"
-
-        def dst(self, dt):
-            return ZERO
-
-    for document_copy in documents_copy:
-        temp = (document_copy.returning_date - datetime.datetime.now(UTC())).days * 24 * 3600 + (
-                document_copy.returning_date - datetime.datetime.now(UTC())).seconds
-        print(temp)
-        if temp >= 3600:
-            document_copy.time_left = str(int(temp / 3600)) + "h:" + str(int(temp % 3600 / 60)) + "m"
-        elif 3600 > temp >= 60:
-            document_copy.time_left = str(int(temp / 60))
+    def get(self, request, *args, **kwargs):
+        if request.user.is_staff:
+            return super().get(self, request, *args, **kwargs)
         else:
-            document_copy.time_left = '0'
-
-        document_copy.save()
-
-    context = {'user': user, 'copies': documents_copy}
-
-    return render(request, 'UserCards/booktaker_view.html', context)
-
-
-def givebook(request, reqid, booktaker):
-
-    user = User.objects.get(pk=booktaker)
-    br = documents_models.BookRequest.objects.get(pk=reqid)
-    doc = br.doc
-    if doc.copies > 0:
-        doc.copies -= 1
-        doc.save()
-        if True or user.status == 'student':
-            new_copy = documents_models.DocumentCopy(doc=doc,
-                                    checked_up_by_whom=user, returning_date=(
-                        datetime.date.today() + datetime.timedelta(days=14)).strftime("%Y-%m-%d"))
-        else:
-            new_copy = documents_models.DocumentCopy(doc=doc,
-                                    checked_up_by_whom=user, returning_date=(
-                        datetime.date.today() + datetime.timedelta(days=21)).strftime("%Y-%m-%d"))
-
-        new_copy.save()
-        br.delete()
-    return redirect('bookrequests')
-
-
-def takebook(request, pk, userid, copyid):
-
-    user = User.objects.get(pk=userid)
-
-    copy_instance = documents_models.DocumentCopy.objects.get(pk=copyid)
-
-    copy_instance.doc.copies += 1
-    copy_instance.doc.save()
-    copy_instance.delete()
-
-    return redirect('bookrequests')
-
-
-
-
+            return redirect('/')
 

@@ -7,10 +7,56 @@
     {% load staticfiles %}
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="{% static 'Documents/style.css' %}"/>
+
+    <style>
+    .container {
+        background-color: rgba(214, 184, 150, 0.8);
+        color: saddlebrown;
+        font-size: 15px;
+        margin:0 auto;
+        overflow:visible;
+        position:absolute;
+        left: 38%;
+        top: 25%;
+        width: 24%;
+        border-radius: 10px;
+    }
+
+    form {
+        padding: 5px;
+        color: black;
+        font-size: 15px;
+        margin: 5px;
+    }
+
+    input {
+        background-color: floralwhite;
+        border: 2px solid saddlebrown;
+        border-radius: 5px;
+        margin: 0 0 0 10px;
+        left: 50%;
+    }
+
+    h2 {
+        color: black;
+        font-size: 40px;
+        text-align: center;
+    }
+
+    .button {
+        width: 40%;
+        font-size: 25px;
+        margin: 15px 15px 15px 30%;
+
+    }
+
+
+
+
+
+    </style>
 
 </head>
 <body>
@@ -27,13 +73,22 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="/">Innopolka</a>
+
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_staff %}
-                <li><a href="/add_doc/">Add document</a></li>
-                {% else %}
-                <li><a href="/user/">Patron Card</a></li>
-                {% endif %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">Librarian</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdown01">
+                        <a class="dropdown-item" href="/add_doc/">Add document</a> <br>
+                        <a class="dropdown-item" href="/admin">Admin site</a> <br>
+                        <a class="dropdown-item" href="/user/create_user/">Create new user</a> <br>
+                        <a class="dropdown-item" href="/requests/">Requests</a> <br>
+                        <a class="dropdown-item" href="/user/all">All users</a> <br>
+                    </div>
             </ul>
+            {% endif %}
+
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -46,9 +101,8 @@
             </form>
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_anonymous %}
-                <li class="active"><a href="/user/signup">Sign up <span class="sr-only">(current)</span></a></li>
                 <li><a href="/user/login">Log In</a></li>
-                {% else %}
+                {% elif user.is_authenticated %}
                 <li><a href="/user/">{{user.username}}</a></li>
                 <li><a href="/user/logout">Log Out</a></li>
                 {% endif %}
@@ -70,6 +124,7 @@
 
 {% endblock %}
 
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </body>
 </html>

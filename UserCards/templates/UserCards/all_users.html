@@ -2,9 +2,9 @@
 {% load staticfiles %}
 {% block body  %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'UserCards/edit_style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'UserCards/edit_style.css' %}"/>
 
-    <style>
+<style>
     .container {
         background-color: rgba(214, 184, 150, 0.8);
         color: saddlebrown;
@@ -18,21 +18,6 @@
         border-radius: 10px;
     }
 
-    form {
-        padding: 5px;
-        color: black;
-        font-size: 15px;
-        margin: 5px;
-    }
-
-    input {
-        background-color: floralwhite;
-        border: 2px solid saddlebrown;
-        border-radius: 5px;
-        margin: 0 0 0 10px;
-        left: 50%;
-    }
-
     h2 {
         color: black;
         font-size: 40px;
@@ -44,16 +29,18 @@
         font-size: 25px;
         margin: 15px 15px 15px 30%;
     }
+
 </style>
 
-<div class="container">
-<h2>Card edit</h2>
 
-<form action="" method="post">
-    {{ form.as_p }}
-    <input class="button" type="submit" value="Edit">
-    {% csrf_token %}
-</form>
+<h2>User list</h2>
+
+<div class="container">
+    <ul>
+        {% for user in users %}
+        <li><a href="/user/?id={{user.id}}">{{user}}</a></li>
+        {% endfor %}
+    </ul>
 </div>
 
 {% endblock  %}
