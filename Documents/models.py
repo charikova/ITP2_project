@@ -48,7 +48,7 @@ class DocumentCopy(models.Model):
     time_left = models.CharField(null=True, max_length=250)
     level = models.PositiveIntegerField(default=1)
     room = models.PositiveIntegerField(default=1)
-    fine_price = models.IntegerField(null=False)
+    fine_price = models.IntegerField(null=True)
 
     class Meta:
         verbose_name_plural = 'Document copies'
