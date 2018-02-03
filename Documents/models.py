@@ -50,6 +50,9 @@ class DocumentCopy(models.Model):
     room = models.PositiveIntegerField(default=1)
     price = models.IntegerField(null=False)
 
+    class Meta:
+        verbose_name_plural = 'Document copies'
+
     def __str__(self):
-        return str(self.doc)
+        return "\"" + self.doc.title + '" in ' + str(self.checked_up_by_whom.username)
 

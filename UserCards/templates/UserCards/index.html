@@ -113,9 +113,9 @@
     {% csrf_token %}
     {% endif %}
 
-
+    {% if user.is_staff %}
     <a class="edit" href="/user/edit/">Edit profile</a>
-
+    {% endif %}
 
     <br>
 </div>

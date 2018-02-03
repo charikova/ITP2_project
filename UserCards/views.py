@@ -52,14 +52,14 @@ def user_card_info(request):
     shows users their information and docs they currently checking out with time left to return them back
     """
     user = request.user
-    fields = list()
 
     for profile_field in USER_PROFILE_DATA: # take all data from user's profile and put into user object
         exec('user.{0} = user.userprofile.{0}'.format(profile_field))
 
-    for field in CreateUserForm.Meta.fields:
-        fields.append((field, eval('user.{}'.format(field))))
-        print('user.{}'.format(field))
+    fields = list()
+    for field in CreateUserForm.Meta.fields: # take all fields from "user creation form" which should be displayed
+        fields.append((field.replace('_', ' ').capitalize(), eval('user.{}'.format(field))))
+
     documents_copy = user.documentcopy_set.all()
 
     ZERO = datetime.timedelta(0)

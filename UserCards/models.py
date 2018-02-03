@@ -2,9 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 
 USER_PROFILE_DATA = [
-    'status',
     'phone_number',
     'address',
+    'status'
 ]
 
 class UserProfile(models.Model):

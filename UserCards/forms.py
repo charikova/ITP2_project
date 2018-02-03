@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.models import Group
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
 from .models import UserProfile, USER_PROFILE_DATA
@@ -10,6 +11,9 @@ USER_STATUSES = [
     [3, "librarian"],
 ]
 
+EDIT_PROFILE_DATA = USER_PROFILE_DATA
+EDIT_PROFILE_DATA.remove('status')
+
 
 class CreateUserForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -19,7 +23,7 @@ class CreateUserForm(UserCreationForm):
 
     class Meta:
         fields = [
-            'username', 'first_name', 'last_name', 'email',  *USER_PROFILE_DATA
+            'username', 'first_name', 'last_name', 'email', *USER_PROFILE_DATA
         ]
         model = User
 
@@ -34,15 +38,18 @@ class CreateUserForm(UserCreationForm):
         if commit:
             user.save(True)
             UserProfile.objects.create(user=user, address=address, phone_number=phone_number, status=status)
+            if status == "librarian":
+                user.is_staff = True
+                lib_group = Group.objects.get(name='Librarian')
+                lib_group.user_set.add(user)
 
 
 class EditPatronForm(UserChangeForm):
     address = forms.CharField(required=True)
     phone_number = forms.IntegerField(required=True)
 
-    class Meta:
-        model = User
+    class Meta(CreateUserForm.Meta):
         fields = [
-            'first_name', 'last_name', 'email', 'phone_number', 'address'
+            'username', 'first_name', 'last_name', 'email', *EDIT_PROFILE_DATA
         ]
 
