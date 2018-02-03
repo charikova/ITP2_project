@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
-from.models import UserProfile
+from .models import UserProfile, USER_PROFILE_DATA
 
 
 USER_STATUSES = [
@@ -19,7 +19,7 @@ class CreateUserForm(UserCreationForm):
 
     class Meta:
         fields = [
-            'username', 'first_name', 'last_name', 'email', 'address', 'phone_number', 'status'
+            'username', 'first_name', 'last_name', 'email',  *USER_PROFILE_DATA
         ]
         model = User
 
