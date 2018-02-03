@@ -78,6 +78,7 @@
 
 
 </style>
+
 <div class="container">
     {% if not user.is_staff %}
     <h2>Patron card information</h2>
@@ -89,6 +90,8 @@
         Username: {{ user.username }} <br>
         First name: {{ user.first_name }} <br>
         Last name: {{ user.last_name }} <br>
+        Status: {{ user.status }} <br>
+        ID: {{ user.id }} <br>
         Phone: {{ user.phone_number }} <br>
         Email: {{ user.email }} <br>
         Address: {{ user.address }} <br><br>

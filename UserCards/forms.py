@@ -29,6 +29,8 @@ class CreateUserForm(UserCreationForm):
         address = self.cleaned_data['address']
         phone_number = self.cleaned_data['phone_number']
         status = dict(USER_STATUSES)[int(self.cleaned_data['status'])]
+        if status == "librarian":
+            user.is_staff = True
         if commit:
             user.save(True)
             UserProfile.objects.create(user=user, address=address, phone_number=phone_number, status=status)

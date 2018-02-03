@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import View
 import Documents.models as documents_models
 from Documents.librarian_view import need_logged_in
+from .models import USER_PROFILE_DATA
 from .forms import *
 import datetime
 
@@ -52,6 +53,10 @@ def user_card_info(request):
     shows users their information and docs they currently checking out with time left to return them back
     """
     user = request.user
+
+    for profile_field in USER_PROFILE_DATA:
+        exec('user.{0} = user.userprofile.{0}'.format(profile_field))
+
     documents_copy = user.documentcopy_set.all()
 
     ZERO = datetime.timedelta(0)
