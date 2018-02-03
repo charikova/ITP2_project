@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
+from.models import UserProfile
 
 
 USER_STATUSES = [
@@ -25,10 +26,12 @@ class CreateUserForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super(CreateUserForm, self).save(commit=False)
-        user.address = self.cleaned_data['address']
-        user.phone_number = self.cleaned_data['phone_number']
+        address = self.cleaned_data['address']
+        phone_number = self.cleaned_data['phone_number']
+        status = dict(USER_STATUSES)[int(self.cleaned_data['status'])]
         if commit:
             user.save(True)
+            UserProfile.objects.create(user=user, address=address, phone_number=phone_number, status=status)
 
 
 class EditPatronForm(UserChangeForm):

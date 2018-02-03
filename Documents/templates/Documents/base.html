@@ -7,10 +7,52 @@
     {% load staticfiles %}
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="{% static 'Documents/style.css' %}"/>
+
+    <style>
+    .container {
+        background-color: rgba(214, 184, 150, 0.8);
+        color: saddlebrown;
+        font-size: 15px;
+        margin:0 auto;
+        overflow:visible;
+        position:absolute;
+        left: 38%;
+        top: 25%;
+        width: 24%;
+        border-radius: 10px;
+    }
+
+    form {
+        padding: 5px;
+        color: black;
+        font-size: 15px;
+        margin: 5px;
+    }
+
+    input {
+        background-color: floralwhite;
+        border: 2px solid saddlebrown;
+        border-radius: 5px;
+        margin: 0 0 0 10px;
+        left: 50%;
+    }
+
+    h2 {
+        color: black;
+        font-size: 40px;
+        text-align: center;
+    }
+
+    .button {
+        width: 40%;
+        font-size: 25px;
+        margin: 15px 15px 15px 30%;
+
+    }
+
+    </style>
 
 </head>
 <body>
@@ -72,6 +114,7 @@
 
 {% endblock %}
 
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </body>
 </html>
