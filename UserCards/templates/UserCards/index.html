@@ -101,7 +101,7 @@
         <ul>
             {% for copy in copies %}
             <li>
-                <a href="/{{copy.doc.id}}">{{ copy }}</a>
+                <a href="/{{copy.doc.id}}">{{ copy.name }}</a>
                 <input type="checkbox" name="{{copy.id}}"> <br>
                 {{ copy.time_left }}<br>
             </li>

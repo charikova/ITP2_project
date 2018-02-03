@@ -75,12 +75,25 @@ def user_card_info(request):
 
     for document_copy in documents_copy:
         temp = (document_copy.returning_date - datetime.datetime.now(UTC())).days*24*3600 + (document_copy.returning_date - datetime.datetime.now(UTC())).seconds
+
+        print(temp)
+
         if temp >= 3600:
             document_copy.time_left = "Time to return: " + str(int(temp / 3600)) + "h:" + str(int(temp % 3600 / 60))+"m"
         elif 3600 > temp >= 60:
             document_copy.time_left = "Time to return: " + str(int(temp / 60))
+        elif 60 > temp > 0:
+            document_copy.time_left = "Time to return: " + str(int(temp))
         else:
-            document_copy.time_left = 'You need to pay: ' + document_copy.price
+            day = (datetime.datetime.now(UTC())-document_copy.returning_date).days
+
+            print(day)
+            if 100*int(day) <= document_copy.doc.price:
+                document_copy.fine_price = 100*int(day)
+            else:
+                document_copy.fine_price = document_copy.doc.price
+
+            document_copy.time_left = 'You need to pay: ' + str(document_copy.fine_price)
 
         document_copy.save()
 
