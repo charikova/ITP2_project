@@ -97,14 +97,28 @@
 </style>
 <div class="container">
    <p>
-
         Username: {{ user.username }} <br>
         First name: {{ user.first_name }} <br>
         Last name: {{ user.last_name }} <br>
         Phone: {{ user.phone_number }} <br>
         Email: {{ user.email }} <br>
         Address: {{ user.address }} <br>
-   </p>
+
+    <p>
+        <strong>Documents in use:</strong>
+    </p>
+        <ul>
+            {% for copy in copies %}
+            <li>
+                <a href="/{{copy.doc.id}}">{{ copy }}</a>
+                <input type="checkbox" name="{{copy.id}}"> <br>
+                Time to return: {{ copy.time_left }}<br>
+            </li>
+            {% endfor %}
+        </ul>
+
+
+    </p>
 
 </div>
 {% endblock  %}
