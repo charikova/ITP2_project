@@ -12,7 +12,5 @@ urlpatterns = [
     url(r'^bookrequests/(?P<pk>[0-9]+)/$', views.booktaker_view, name='booktaker_view'),
     url(r'^bookrequests/$', views.BookRequestsView.as_view(), name='bookrequests'),
     url(r'^bookrequests/(?P<reqid>[0-9]+)/(?P<booktaker>[0-9]+)/$', views.givebook, name='givebook'),
-    url(r'^bookrequests/(?P<pk>[0-9]+)/takebook/(?P<userid>[0-9]+)/(?P<copyid>[0-9]+)$', views.takebook, name='takebook'),
+    # url(r'^bookrequests/(?P<pk>[0-9]+)/takebook/(?P<userid>[0-9]+)/(?P<copyid>[0-9]+)$', views.takebook, name='takebook'),
 ]
-
-
