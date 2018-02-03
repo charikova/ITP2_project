@@ -132,10 +132,10 @@ def booktaker_view(request, pk):
     return render(request, 'UserCards/booktaker_view.html', context)
 
 
-def givebook(request, pk, booktaker):
+def givebook(request, reqid, booktaker):
 
     user = User.objects.get(pk=booktaker)
-    br = documents_models.BookRequest.objects.get(pk=pk)
+    br = documents_models.BookRequest.objects.get(pk=reqid)
     doc = br.doc
     if doc.copies > 0:
         doc.copies -= 1
@@ -154,17 +154,17 @@ def givebook(request, pk, booktaker):
     return redirect('bookrequests')
 
 
-def takebook(request, pk, user, copy):
+def takebook(request, pk, userid, copyid):
 
-    user = User.objects.get(pk=user)
+    user = User.objects.get(pk=userid)
 
-    copy_instance = documents_models.DocumentCopy.objects.get(pk=copy)
+    copy_instance = documents_models.DocumentCopy.objects.get(pk=copyid)
+
     copy_instance.doc.copies += 1
     copy_instance.doc.save()
     copy_instance.delete()
 
-
-    return redirect('index')
+    return redirect('bookrequests')
 
 
 
