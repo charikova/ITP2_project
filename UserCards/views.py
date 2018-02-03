@@ -90,20 +90,6 @@ def user_card_info(request):
     context = {'user': user, 'copies': user.documentcopy_set.all()}
     return render(request, 'UserCards/index.html', context)
 
-
-@need_logged_in
-def return_copies(request):
-    user = request.user
-    chosen_copies = [documents_models.DocumentCopy.objects.get(id=int(id)) for id in request.POST.keys() if
-                     id.isdigit()]
-    for copy in chosen_copies:
-        copy.doc.copies += 1
-        copy.doc.save()
-        copy.delete()
-    context = {'user': user, 'copies': user.documentcopy_set.all()}
-    return render(request, 'UserCards/index.html', context)
-
-
 class BookRequestsView(ListView):
         template_name = 'UserCards/bookrequests.html'
         model = documents_models.BookRequest
@@ -146,7 +132,6 @@ def booktaker_view(request, pk):
     return render(request, 'UserCards/booktaker_view.html', context)
 
 
-
 def givebook(request, pk, booktaker):
 
     user = User.objects.get(pk=booktaker)
@@ -167,6 +152,21 @@ def givebook(request, pk, booktaker):
         new_copy.save()
         br.delete()
     return redirect('bookrequests')
+
+
+def takebook(request, pk, user, copy):
+
+    user = User.objects.get(pk=user)
+
+    copy_instance = documents_models.DocumentCopy.objects.get(pk=copy)
+    copy_instance.doc.copies += 1
+    copy_instance.doc.save()
+    copy_instance.delete()
+
+
+    return redirect('index')
+
+
 
 
 

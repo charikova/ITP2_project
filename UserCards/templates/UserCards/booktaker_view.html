@@ -107,11 +107,12 @@
     <p>
         <strong>Documents in use:</strong>
     </p>
+
         <ul>
             {% for copy in copies %}
             <li>
-                <a href="/{{copy.doc.id}}">{{ copy }}</a>
-                <input type="checkbox" name="{{copy.id}}"> <br>
+                <a href="/{{copy.doc.id}}">{{ copy }}</a> <br>
+                <a class="takebook" href="takebook/{{user.id}}/{{copy.id}}">take book</a><br>
                 Time to return: {{ copy.time_left }}<br>
             </li>
             {% endfor %}
