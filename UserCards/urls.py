@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^logout/$', logout, {'next_page': '/user/login/'}, name='logout'),
     url(r'^edit/$', views.EditCardView.as_view(), name='edit'),
     url(r'^return_copies/$', views.return_copies, name='return_copies'),
+    url(r'^bookrequests/(?P<pk>[0-9])/$', views.booktaker_view, name='booktaker_view'),
     url(r'^bookrequests/$', views.BookRequestsView.as_view(), name='bookrequests'),
     url(r'^bookrequests/(?P<pk>[0-9])/(?P<booktaker>[0-9])/$', views.givebook, name='givebook'),
 ]

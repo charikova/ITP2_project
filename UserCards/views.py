@@ -64,6 +64,7 @@ def user_card_info(request):
     documents_copy = user.documentcopy_set.all()
 
     ZERO = datetime.timedelta(0)
+
     class UTC(datetime.tzinfo):
         def utcoffset(self, dt):
             return ZERO
@@ -110,7 +111,16 @@ class BookRequestsView(ListView):
         paginate_by = 10
 
 
-def givebook(request, pk,  booktaker):
+def booktaker_view(request, pk):
+
+    user = User.objects.get(pk=pk)
+    context = {'user': user}
+
+    return render(request, 'UserCards/booktaker_view.html', context)
+
+
+
+def givebook(request, pk, booktaker):
 
     user = User.objects.get(pk=booktaker)
     br = documents_models.BookRequest.objects.get(pk=pk)
@@ -129,8 +139,6 @@ def givebook(request, pk,  booktaker):
 
         new_copy.save()
         br.delete()
-
-
     return redirect('bookrequests')
 
 
