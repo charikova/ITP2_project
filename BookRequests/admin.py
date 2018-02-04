@@ -1,4 +1,4 @@
 from django.contrib import admin
-from .models import BookRequest
+from .models import Request
 
-admin.site.register(BookRequest)
+admin.site.register(Request)

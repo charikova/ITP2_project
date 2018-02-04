@@ -3,7 +3,7 @@ from Documents.librarian_view import required_staff, need_logged_in
 from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView
 import Documents.models as documents_models
-from .models import BookRequest
+from .models import Request
 import datetime
 
 
@@ -12,7 +12,7 @@ class RequestsView(ListView):
     view of all requests made by users
     """
     template_name = 'BookRequests/bookrequests.html'
-    model = BookRequest
+    model = Request
     context_object_name = 'requests'
     paginate_by = 10
 
@@ -29,19 +29,19 @@ def make_new(request):
     creates new request from user
     """
     doc_id = request.GET['doc']
-    doc_request = BookRequest(doc=documents_models.Document.objects.get(id=doc_id),
+    doc_request = Request(doc=documents_models.Document.objects.get(id=doc_id),
                           checked_up_by_whom=request.user, timestamp=datetime.datetime.now())
     doc_request.save()
     return redirect('/')
 
 
 @required_staff
-def givebook(request):
+def approve_request(request):
     """
     gives book to particular user
     """
     user = User.objects.get(pk=request.GET.get('user_id'))
-    doc_request = BookRequest.objects.get(pk=request.GET.get('req_id'))
+    doc_request = Request.objects.get(pk=request.GET.get('req_id'))
     doc = doc_request.doc
     if doc.copies > 0:
         doc.copies -= 1
@@ -65,7 +65,7 @@ def refuse(request):
     """
     refuses request made by user
     """
-    doc_request = BookRequest.objects.get(id=request.GET.get('req_id'))
+    doc_request = Request.objects.get(id=request.GET.get('req_id'))
     doc_request.delete()
     return redirect('/requests/')
 
@@ -81,3 +81,7 @@ def takebook(request):
     copy_instance.delete()
     return redirect('/requests/')
 
+
+@need_logged_in
+def renew(request):
+    pass

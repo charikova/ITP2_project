@@ -3,7 +3,7 @@ from Documents.models import Document
 from django.contrib.auth.models import User
 
 
-class BookRequest(models.Model):
+class Request(models.Model):
     doc = models.ForeignKey(Document, null=True, default=None, on_delete=models.CASCADE)
     checked_up_by_whom = models.ForeignKey(User, null=True, default=None, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
