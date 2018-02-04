@@ -12,9 +12,9 @@
         font-size: 15px;
         overflow:visible;
         position:absolute;
-        left: 25%;
-        top: 18%;
-        width: 50%;
+        left: 30%;
+        top: 35%;
+        width: 40%;
         border: 0;
         border-radius: 10px;
         margin: 0 auto 60px;
@@ -39,14 +39,6 @@
         border-radius: 5px;
         margin: 0 0 0 10px;
         left: 50%;
-    }
-
-    .button {
-        width: 30%;
-        font-size: 25px;
-        margin: 15px 15px 15px 35%;
-        border: 3px solid saddlebrown;
-        border-radius: 10px;
     }
 
 
@@ -84,10 +76,14 @@
         margin: auto;
     }
 
+    li {
+        font-size: 20px;
+    }
+
 </style>
 <div class="container">
 
-    <h3>Select the type of document you wish to add:<br></h3>
+    <h2>Select the type of document you want to add:<br></h2>
     <ul>
     {% for cls in clss %}
         <li><a href="/create/?type={{cls}}">{{cls}}</a><br></li>
