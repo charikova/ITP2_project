@@ -38,30 +38,3 @@ def document_detail(request, pk):
     return render(request, 'Documents/doc_inf.html', context)
 
 
-@need_logged_in
-def checkout(request, pk):
-    """
-    when user check out doc -> find this doc via pk(id), create an instance of document_copy
-    which will be linked to this document and to user
-    """
-    doc = get_object_or_404(Document, pk=pk)
-    user = request.user
-    if user.is_staff:
-        raise Http404('staff can not take documents')
-    if user.documentcopy_set.filter(doc=doc): # if user already has this doc
-        return redirect('/{0}/'.format(pk))
-    if doc.copies > 0:
-        doc.copies -= 1
-        doc.save()
-        if user.status == 'student':
-            new_copy = DocumentCopy(doc=doc,
-                                    checked_up_by_whom=user, returning_date=(
-                    datetime.date.today() + datetime.timedelta(days=14)).strftime("%Y-%m-%d"))
-        else:
-            new_copy = DocumentCopy(doc=doc,
-                                    checked_up_by_whom=user, returning_date=(
-                    datetime.date.today() + datetime.timedelta(days=21)).strftime("%Y-%m-%d"))
-
-        new_copy.save()
-    return redirect('/{0}/'.format(pk)) # go back to doc page
-

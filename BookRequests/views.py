@@ -17,7 +17,7 @@ class RequestsView(ListView):
     paginate_by = 10
 
     def get(self, request, *args, **kwargs):
-        if request.user.is_staff:
+        if request.user.is_authenticated:
             return super().get(request, *args, **kwargs)
         else:
             return redirect('/')
@@ -29,10 +29,13 @@ def make_new(request):
     creates new request from user
     """
     doc_id = request.GET['doc']
-    doc_request = Request(doc=documents_models.Document.objects.get(id=doc_id),
+    # make sure there are no requests for this doc earlier
+    req_exist = len(request.user.request_set.filter(doc=documents_models.Document.objects.get(id=doc_id)))
+    if not req_exist:
+        doc_request = Request(doc=documents_models.Document.objects.get(id=doc_id),
                           checked_up_by_whom=request.user, timestamp=datetime.datetime.now())
-    doc_request.save()
-    return redirect('/')
+        doc_request.save()
+    return redirect('/' + str(doc_id))
 
 
 @required_staff
@@ -46,11 +49,11 @@ def approve_request(request):
     if doc.copies > 0:
         doc.copies -= 1
         doc.save()
-        if user.userprofile.status == 'student':
+        if user.userprofile.status == 'faculty': # 4 weeks for checking out doc
             new_copy = documents_models.DocumentCopy(doc=doc,
                                     checked_up_by_whom=user, returning_date=(
-                        datetime.date.today() + datetime.timedelta(days=14)).strftime("%Y-%m-%d"))
-        else:
+                        datetime.date.today() + datetime.timedelta(days=28)).strftime("%Y-%m-%d"))
+        else: # 3 weeks for students
             new_copy = documents_models.DocumentCopy(doc=doc,
                                     checked_up_by_whom=user, returning_date=(
                         datetime.date.today() + datetime.timedelta(days=21)).strftime("%Y-%m-%d"))
@@ -60,7 +63,7 @@ def approve_request(request):
     return redirect('/requests')
 
 
-@required_staff
+@need_logged_in
 def refuse(request):
     """
     refuses request made by user
@@ -76,12 +79,18 @@ def takebook(request):
     taking document back (user has returned his document)
     """
     copy_instance = documents_models.DocumentCopy.objects.get(pk=request.GET.get('copy_id'))
+    user_id = copy_instance.checked_up_by_whom.id
     copy_instance.doc.copies += 1
     copy_instance.doc.save()
     copy_instance.delete()
-    return redirect('/requests/')
+    return redirect('/user/?user_id=' + str(user_id))
 
 
 @need_logged_in
 def renew(request):
-    pass
+    user = request.user
+    copy = user.documentcopy_set.filter(id=request.GET.get('copy_id'))
+    if copy:
+        copy = copy[0]
+        # update date
+    return redirect('/' + str(copy.doc.id))

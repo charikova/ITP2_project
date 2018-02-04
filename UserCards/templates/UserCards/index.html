@@ -118,7 +118,10 @@
             <li>
                 <a href="/{{copy.doc.id}}">{{ copy }}</a>
                 {{ copy.time_left }}<br>
-                <a class="btn" href="/requests/takebook/?copy_id={{copy.id}}">Take book</a><br>
+                {% if user.is_staff %}
+                <a class="btn" href="/requests/takebook/?copy_id={{copy.id}}">Take book</a>
+                {% endif %}
+                <a class="btn" href="/requests/renew/?copy_id={{copy.id}}">Renew</a><br>
             </li>
             {% endfor %}
         </ul>
@@ -126,7 +129,6 @@
     </div>
     {% csrf_token %}
     {% endif %}
-
 
     {% if user.is_staff %}
     <a class="edit" href="/user/edit/">Edit profile</a>

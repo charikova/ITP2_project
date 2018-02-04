@@ -8,5 +8,6 @@ urlpatterns = [
     url(r'^approve/$', views.approve_request, name='approve_request'),
     url(r'^takebook/', views.takebook, name='takebook'),
     url(r'^refuse/', views.refuse, name='refuse'),
+    url(r'^renew/', views.renew, name='renew'),
 ]
 

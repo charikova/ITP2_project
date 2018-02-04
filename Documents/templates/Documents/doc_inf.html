@@ -17,12 +17,12 @@
         {%endfor%}
 
         {% if user.is_staff %}
-        <a type="btn" href="update/">Update</a> <br>
-        <a type="btn" href="delete/" onclick="return confirm('Delete {{doc.title}}?')">Delete</a>
+        <a class="btn" href="update/">Update</a> <br>
+        <a class="btn" href="delete/" onclick="return confirm('Delete {{doc.title}}?')">Delete</a>
         {% elif user.is_authenticated %}
         <a class="button" href="/requests/make_new/?doc={{doc.id}}" onclick="
         if ({{user_has_doc}})
-            alert('You already have this document');
+            return alert('You already have this document');
         else
             return confirm('Sure you want to check out {{doc.title}}?');
 
@@ -31,3 +31,4 @@
     </table>
     {% endblock %}
 </div>
+

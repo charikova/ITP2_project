@@ -6,14 +6,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-{% extends 'Documents/base.html'  %}
+    {% extends 'Documents/base.html' %}
 
-{% load staticfiles %}
+    {% load staticfiles %}
 
 
-{% block body  %}
+    {% block body %}
 
-    <link rel="stylesheet" type="text/css" href="{% static 'Documents/style.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'Documents/style.css' %}"/>
 
     <style>
         h1 {
@@ -46,43 +46,52 @@
     }
 
 
+
     </style>
 
-<h3 align="center">Document's requests for now:</h3>
+    {% if user.is_staff %}
+    <h3 align="center">Document's requests for now:</h3>
+    {% elif user.is_authenticated %}
+    <h3 align="center">My requests:</h3>
+    {% endif %}
 
 
+    <form action="" method="post">
+        <div align="center">
+            <table>
 
-<form action="" method="post">
+                <tr>
+                    <th class="cen" colspan="1">Document</th>
+                    <th class="cen">Date</th>
+                    {% if user.is_staff %}
+                    <th class="cen">User</th>
+                    {% endif %}
+                </tr>
+
+                <tr>
+                    {% for req in requests %}
+                    {% if user.is_staff or user == req.checked_up_by_whom %}
+                    <td><a href="/{{ req.doc.id }}/">{{ req.doc.title }}</a></td>
+                    <td>{{req.timestamp}}</td>
+                    {% if user.is_staff %}
+                    <td><a href="/user/?id={{ req.checked_up_by_whom.id }}">{{req.checked_up_by_whom.username}}</a></td>
+                    <td><a class="btn" href="/requests/approve/?user_id={{req.checked_up_by_whom.id}}&req_id={{req.id}}">approve</a>
+                    </td>
+                    {% endif %}
+                    <td><a class="btn" href="/requests/refuse/?req_id={{req.id}}">refuse</a></td>
+                    {% endif %}
+
+                </tr>
+                {% endfor %}
+
+            </table>
+            {% csrf_token %}
+        </div>
+    </form>
+
+
     <div align="center">
-        <table>
-
-            <tr>
-                <th class="cen" colspan="1">Document</th>
-                <th class="cen">User</th>
-                <th class="cen">Date</th>
-            </tr>
-
-            <tr>
-                {% for req in requests %}
-
-                <td><a href="/{{ req.doc.id }}/">{{ req.doc.title }}</a></td>
-                <td><a href="/user/?id={{ req.checked_up_by_whom.id }}">{{req.checked_up_by_whom.username}}</a></td>
-                <td>{{req.timestamp}}</td>
-                <td><a href="/requests/approve/?user_id={{req.checked_up_by_whom.id}}&req_id={{req.id}}">approve</a></td>
-                <td><a href="/requests/refuse/?req_id={{req.id}}">refuse</a></td>
-
-
-            </tr>
-               {% endfor %}
-
-        </table>
-    {% csrf_token %}
-    </div>
-</form>
-
-
-<div align="center">
-    <div class="paginator">
+        <div class="paginator">
          <span class="step-links">
             {% if page_obj.has_previous %}
                 <a href="?page={{ page_obj.previous_page_number }}">previous</a>
@@ -96,9 +105,9 @@
                 <a href="?page={{ page_obj.next_page_number }}">next</a>
             {% endif %}
         </span>
+        </div>
     </div>
-</div>
 
 
-{% endblock  %}
+    {% endblock %}
 
