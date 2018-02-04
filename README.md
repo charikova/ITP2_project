@@ -4,15 +4,14 @@ Introduction to Programming project by students of BS1-7 group, team: Danil Ginz
 Maria Charikova, Roman
 
 # The way it works
-Patrons can survey diffrent documents on the main page <strong>/index.html</strong> and leave requests for them. Librarins (staff) can whether 
+Patrons can survey diffrent documents on the main page and leave requests for them. Librarins (staff) can whether 
 approve or refuse their requests. 
 
 # Usage
-After installation you can simply run this website by runnign this
+After installation you can simply run this website by running this command
 
-     python manage.py runserver # or python3 manage.py runserver if you have python2 and python3
+     python manage.py runserver
      
-command in your command line
 
 # Patron's types
 There are types of patrons available: 
@@ -27,7 +26,7 @@ Have permission to <strong>Check out</strong> documents for 3 weeks and are able
 Have permission to <strong>Check out</strong> documents for 4 weeks and are able to renew documents
 # Librarian permissions
 Librarians are allowed to add/delete/update any document. They can modify patrons and their permissions as well.
-Librarians <strong>are not</strong> allowed to check out documents: only approve/refuse current requests for documents from 
+Librarians are allowed to approve/refuse current requests for documents from 
 patron's requests list on /requests url
   
 # Architecture of the website
@@ -52,7 +51,7 @@ Table
 which is typicly the abstract class for all documents. It has necessary fields for all document types which are 
 required to fill out when librarian is creating new document.
 Bellow in innopolka/Documents/models.py we have other document types which are inhereted from 
-Document model class. It look like this: 
+Document model class. It looks like this: 
 
      class YourType(Document):
           type = "Your Type"
@@ -60,13 +59,7 @@ Document model class. It look like this:
           filed2 = models.IntegerField()
           
 Notice, that each inherited document should have "type" attribute that will be used as a name for 
-creation this type of document. The thing is when document's type is created in db, the name of 
-class disappears.
-<strong>Important!</strong> when you will modify models.py code you should run
-
-     python manage.py makemigrations & python manage.py migrate
-     
-in order to apply your changes into database.
+creation this kind of document. 
 ## Document Copy
      class DocumentCopy(models.Model):
           """
@@ -80,5 +73,14 @@ in order to apply your changes into database.
 Every time user check out document - new copy object is created. Basicly it is not a document, it is
 an object that keeps links to particluar document and to holder of this document. Also DocumentCopy
 keeps other data like level, room, time it was checked out, etc.
-## Users(Patons)
-We are using <a href="https://docs.djangoproject.com/en/2.0/topics/auth/">built-in user authentication</a> provied by django framework
+## Users(Patrons)
+We are using <a href="https://docs.djangoproject.com/en/2.0/topics/auth/">built-in user interface</a> provied by django framework. Unfortunately django doesn't provide possibility to add extra fields for users 
+(such as status, phone number, etc). Thus we use user profile model: 
+
+     class UserProfile(models.Model):
+         user = models.OneToOneField(User, on_delete=models.CASCADE) # link to user with OnoToOne-connection
+         phone_number = models.CharField(max_length=15, null=True, blank=True)
+         address = models.CharField(max_length=250, null=True, blank=True)
+         status = models.CharField(max_length=250, default='student')
+    
+It is an extra profile which is created every time whenever new user is created.
