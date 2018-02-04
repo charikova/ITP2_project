@@ -12,9 +12,10 @@
         overflow:visible;
         position:absolute;
         left: 38%;
-        top: 25%;
+        top: 10%;
         width: 24%;
         border-radius: 10px;
+        margin-bottom: 1%;
     }
 
     form {
@@ -50,7 +51,6 @@
 
 <div class="container">
     <form action="" method="post">
-        <img src="{{cover}}"><br>
 
         {% for key, value in fields %}
         {% if key == 'publication_date' %}
@@ -65,7 +65,7 @@
         </p>
         {% endif %}
         {%endfor%}
-        <input type="submit" name="submit">
+        <input class="button" type="submit" name="submit" value="Submit">
         {% csrf_token %}
     </form>
 
