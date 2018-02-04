@@ -4,13 +4,107 @@
 {% block body  %}
 <link rel="stylesheet" type="text/css" href="{% static 'Documents/doc_inf_style.css' %}"/>
 
+    <style>
+    .container {
+        background-color: rgba(214, 184, 150, 0);
+        color: saddlebrown;
+        font-size: 15px;
+        overflow:visible;
+        position:absolute;
+        left: 25%;
+        top: 10%;
+        width: 50%;
+        border: 0;
+        border-radius: 10px;
+        margin: 0 auto 60px;
+    }
+
+    h2 {
+        color: white;
+        font-size: 40px;
+        text-align: center;
+    }
+
+    form {
+        padding: 5px;
+        color: black;
+        font-size: 15px;
+        margin: 5px;
+    }
+
+    input {
+        background-color: floralwhite;
+        border: 2px solid saddlebrown;
+        border-radius: 5px;
+        margin: 0 0 0 10px;
+        left: 50%;
+    }
+
+    .button {
+        width: 40%;
+        font-size: 25px;
+        margin: 15px 15px 15px 30%;
+    }
+
+    p {
+        color: black;
+        margin: 15px;
+        font-size: 20px;
+    }
+
+    a {
+        color: white;
+        padding-left: ;
+    }
+
+     table {
+        border: none;
+        border-radius: 10px;
+         width: 100%;
+        background-color: rgba(214, 184, 150, 0.8);
+         margin: 10px;
+    }
+
+    tr {
+        border: none;
+        text-align: left;
+    }
+
+    td {
+        border: none;
+        text-align: left;
+    }
+
+    img {
+        width: 300px;
+        height: auto;
+        margin-top: 1%;
+    }
+
+    .button {
+        width: 40%;
+        font-size: 25px;
+        background-color: floralwhite;
+        color: black;
+        border-radius: 10px;
+        border: 3px solid saddlebrown;
+        padding: 5px;
+        margin: 15px 15px 15px 40%;
+    }
+
+    .button:hover {
+        text-decoration: none;
+        color: black;
+    }
+
+
+</style>
 <div class="container">
-
+<h2>Document information</h2>
     <table>
-        <h3>Document information</h3>
-        <img src="{{cover}}"><br>
-
-        {% for key, value in fields %}
+        <tr>
+            <td>
+                {% for key, value in fields %}
         <p>
             {{key}}: {{value}}
         </p>
@@ -20,7 +114,14 @@
         <a type="btn" href="update/">Update</a> <br>
         <a type="btn" href="delete/" onclick="return confirm('Delete {{doc.title}}?')">Delete</a>
         {% elif user.is_authenticated %}
-        <a class="button" href="/{{doc.id}}/checkout" onclick="
+            </td>
+
+            <td>
+                <img src="{{cover}}"><br>
+            </td>
+        </tr>
+    </table>
+    <a class="button" href="/{{doc.id}}/checkout" onclick="
         if ({{user_has_doc}})
             alert('You already have this document');
         else
@@ -28,6 +129,5 @@
 
         ">Check out</a>
         {% endif %}
-    </table>
     {% endblock %}
 </div>
