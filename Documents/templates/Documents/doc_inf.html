@@ -89,7 +89,9 @@
         border-radius: 10px;
         border: 3px solid saddlebrown;
         padding: 5px;
-        margin: 15px 15px 15px 40%;
+        margin: 10px;
+        position: relative;
+        left: 30%;
     }
 
     .button:hover {
@@ -111,8 +113,8 @@
         {%endfor%}
 
         {% if user.is_staff %}
-        <a type="btn" href="update/">Update</a> <br>
-        <a type="btn" href="delete/" onclick="return confirm('Delete {{doc.title}}?')">Delete</a>
+        <a class="button" type="btn" href="update/">Update</a>
+        <a class="button" type="btn" href="delete/" onclick="return confirm('Delete {{doc.title}}?')">Delete</a>
         {% elif user.is_authenticated %}
             </td>
 
