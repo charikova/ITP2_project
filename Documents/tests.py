@@ -1,6 +1,6 @@
 from django.test import TestCase
-from django.contrib.auth.models import User
-from django.http import HttpRequest
+from UserCards.models import UserProfile
+from django.http import HttpRequest, Http404
 from .models import *
 from Documents.views import checkout
 import datetime
@@ -8,85 +8,14 @@ from UserCards.models import UserProfile
 from UserCards.views import user_card_info
 
 
-class UserGenerator:
-    username = 'username'
-    first_name = 'first_name'
-    last_name = 'last_name'
-    email = 'example@mail.com'
-
-    @staticmethod
-    def _get_user():
-        user = User()
-        user.username = UserGenerator.username
-        user.first_name = UserGenerator.first_name
-        user.last_name = UserGenerator.last_name
-        user.email = UserGenerator.email
-        user.set_password('1234567890qwerty')
-        user.save()
-        return user
-
-    @staticmethod
-    def get_student():
-        user = UserGenerator._get_user()
-        user.status = 'student'
-
-    @staticmethod
-    def get_faculty():
-        user = UserGenerator._get_user()
-        user.status = 'faculty'
-
-    @staticmethod
-    def get_librarian():
-        user = UserGenerator._get_user()
-        user.status = 'librarian'
-        user.is_staff = True
-
-
-class DocGenerator:
-    title = 'title'
-    cover = 'cover'
-    authors = 'authors'
-    price = 0
-    copies = 1
-
-    @staticmethod
-    def get_book():
-        b = Book()
-        b.title = DocGenerator.title
-        b.cover = DocGenerator.cover
-        b.authors = DocGenerator.authors
-        b.price = DocGenerator.price
-        b.copies = DocGenerator.copies
-        b.publication_date = datetime.datetime.now()
-        b.publisher = 'unknown'
-        b.edition = 1
-        b.type = 'Book'
-        b.save()
-        return b
-
-    @staticmethod
-    def get_avfile():
-        f = AVFile()
-        f.type = 'AVFile'
-        f.save()
-        return f
-
-    @staticmethod
-    def get_article():
-        b = JournalArticle()
-        b.publication_date = datetime.datetime.now()
-        b.publisher_journal = 'unknown'
-        b.edition = 1
-        b.type = 'JournalArticle'
-        b.save()
-        return b
-
-
 class IntroductionToProgrammingTestCase(TestCase):
 
     def TC1(self):
         # initial state
         p = User.objects.create_user('username', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
+        UserProfile.objects.create(user=p, phone_number=123, status='student', address='1-103')
+        l = User.objects.create_user('username2', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L', is_staff=True)
+        UserProfile.objects.create(user=l, phone_number=123, status='student', address='1-103')
         b = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
                                 edition=1, copies=2, authors='sadf', cover='cover', publisher='pub')
         self.assertEqual(b.copies, 2, msg="not 2 copies")
@@ -101,6 +30,7 @@ class IntroductionToProgrammingTestCase(TestCase):
         self.assertIs(patron_has_one_copy, True)
         self.assertIs(library_has_one_copy, True)
 
+<<<<<<< HEAD
     def TC2(self):
         pass
 
@@ -127,12 +57,43 @@ class IntroductionToProgrammingTestCase(TestCase):
         self.assertEqual(
             (f.documentcopy_set.filter(doc=b)[0].returning_date - f.documentcopy_set.filter(doc=b)[0].date).days,
             datetime.timedelta(days=14).days-1)
+=======
+        # librarian see
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = l
+        request.path = '/user/?id=' + str(p.id) # sees patron's page
+        response = user_card_info(request)
+        self.assertEqual(response.status_code, 200) # librarian has access to see this page
+        self.assertEqual(b.title in str(response.content), True) # there are exist title of this book in response content
+
+
+    def TC2(self):
+        p = User.objects.create_user('username', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
+
+        # doesn't have any books by author A
+        have_book = len(Book.objects.filter(authors='A')) > 0
+        self.assertEqual(have_book, False)
+
+        # patron checks out book by A
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = p
+
+        try:
+            checkout(request, 1000) # 1000 id doesn't exist
+        except Http404:
+            pass
+        else:
+            raise Exception('should raise 404')
+>>>>>>> abb0a5d059dee8f34a3a3974c857281dec48e4d0
 
     def TC5(self):
         s1 = User.objects.create_user('Student1', 'Student1@mail.ru', '123456qwerty', first_name='Student1', last_name='L')
         s2 = User.objects.create_user('Student2', 'Student2@mail.ru', '123456qwerty', first_name='Student2', last_name='L')
         s3 = User.objects.create_user('Student3', 'Student3@mail.ru', '123456qwerty', first_name='Student3', last_name='L')
 
+<<<<<<< HEAD
         UserProfile.objects.create(user=s1, status='student', phone_number=896000, address='2-107')
         UserProfile.objects.create(user=s2, status='student', phone_number=896000, address='2-107')
         UserProfile.objects.create(user=s3, status='student', phone_number=896000, address='2-107')
@@ -142,14 +103,41 @@ class IntroductionToProgrammingTestCase(TestCase):
 
         b = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
                                 edition=1, copies=2, authors='sadf', cover='cover', publisher='pub', is_bestseller=True)
+=======
+    def TC3(self):
+        student = User.objects.create_user('s', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
+        faculty = User.objects.create_user('f', 'exampl2@mail.ru', '123456qwerty', first_name='F', last_name='L')
+        UserProfile.objects.create(user=student, phone_number=123, status='student', address='1-103')
+        UserProfile.objects.create(user=faculty, phone_number=123, status='faculty', address='1-103')
+        book = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
+                                edition=1, copies=2, authors='sadf', cover='cover', publisher='pub')
+
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = faculty
+        checkout(request, book.id)
+
+        returning_date = faculty.documentcopy_set.get(doc=book).returning_date
+        should_be_today = returning_date - datetime.timedelta(days=28)
+        should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
+        self.assertEqual(should_be_today, datetime.date.today())
+
+    def TC4(self):
+        pass
+>>>>>>> abb0a5d059dee8f34a3a3974c857281dec48e4d0
 
         request = HttpRequest()
         request.method = 'GET'
         request.user = s1
         checkout(request, b.id)
 
+<<<<<<< HEAD
         request.user = s2
         checkout(request, b.id)
+=======
+    def TC5(self):
+        pass
+>>>>>>> abb0a5d059dee8f34a3a3974c857281dec48e4d0
 
         request.user = s3
         checkout(request, b.id)
@@ -157,6 +145,7 @@ class IntroductionToProgrammingTestCase(TestCase):
         self.assertEqual(len(b.documentcopy_set.all()), 2)
 
     def TC6(self):
+<<<<<<< HEAD
         p = User.objects.create_user('username', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
         UserProfile.objects.create(user=p, status='student', phone_number=896000, address='2-107')
 
@@ -174,21 +163,21 @@ class IntroductionToProgrammingTestCase(TestCase):
         self.assertEqual(len(b.documentcopy_set.all()), 1)
 
 
+=======
+        pass
+>>>>>>> abb0a5d059dee8f34a3a3974c857281dec48e4d0
 
 
     def TC7(self):
-        self.assertIs()
+        pass
 
     def TC8(self):
-        self.assertIs()
+        pass
 
     def TC9(self):
-        self.assertIs()
+        pass
 
     def TC10(self):
-        self.assertIs()
+        pass
 
 
-if __name__ == "__main__":
-    itptest = IntroductionToProgrammingTestCase()
-    itptest.TC1()
