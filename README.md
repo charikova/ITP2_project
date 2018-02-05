@@ -12,7 +12,6 @@ After installation you can simply run this website by running this command
 
      python manage.py runserver
      
-
 # Patron's types
 There are types of patrons available: 
 <ul>
@@ -60,19 +59,7 @@ Document model class. It looks like this:
           
 Notice, that each inherited document should have "type" attribute that will be used as a name for 
 creation this kind of document. 
-## Document Copy
-     class DocumentCopy(models.Model):
-          """
-          copy object which is created when user check out document
-          """
-          doc = models.ForeignKey(Document, blank=True, default=None, on_delete=models.CASCADE) # link to document which is checked out
-          checked_up_by_whom = models.ForeignKey(User, blank=True, default=None, on_delete=models.CASCADE) # link to holder
-          level = models.PositiveIntegerField(default=1)
-          room = models.PositiveIntegerField(default=1)
 
-Every time user check out document - new copy object is created. Basicly it is not a document, it is
-an object that keeps links to particluar document and to holder of this document. Also DocumentCopy
-keeps other data like level, room, time it was checked out, etc.
 ## Users(Patrons)
 We are using <a href="https://docs.djangoproject.com/en/2.0/topics/auth/">built-in user interface</a> provied by django framework. Unfortunately django doesn't provide possibility to add extra fields for users 
 (such as status, phone number, etc). Thus we use user profile model: 
@@ -81,6 +68,23 @@ We are using <a href="https://docs.djangoproject.com/en/2.0/topics/auth/">built-
          user = models.OneToOneField(User, on_delete=models.CASCADE) # link to user with OnoToOne-connection
          phone_number = models.CharField(max_length=15, null=True, blank=True)
          address = models.CharField(max_length=250, null=True, blank=True)
+         photo = models.ImageField(default="https://lh3.googleusercontent.com/")"
          status = models.CharField(max_length=250, default='student')
     
 It is an extra profile which is created every time whenever new user is created.
+
+## Booking System (Document Copy)
+    class DocumentCopy(models.Model):
+    """
+    copy object which is created when user check out document
+    """
+    doc = models.ForeignKey(Document, blank=True, default=None, on_delete=models.CASCADE) # link to document which is checked out
+    checked_up_by_whom = models.ForeignKey(User, blank=True, default=None, on_delete=models.CASCADE) # link to holder
+    level = models.PositiveIntegerField(default=1)
+    room = models.PositiveIntegerField(default=1)
+
+Every time user check out document - new copy object is created. Basicly it is not a document, it is
+an object that keeps links to particluar document and to holder of this document. Also DocumentCopy
+keeps other data like level, room, time it was checked out, etc.
+
+

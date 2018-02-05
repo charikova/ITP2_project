@@ -105,7 +105,9 @@
 <h2>Document information</h2>
     <table>
         <tr>
+
             <td>
+
                 {% for key, value in fields %}
         <p>
             {{key}}: {{value}}
@@ -116,10 +118,13 @@
         <a class="button" type="btn" href="update/">Update</a>
         <a class="button" type="btn" href="delete/" onclick="return confirm('Delete {{doc.title}}?')">Delete</a>
         {% elif user.is_authenticated %}
+
             </td>
 
             <td>
-                <img src="{{cover}}"><br>
+                <p>
+                    <img src={{cover}}><br>
+                </p>
             </td>
         </tr>
     </table>
