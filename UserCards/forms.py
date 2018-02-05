@@ -19,7 +19,7 @@ class CreateUserForm(UserCreationForm):
     email = forms.EmailField(required=True)
     address = forms.CharField(required=True)
     phone_number = forms.IntegerField(required=True)
-    photo = forms.CharField(required=True)
+    photo = forms.FileField(required=False)
     status = forms.ChoiceField(choices=USER_STATUSES, required=True)
 
     class Meta:
