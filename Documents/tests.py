@@ -1,84 +1,10 @@
 from django.test import TestCase
-from django.contrib.auth.models import User
-from django.http import HttpRequest
+from UserCards.models import UserProfile
+from django.http import HttpRequest, Http404
 from .models import *
 from Documents.views import checkout
 import datetime
 from UserCards.views import user_card_info
-
-
-class UserGenerator:
-    username = 'username'
-    first_name = 'first_name'
-    last_name = 'last_name'
-    email = 'example@mail.com'
-
-    @staticmethod
-    def _get_user():
-        user = User()
-        user.username = UserGenerator.username
-        user.first_name = UserGenerator.first_name
-        user.last_name = UserGenerator.last_name
-        user.email = UserGenerator.email
-        user.set_password('1234567890qwerty')
-        user.save()
-        return user
-
-    @staticmethod
-    def get_student():
-        user = UserGenerator._get_user()
-        user.status = 'student'
-
-    @staticmethod
-    def get_faculty():
-        user = UserGenerator._get_user()
-        user.status = 'faculty'
-
-    @staticmethod
-    def get_librarian():
-        user = UserGenerator._get_user()
-        user.status = 'librarian'
-        user.is_staff = True
-
-
-class DocGenerator:
-    title = 'title'
-    cover = 'cover'
-    authors = 'authors'
-    price = 0
-    copies = 1
-
-    @staticmethod
-    def get_book():
-        b = Book()
-        b.title = DocGenerator.title
-        b.cover = DocGenerator.cover
-        b.authors = DocGenerator.authors
-        b.price = DocGenerator.price
-        b.copies = DocGenerator.copies
-        b.publication_date = datetime.datetime.now()
-        b.publisher = 'unknown'
-        b.edition = 1
-        b.type = 'Book'
-        b.save()
-        return b
-
-    @staticmethod
-    def get_avfile():
-        f = AVFile()
-        f.type = 'AVFile'
-        f.save()
-        return f
-
-    @staticmethod
-    def get_article():
-        b = JournalArticle()
-        b.publication_date = datetime.datetime.now()
-        b.publisher_journal = 'unknown'
-        b.edition = 1
-        b.type = 'JournalArticle'
-        b.save()
-        return b
 
 
 class IntroductionToProgrammingTestCase(TestCase):
@@ -103,44 +29,67 @@ class IntroductionToProgrammingTestCase(TestCase):
 
     def TC2(self):
         p = User.objects.create_user('username', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
-        b = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
-                                edition=1, copies=2, authors='sadf', cover='cover', publisher='pub')
 
+        # doesn't have any books by author A
+        have_book = len(Book.objects.filter(authors='A')) > 0
+        self.assertEqual(have_book, False)
 
+        # patron checks out book by A
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = p
+
+        try:
+            checkout(request, 1000) # 1000 id doesn't exist
+        except Http404:
+            pass
+        else:
+            raise Exception('should raise 404')
 
 
     def TC3(self):
-        self.assertIs()
+        student = User.objects.create_user('s', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
+        faculty = User.objects.create_user('f', 'exampl2@mail.ru', '123456qwerty', first_name='F', last_name='L')
+        UserProfile.objects.create(user=student, phone_number=123, status='student', address='1-103')
+        UserProfile.objects.create(user=faculty, phone_number=123, status='faculty', address='1-103')
+        book = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
+                                edition=1, copies=2, authors='sadf', cover='cover', publisher='pub')
 
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = faculty
+        checkout(request, book.id)
+
+        returning_date = faculty.documentcopy_set.get(doc=book).returning_date
+        should_be_today = returning_date - datetime.timedelta(days=28)
+        should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
+        self.assertEqual(should_be_today, datetime.date.today())
 
     def TC4(self):
-        self.assertIs()
+        pass
 
 
     def TC5(self):
-        self.assertIs()
+        pass
 
 
     def TC6(self):
-        self.assertIs()
+        pass
 
 
     def TC7(self):
-        self.assertIs()
+        pass
 
 
     def TC8(self):
-        self.assertIs()
+        pass
 
 
     def TC9(self):
-        self.assertIs()
+        pass
 
 
     def TC10(self):
-        self.assertIs()
+        pass
 
 
-if __name__ == "__main__":
-    itptest = IntroductionToProgrammingTestCase()
-    itptest.TC1()

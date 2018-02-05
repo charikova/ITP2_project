@@ -20,7 +20,7 @@ def document_detail(request, pk):
     """
     document details page. Find document via pk(id). Get all fields of the doc and show rendered doc_inf.html
     """
-    doc = None
+    doc = get_object_or_404(Document, pk=pk)
     for Type in Document.__subclasses__():
         if Type.objects.filter(pk=pk):
             doc = Type.objects.get(pk=pk)
@@ -53,14 +53,14 @@ def checkout(request, pk):
     if doc.copies > 0:
         doc.copies -= 1
         doc.save()
-        if True or user.status == 'student':
-            new_copy = DocumentCopy(doc=doc,
-                                    checked_up_by_whom=user, returning_date=(
-                    datetime.date.today() + datetime.timedelta(days=14)).strftime("%Y-%m-%d"))
-        else:
+        if user.userprofile.status == 'student':
             new_copy = DocumentCopy(doc=doc,
                                     checked_up_by_whom=user, returning_date=(
                     datetime.date.today() + datetime.timedelta(days=21)).strftime("%Y-%m-%d"))
+        else:
+            new_copy = DocumentCopy(doc=doc,
+                                    checked_up_by_whom=user, returning_date=(
+                    datetime.date.today() + datetime.timedelta(days=28)).strftime("%Y-%m-%d"))
 
         new_copy.save()
     return redirect('/{0}/'.format(pk)) # go back to doc page
