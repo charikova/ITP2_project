@@ -1,11 +1,15 @@
 from django.contrib.auth import authenticate
 from django.shortcuts import render, redirect
-from django.views.generic import View
+from django.views.generic import View, ListView
 import Documents.models as documents_models
 from Documents.librarian_view import need_logged_in
 from .forms import *
 import datetime
 
+
+class UserList(ListView):
+    template_name = 'UserCards/user_list.html'
+    model = User
 
 class CreateUserView(View):
     """
@@ -52,6 +56,11 @@ def user_card_info(request):
     shows users their information and docs they currently checking out with time left to return them back
     """
     user = request.user
+    if request.GET.get('id') is not None:
+        if request.user.is_staff:
+            user = User.objects.get(id=request.GET.get('id'))
+        else:
+            return redirect('/')
 
     for profile_field in USER_PROFILE_DATA: # take all data from user's profile and put into user object
         exec('user.{0} = user.userprofile.{0}'.format(profile_field))

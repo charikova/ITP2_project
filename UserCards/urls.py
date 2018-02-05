@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^login/$', login, {'template_name': 'UserCards/login.html'}, name='login'),
     url(r'^logout/$', logout, {'next_page': '/user/login/'}, name='logout'),
     url(r'^edit/$', views.EditCardView.as_view(), name='edit'),
+    url(r'^list/$', views.UserList.as_view(), name='user_list'),
     url(r'^return_copies/$', views.return_copies, name='return_copies'),
 
 ]
