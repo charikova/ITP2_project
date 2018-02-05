@@ -14,6 +14,7 @@ class Document(models.Model):
     cover = models.CharField(max_length=1000, default="https://lh3.googleusercontent.com/zqfUbCXdb1oGmsNEzNxTjQU5ZlS3x46nQoB83sFbRSlMnpDTZgdVCe_LvCx-rl7sOA=w300")
     copies = models.PositiveIntegerField(default=1)
     type = models.CharField(max_length=100, default='Document')
+    is_bestseller = models.BooleanField(default=False)
 
     def __str__(self):
         return "{}; authors: {}".format(self.title, self.price, self.authors)
