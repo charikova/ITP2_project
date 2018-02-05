@@ -17,4 +17,3 @@ class UserProfile(models.Model):
     address = models.CharField(max_length=250, null=True, blank=True)
     status = models.CharField(max_length=250, default='student')
 
-

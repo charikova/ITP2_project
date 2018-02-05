@@ -1,15 +1,14 @@
 from django.contrib.auth import authenticate
 from django.shortcuts import render, redirect
 from django.views.generic import View, ListView
-import Documents.models as documents_models
-from Documents.librarian_view import need_logged_in, required_staff
+from Documents.librarian_view import need_logged_in
 from .forms import *
 import datetime
 
 
 class CreateUserView(View):
     """
-    User creation view
+    user creation view
     """
     template_name = "UserCards/signup.html"
 
@@ -79,18 +78,18 @@ def user_card_info(request):
             return ZERO
 
     for document_copy in documents_copy:
-        temp = (document_copy.returning_date - datetime.datetime.now(UTC())).days*24*3600 + (document_copy.returning_date - datetime.datetime.now(UTC())).seconds
+        temp = (document_copy.returning_date - datetime.datetime.now(UTC())).days*24*3600 + \
+               (document_copy.returning_date - datetime.datetime.now(UTC())).seconds
 
         if temp >= 3600:
             document_copy.time_left = "Time to return: " + str(int(temp / 3600)) + "h:" + str(int(temp % 3600 / 60))+"m"
         elif 3600 > temp >= 60:
-            document_copy.time_left = "Time to return: " + str(int(temp / 60))
+            document_copy.time_left = "Time to return: " + str(int(temp / 60)) + "m"
         elif 60 > temp > 0:
-            document_copy.time_left = "Time to return: " + str(int(temp))
+            document_copy.time_left = "Time to return: " + str(int(temp)) + "s"
         else:
             day = (datetime.datetime.now(UTC())-document_copy.returning_date).days
 
-            print(day)
             if 100*int(day) <= document_copy.doc.price:
                 document_copy.fine_price = 100*int(day)
             else:

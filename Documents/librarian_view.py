@@ -85,7 +85,6 @@ def create_doc(request):
     elif request.method == "POST":
         new_doc = model()
         for field, value in request.POST.items():
-            print(field, value)
             exec('new_doc.{0} = "{1}"'.format(field, value))
         new_doc.save()
         return redirect('/{}/'.format(new_doc.id))
