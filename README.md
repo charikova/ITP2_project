@@ -68,7 +68,7 @@ We are using <a href="https://docs.djangoproject.com/en/2.0/topics/auth/">built-
          user = models.OneToOneField(User, on_delete=models.CASCADE) # link to user with OnoToOne-connection
          phone_number = models.CharField(max_length=15, null=True, blank=True)
          address = models.CharField(max_length=250, null=True, blank=True)
-         photo = models.ImageField(default="https://lh3.googleusercontent.com/")"
+         photo = models.ImageField(default="https://lh3.googleusercontent.com/")
          status = models.CharField(max_length=250, default='student')
     
 It is an extra profile which is created every time whenever new user is created.
