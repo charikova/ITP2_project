@@ -12,6 +12,9 @@ class IntroductionToProgrammingTestCase(TestCase):
     def TC1(self):
         #initial state
         p = User.objects.create_user('username', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
+        UserProfile.objects.create(user=p, phone_number=123, status='student', address='1-103')
+        l = User.objects.create_user('username2', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L', is_staff=True)
+        UserProfile.objects.create(user=l, phone_number=123, status='student', address='1-103')
         b = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
                                 edition=1, copies=2, authors='sadf', cover='cover', publisher='pub')
         self.assertEqual(b.copies, 2, msg="not 2 copies")
@@ -25,6 +28,15 @@ class IntroductionToProgrammingTestCase(TestCase):
         library_has_one_copy = len(Document.objects.filter(title='title')) == 1
         self.assertIs(patron_has_one_copy, True)
         self.assertIs(library_has_one_copy, True)
+
+        # librarian see
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = l
+        request.path = '/user/?id=' + str(p.id) # sees patron's page
+        response = user_card_info(request)
+        self.assertEqual(response.status_code, 200) # librarian has access to see this page
+        self.assertEqual(b.title in str(response.content), True) # there are exist title of this book in response content
 
 
     def TC2(self):
