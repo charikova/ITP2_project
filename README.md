@@ -46,9 +46,9 @@ creation this kind of document.
 
 # Users 
 <ul>
-  <li> Student </li>Have permission to <strong>Check out</strong> documents for 3 weeks and are able to renew documents
-  <li> Faculty </li>Have permission to <strong>Check out</strong> documents for 4 weeks and are able to renew documents
-  <li> Librarian </li>Is allowed to add/delete/update any document. They can add/del/modify patrons and their permissions as well.
+  <li> Student </li>Have permission to <strong>Check out</strong> documents for 3 weeks and is able to renew documents
+  <li> Faculty </li>Have permission to <strong>Check out</strong> documents for 4 weeks and is able to renew documents
+  <li> Librarian </li>Is allowed to add/delete/update any document. Can add/del/modify patrons and their permissions as well.
 </ul>
 
 We are using <a href="https://docs.djangoproject.com/en/2.0/topics/auth/">built-in user model</a> provied by 
