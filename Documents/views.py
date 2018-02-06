@@ -53,14 +53,14 @@ def checkout(request, pk):
     if doc.copies > 0:
         doc.copies -= 1
         doc.save()
-        if user.userprofile.status == 'student':
-            new_copy = DocumentCopy(doc=doc,
-                                    checked_up_by_whom=user, returning_date=(
-                    datetime.date.today() + datetime.timedelta(days=21)).strftime("%Y-%m-%d"))
-        else:
-            new_copy = DocumentCopy(doc=doc,
-                                    checked_up_by_whom=user, returning_date=(
-                    datetime.date.today() + datetime.timedelta(days=28)).strftime("%Y-%m-%d"))
+        days = 21 # for student
+        if doc.is_bestseller:
+            days = 14
+        elif user.userprofile.status == 'faculty':
+            days = 28
+        new_copy = DocumentCopy(doc=doc,
+                                checked_up_by_whom=user, returning_date=(
+                datetime.date.today() + datetime.timedelta(days=days)).strftime("%Y-%m-%d"))
 
         new_copy.save()
     return redirect('/{0}/'.format(pk)) # go back to doc page

@@ -87,6 +87,7 @@ class IntroductionToProgrammingTestCase(TestCase):
         self.assertEqual(should_be_today, datetime.date.today())
 
     def test_TC4(self):
+        #
         f = User.objects.create_user('Faculty', 'fac@mail.ru', '123456qwerty', first_name='F', last_name='L')
         UserProfile.objects.create(user=f, status='faculty', phone_number=896000, address='2-107')
 
@@ -101,9 +102,11 @@ class IntroductionToProgrammingTestCase(TestCase):
         request.user = f
         checkout(request, b.id)
 
-        self.assertEqual(
-            (f.documentcopy_set.filter(doc=b)[0].returning_date - f.documentcopy_set.filter(doc=b)[0].date).days,
-            datetime.timedelta(days=14).days - 1)
+        returning_date = f.documentcopy_set.get(doc=b).returning_date
+        should_be_today = returning_date - datetime.timedelta(days=14) # day or returning minus 2 weeks
+        should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
+
+        self.assertEqual(should_be_today, datetime.date.today())
 
     def test_TC5(self):
         s1 = User.objects.create_user('Student1', 'Student1@mail.ru', '123456qwerty', first_name='Student1',
