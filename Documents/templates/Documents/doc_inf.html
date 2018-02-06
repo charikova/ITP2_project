@@ -129,7 +129,7 @@
         </tr>
     </table>
 
-            {% if doc.is_referenced == False %}
+    {% if doc.is_reference == 0 %}
     <a class="button" href="/{{doc.id}}/checkout" onclick="
         if ({{user_has_doc}})
             alert('You already have this document');
@@ -137,7 +137,10 @@
             return confirm('Sure you want to check out {{doc.title}}?');
 
         ">Check out</a>
-                {% endif %}
+        {% else %}
+        <p> Sorry </p>
+        {% endif %}
+
         {% endif %}
     {% endblock %}
 </div>
