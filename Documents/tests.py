@@ -201,7 +201,23 @@ class IntroductionToProgrammingTestCase(TestCase):
         self.assertEqual(should_be_today, datetime.date.today())
 
     def test_TC9(self):
-        pass
+        student = User.objects.create_user('s', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
+        faculty = User.objects.create_user('f', 'exampl2@mail.ru', '123456qwerty', first_name='F', last_name='L')
+        librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qwerty', first_name='F', last_name='L',
+                                             is_staff=True)
+        book = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
+                                   edition=1, copies=2, authors='sadf', cover='cover', publisher='pub', is_bestseller=True)
+
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = student
+        checkout(request, book.id)
+
+        returning_date = student.documentcopy_set.get(doc=book).returning_date
+        should_be_today = returning_date - datetime.timedelta(days=14)
+        should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
+
+        self.assertEqual(should_be_today, datetime.date.today())
 
     def test_TC10(self):
         pass
