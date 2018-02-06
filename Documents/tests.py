@@ -17,7 +17,7 @@ class IntroductionToProgrammingTestCase(TestCase):
         UserProfile.objects.create(user=l, phone_number=123, status='student', address='1-103')
         b = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
                                 edition=1, copies=2, authors='sadf', cover='cover', publisher='pub')
-        self.assertEqual(b.copies, 2, msg="not 2 copies")
+        self.assertEqual(b.copies, 2)
 
         request = HttpRequest()
         request.method = 'GET'
@@ -40,8 +40,8 @@ class IntroductionToProgrammingTestCase(TestCase):
 
 
     def test_TC2(self):
+        #library has patron and librarian
         p = User.objects.create_user('username', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
-
         librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qwerty', first_name='F', last_name='L',
                                              is_staff=True)
         UserProfile.objects.create(user=librarian, phone_number=123, status='faculty', address='1-103')
@@ -50,13 +50,11 @@ class IntroductionToProgrammingTestCase(TestCase):
         have_book = len(Book.objects.filter(authors='A')) > 0
         self.assertEqual(have_book, False)
 
-        # patron checks out book by A
         request = HttpRequest()
         request.method = "GET"
         request.user = p
-
         try:
-            checkout(request, 1000) # 1000 id doesn't exist
+            checkout(request, 1000) # 1000 id doesn't exist (user tries to checkout book that doesn't exist)
         except Http404: # expected state: 404 error
             pass
         else:
@@ -64,24 +62,26 @@ class IntroductionToProgrammingTestCase(TestCase):
 
 
     def test_TC3(self):
+        # library has s, f, l and book b
         student = User.objects.create_user('s', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
         faculty = User.objects.create_user('f', 'exampl2@mail.ru', '123456qwerty', first_name='F', last_name='L')
         librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qwerty', first_name='F', last_name='L', is_staff=True)
-
         UserProfile.objects.create(user=student, phone_number=123, status='student', address='1-103')
         UserProfile.objects.create(user=faculty, phone_number=123, status='faculty', address='1-103')
         UserProfile.objects.create(user=librarian, phone_number=123, status='faculty', address='1-103')
-
+        # book
         book = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
                                 edition=1, copies=2, authors='sadf', cover='cover', publisher='pub')
 
+        # faculty checks out book
         request = HttpRequest()
         request.method = "GET"
         request.user = faculty
         checkout(request, book.id)
 
+        # faculty has 4 weeks to return this book since today
         returning_date = faculty.documentcopy_set.get(doc=book).returning_date
-        should_be_today = returning_date - datetime.timedelta(days=28)
+        should_be_today = returning_date - datetime.timedelta(days=28) # 4 weeks = 28 days
         should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
 
         self.assertEqual(should_be_today, datetime.date.today())
@@ -135,10 +135,14 @@ class IntroductionToProgrammingTestCase(TestCase):
         checkout(request, b.id)
 
         self.assertEqual(len(b.documentcopy_set.all()), 2)
+        self.assertEqual(len(s1.documentcopy_set.filter(doc=b)), 1) # s1 has b
+        self.assertEqual(len(s2.documentcopy_set.filter(doc=b)), 1) # s2 has b
+        self.assertEqual(len(s3.documentcopy_set.filter(doc=b)), 0) # s3 has no b
 
     def test_TC6(self):
         p = User.objects.create_user('username', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
         UserProfile.objects.create(user=p, status='student', phone_number=896000, address='2-107')
+        librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qwerty', first_name='F', last_name='L', is_staff=True)
 
         b = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
                                 edition=1, copies=2, authors='sadf', cover='cover', publisher='pub', is_bestseller=True)
@@ -146,7 +150,7 @@ class IntroductionToProgrammingTestCase(TestCase):
         request = HttpRequest()
         request.method = 'GET'
         request.user = p
-        checkout(request, b.id)
+        checkout(request, b.id) # check it out twice
         checkout(request, b.id)
 
         self.assertEqual(len(b.documentcopy_set.all()), 1)
@@ -241,9 +245,10 @@ class IntroductionToProgrammingTestCase(TestCase):
         request.method = "GET"
         request.user = student
         checkout(request, A.id) # everything ok
+
         try:
-            checkout(request, B.id)
-        except Http404: # expected state:
+            checkout(request, B.id) # try to checkout reference book
+        except Http404: # expected state: 404 error
             pass
         else:
             raise Exception('should be 404')
@@ -251,6 +256,6 @@ class IntroductionToProgrammingTestCase(TestCase):
         number_copies_patron_has = len(student.documentcopy_set.all())
         self.assertEqual(number_copies_patron_has, 1)
 
-        student.documentcopy_set.get(id=A.id) # will raise error if it doesn't exist
+        student.documentcopy_set.get(id=A.id) # will raise error if copy of A doesn't exist
 
 
