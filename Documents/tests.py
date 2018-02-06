@@ -117,9 +117,6 @@ class IntroductionToProgrammingTestCase(TestCase):
         UserProfile.objects.create(user=s2, status='student', phone_number=896000, address='2-107')
         UserProfile.objects.create(user=s3, status='student', phone_number=896000, address='2-107')
 
-        # l = User.objects.create_user('username', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L',/
-        # is_stuff=True)
-
         b = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
                                 edition=1, copies=2, authors='sadf', cover='cover', publisher='pub', is_bestseller=True)
 
@@ -136,7 +133,6 @@ class IntroductionToProgrammingTestCase(TestCase):
 
         self.assertEqual(len(b.documentcopy_set.all()), 2)
 
-
     def test_TC6(self):
         p = User.objects.create_user('username', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
         UserProfile.objects.create(user=p, status='student', phone_number=896000, address='2-107')
@@ -151,7 +147,6 @@ class IntroductionToProgrammingTestCase(TestCase):
         checkout(request, b.id)
 
         self.assertEqual(len(b.documentcopy_set.all()), 1)
-
 
     def test_TC7(self):
         p1 = User.objects.create_user('s', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
@@ -182,7 +177,6 @@ class IntroductionToProgrammingTestCase(TestCase):
 
         self.assertEqual(p1_and_p2, library_has_no_copy)
 
-
     def test_TC8(self):
         student = User.objects.create_user('s', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
         faculty = User.objects.create_user('f', 'exampl2@mail.ru', '123456qwerty', first_name='F', last_name='L')
@@ -206,10 +200,8 @@ class IntroductionToProgrammingTestCase(TestCase):
 
         self.assertEqual(should_be_today, datetime.date.today())
 
-
     def test_TC9(self):
         pass
-
 
     def test_TC10(self):
         pass
