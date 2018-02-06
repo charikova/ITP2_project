@@ -48,6 +48,8 @@ def checkout(request, pk):
     user = request.user
     if user.is_staff:
         raise Http404('staff can not take documents')
+    if doc.is_reference:
+        raise Http404("reference book can not be checked out")
     if user.documentcopy_set.filter(doc=doc): # if user already has this doc
         return redirect('/{0}/'.format(pk))
     if doc.copies > 0:

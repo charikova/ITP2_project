@@ -230,25 +230,27 @@ class IntroductionToProgrammingTestCase(TestCase):
                                              is_staff=True)
         UserProfile.objects.create(user=librarian, phone_number=123, status='student', address='1-103')
 
-        book = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
+        A = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
                                    edition=1, copies=1, authors='sadf', cover='cover', publisher='pub')
 
-        request = HttpRequest()
-        request.method = "GET"
-        request.user = student
-        checkout(request, book.id)
+        B = Book.objects.create(title='title2', price=0, publication_date=datetime.datetime.now(),
+                                   edition=1, copies=1, authors='sadf', cover='cover', publisher='pub',
+                                   is_reference=True)
 
         request = HttpRequest()
         request.method = "GET"
         request.user = student
-        checkout(request, book.id)
+        checkout(request, A.id) # everything ok
+        try:
+            checkout(request, B.id)
+        except Http404: # expected state:
+            pass
+        else:
+            raise Exception('should be 404')
 
-        returning_date = student.documentcopy_set.get(doc=book).returning_date
-        should_be_today = returning_date - datetime.timedelta(days=21)
-        should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
+        number_copies_patron_has = len(student.documentcopy_set.all())
+        self.assertEqual(number_copies_patron_has, 1)
 
-        self.assertEqual(should_be_today, datetime.date.today())
-
-
+        student.documentcopy_set.get(id=A.id) # will raise error if it doesn't exist
 
 
