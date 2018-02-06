@@ -15,6 +15,7 @@ class Document(models.Model):
     copies = models.PositiveIntegerField(default=1)
     type = models.CharField(max_length=100, default='Document')
     is_bestseller = models.BooleanField(default=False)
+    is_reference = models.BooleanField(default=False)
 
     def __str__(self):
         return "{}; authors: {}".format(self.title, self.price, self.authors)
