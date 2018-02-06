@@ -208,6 +208,9 @@ class IntroductionToProgrammingTestCase(TestCase):
         self.assertEqual(should_be_today, datetime.date.today())
 
     def test_TC9(self):
+
+        # The library has at least one patron (Faculty) 'f' and one patron (Student) 's', and a librarian. It also has book 'b'
+        # that is best seller
         student = User.objects.create_user('s', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
         faculty = User.objects.create_user('f', 'exampl2@mail.ru', '123456qwerty', first_name='F', last_name='L')
         librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qwerty', first_name='F', last_name='L',
@@ -215,11 +218,13 @@ class IntroductionToProgrammingTestCase(TestCase):
         book = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
                                    edition=1, copies=1, authors='sadf', cover='cover', publisher='pub', is_bestseller=True)
 
+        # 's' checks out book 'b'
         request = HttpRequest()
         request.method = "GET"
         request.user = student
         checkout(request, book.id)
 
+        # The book is checked out by 's' with returning time of 2 weeks (from the day it was checked out)
         returning_date = student.documentcopy_set.get(doc=book).returning_date
         should_be_today = returning_date - datetime.timedelta(days=14)
         should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
@@ -227,6 +232,8 @@ class IntroductionToProgrammingTestCase(TestCase):
         self.assertEqual(should_be_today, datetime.date.today())
 
     def test_TC10(self):
+
+        # There is at least one patron and one librarian in the system. The library has one book A and one reference book B
         student = User.objects.create_user('s', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
         UserProfile.objects.create(user=student, phone_number=123, status='student', address='1-103')
 
@@ -241,6 +248,7 @@ class IntroductionToProgrammingTestCase(TestCase):
                                    edition=1, copies=1, authors='sadf', cover='cover', publisher='pub',
                                    is_reference=True)
 
+        # The patron tries to check out the book A and reference book B.
         request = HttpRequest()
         request.method = "GET"
         request.user = student
@@ -253,6 +261,7 @@ class IntroductionToProgrammingTestCase(TestCase):
         else:
             raise Exception('should be 404')
 
+        # The system allows to check out only the book A. The reference book B is not available for checking out
         number_copies_patron_has = len(student.documentcopy_set.all())
         self.assertEqual(number_copies_patron_has, 1)
 
