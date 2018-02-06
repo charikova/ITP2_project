@@ -54,7 +54,7 @@ def checkout(request, pk):
         doc.copies -= 1
         doc.save()
         days = 21 # for student
-        if doc.is_bestseller:
+        if doc.is_bestseller or doc.type == "AVFile" or doc.type == "JournalArticle":
             days = 14
         elif user.userprofile.status == 'faculty':
             days = 28

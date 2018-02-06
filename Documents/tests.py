@@ -57,7 +57,7 @@ class IntroductionToProgrammingTestCase(TestCase):
 
         try:
             checkout(request, 1000) # 1000 id doesn't exist
-        except Http404:
+        except Http404: # expected state: 404 error
             pass
         else:
             raise Exception('should raise 404')
@@ -224,8 +224,12 @@ class IntroductionToProgrammingTestCase(TestCase):
 
     def test_TC10(self):
         student = User.objects.create_user('s', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
+        UserProfile.objects.create(user=student, phone_number=123, status='student', address='1-103')
+
         librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qwerty', first_name='F', last_name='L',
                                              is_staff=True)
+        UserProfile.objects.create(user=librarian, phone_number=123, status='student', address='1-103')
+
         book = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
                                    edition=1, copies=1, authors='sadf', cover='cover', publisher='pub')
 
