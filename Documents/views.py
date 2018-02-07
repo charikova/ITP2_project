@@ -34,7 +34,7 @@ def document_detail(request, pk):
     excess_fields = ['document_ptr_id', '_state', 'id', 'cover', 'keywords']
     for key, value in doc.__dict__.items():
         if key not in excess_fields:
-            context['fields'].append((key, value))
+            context['fields'].append((key.replace('_', " ").capitalize(), value))
     return render(request, 'Documents/doc_inf.html', context)
 
 

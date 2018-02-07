@@ -63,6 +63,7 @@
          width: 100%;
         background-color: rgba(214, 184, 150, 0.8);
          margin: 10px;
+         table-layout: auto;
     }
 
     tr {
@@ -76,9 +77,8 @@
     }
 
     img {
-        width: 300px;
+        width: 250px;
         height: auto;
-        margin-top: 1%;
     }
 
     .button {
@@ -129,7 +129,7 @@
         </tr>
     </table>
 
-            {% if doc.is_referenced == False %}
+    {% if not doc.is_reference %}
     <a class="button" href="/{{doc.id}}/checkout" onclick="
         if ({{user_has_doc}})
             alert('You already have this document');
@@ -137,7 +137,10 @@
             return confirm('Sure you want to check out {{doc.title}}?');
 
         ">Check out</a>
-                {% endif %}
+        {% else %}
+    <p> <button disabled="disabled" value="Reference book">Reference book</button> </p>
+        {% endif %}
+
         {% endif %}
     {% endblock %}
 </div>
