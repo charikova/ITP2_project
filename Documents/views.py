@@ -56,10 +56,12 @@ def checkout(request, pk):
         doc.copies -= 1
         doc.save()
         days = 21 # for student
-        if doc.is_bestseller or doc.type == "AVFile" or doc.type == "JournalArticle":
+        if doc.type == "AVFile" or doc.type == "JournalArticle":
             days = 14
         elif user.userprofile.status == 'faculty':
             days = 28
+        elif doc.is_bestseller:
+            days = 14
         new_copy = DocumentCopy(doc=doc,
                                 checked_up_by_whom=user, returning_date=(
                 datetime.date.today() + datetime.timedelta(days=days)).strftime("%Y-%m-%d"))
