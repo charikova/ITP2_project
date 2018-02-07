@@ -64,34 +64,22 @@ is created every time whenever new user is created, so it allows us to store any
          status = models.CharField(max_length=250, default='student')
          
          
-## User creation form
-Is used to create new users (only librarians can create those)
-This form recives POST request while creating with all information of new user
+## Librarian features
+Librarian is a user which has is_staff flag equal to True. This flag allows librarians to use special features
+defined in Documents/librarian_view.py. Nevertheless those features are availale for everyone, only 
+librarians have permissions to execute it. "required_staff" function limit non-staff users to deal with database
+and other users. For example feature del_doc which deletes document form database
 
-     class CreateUserForm(UserCreationForm):
+     @required_staff
+     def del_doc(request, id):
+         doc = Document.objects.get(id=id)
+         doc.delete()
+         return redirect('/')
 
-         def save(self, commit=True):
-             user = super().save(commit=False)
-             
-             """parse extra data from POST request"""
-             address = self.cleaned_data['address']
-             phone_number = self.cleaned_data['phone_number']
-             photo = self.cleaned_data['photo']
-             status = dict(USER_STATUSES)[int(self.cleaned_data['status'])]
-             
-             if status == "librarian":
-                 user.is_staff = True
-             if commit:
-                 user.save(True)
-                 """ create user's profile """
-                 UserProfile.objects.create(user=user, address=address, phone_number=phone_number, photo=photo, status=status)
-                 if status == "librarian":
-                    """ adding into librarian group which will give permissions to add/del/mod documents and other users """
-                     lib_group = Group.objects.get(name='Librarian')
-                     lib_group.user_set.add(user)
+
                      
  ## html rendering
- In depence on is_staff flag of user (indicates librarian or not) django generates html in different way. 
+ In depence on user's permissions django renders html in different way. 
  All html files have special django insertions (syntax is similar to python code)
  
      {% if user.is_anonymous %} # execute if user is guest
@@ -103,17 +91,6 @@ This form recives POST request while creating with all information of new user
      {% if user.is_staff %} # execute if user is librarian
           <a href="/add_doc/">Add document</a>
      {% endif %}
-     
-## Function security
-In order to keep away users with not enough permissions to do some stuff (like deleting documents for non-staff users)
-we use python decorators that don't allow to use some function until you are not logged-in or not staff. 
-Here is example of delete_doc function:
-
-     @required_staff # doesn't allow non-staff users execute this function
-     def del_doc(request, id):
-         doc = Document.objects.get(id=id)
-         doc.delete()
-         return redirect('documents/')
          
 ## Booking System (Document Copy)
     class DocumentCopy(models.Model):
