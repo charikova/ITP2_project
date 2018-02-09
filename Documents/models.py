@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import datetime
+from django.urls import reverse
 
 class Document(models.Model):
     '''
@@ -55,6 +56,10 @@ class DocumentCopy(models.Model):
     class Meta:
         verbose_name_plural = 'Document copies'
 
+
     def __str__(self):
         return "\"" + self.doc.title + '" in ' + str(self.checked_up_by_whom.username)
+
+
+
 

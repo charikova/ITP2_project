@@ -56,6 +56,7 @@
 
 
 
+
     </style>
 
 </head>
@@ -84,6 +85,8 @@
                         <a class="dropdown-item" href="/admin">Admin site</a> <br>
                         <a class="dropdown-item" href="/user/list">All users</a> <br>
                         <a class="dropdown-item" href="/user/create_user/">Create new user</a> <br>
+                        <a class="dropdown-item" href="/requests/">Requests</a> <br>
+                        <a class="dropdown-item" href="/user/all">All users</a> <br>
                     </div>
             </ul>
             {% endif %}
@@ -102,6 +105,9 @@
                 {% if user.is_anonymous %}
                 <li><a href="/user/login">Log In</a></li>
                 {% elif user.is_authenticated %}
+                {% if not user.is_staff %}
+                <li><a href="/requests/">My requests</a></li>
+                {% endif %}
                 <li><a href="/user/">{{user.username}}</a></li>
                 <li><a href="/user/logout">Log Out</a></li>
                 {% endif %}
@@ -109,6 +115,8 @@
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
+
+<a href="mailto:b.meyer@innopolis.ru?subject=Suggestions&body=Dear Bertrand Meyer, ">Support</a>​
 
 {% block body %}
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

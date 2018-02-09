@@ -19,4 +19,3 @@ class UserProfile(models.Model):
     photo = models.ImageField(default="https://lh3.googleusercontent.com/zqfUbCXdb1oGmsNEzNxTjQU5ZlS3x46nQoB83sFbRSlMnpDTZgdVCe_LvCx-rl7sOA=w300")
     status = models.CharField(max_length=250, default='student')
 
-

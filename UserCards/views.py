@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate
 from django.shortcuts import render, redirect
 from django.views.generic import View, ListView
-import Documents.models as documents_models
+
 from Documents.librarian_view import need_logged_in
 from .forms import *
 import datetime
@@ -13,7 +13,7 @@ class UserList(ListView):
 
 class CreateUserView(View):
     """
-    User creation view
+    user creation view
     """
     template_name = "UserCards/signup.html"
 
@@ -33,7 +33,6 @@ class CreateUserView(View):
                 user.save()
                 return redirect("/")
             return redirect('/user/create_user/')
-
 
 
 class EditCardView(View):
@@ -72,6 +71,7 @@ def user_card_info(request):
     documents_copy = user.documentcopy_set.all()
 
     ZERO = datetime.timedelta(0)
+
     class UTC(datetime.tzinfo):
         def utcoffset(self, dt):
             return ZERO
@@ -83,20 +83,18 @@ def user_card_info(request):
             return ZERO
 
     for document_copy in documents_copy:
-        temp = (document_copy.returning_date - datetime.datetime.now(UTC())).days*24*3600 + (document_copy.returning_date - datetime.datetime.now(UTC())).seconds
-
-        print(temp)
+        temp = (document_copy.returning_date - datetime.datetime.now(UTC())).days*24*3600 + \
+               (document_copy.returning_date - datetime.datetime.now(UTC())).seconds
 
         if temp >= 3600:
             document_copy.time_left = "Time to return: " + str(int(temp / 3600)) + "h:" + str(int(temp % 3600 / 60))+"m"
         elif 3600 > temp >= 60:
-            document_copy.time_left = "Time to return: " + str(int(temp / 60))
+            document_copy.time_left = "Time to return: " + str(int(temp / 60)) + "m"
         elif 60 > temp > 0:
-            document_copy.time_left = "Time to return: " + str(int(temp))
+            document_copy.time_left = "Time to return: " + str(int(temp)) + "s"
         else:
             day = (datetime.datetime.now(UTC())-document_copy.returning_date).days
 
-            print(day)
             if 100*int(day) <= document_copy.doc.price:
                 document_copy.fine_price = 100*int(day)
             else:
@@ -110,15 +108,15 @@ def user_card_info(request):
     return render(request, 'UserCards/index.html', context)
 
 
-@need_logged_in
-def return_copies(request):
-    """
-    returns copies back. Increases size of copies of document.
-    """
-    chosen_copies = [documents_models.DocumentCopy.objects.get(id=int(id)) for id in request.POST.keys() if
-                     id.isdigit()] # get copies user chose via checkboxes
-    for copy in chosen_copies:
-        copy.doc.copies += 1
-        copy.doc.save()
-        copy.delete()
-    return redirect('/user/')
+class AllUsersView(ListView):
+    model = User
+    template_name = 'UserCards/all_users.html'
+    paginate_by = 15
+    context_object_name = 'users'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_staff:
+            return super().get(self, request, *args, **kwargs)
+        else:
+            return redirect('/')
+

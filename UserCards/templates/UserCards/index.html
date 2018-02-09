@@ -9,25 +9,28 @@
         background-color: rgba(214, 184, 150, 0.8);
         color: saddlebrown;
         font-size: 15px;
-        overflow:visible;
-        position:absolute;
+        overflow: visible;
+        position: absolute;
         width: 50%;
         border: 0;
         border-radius: 10px;
         margin-left: -13%;
         margin-top: 17%;
     }
+
     h2 {
         color: white;
         font-size: 40px;
         text-align: center;
     }
+
     form {
         padding: 5px;
         color: black;
         font-size: 15px;
         margin: 5px;
     }
+
     input {
         background-color: floralwhite;
         border: 2px solid saddlebrown;
@@ -35,16 +38,19 @@
         margin: 0 0 0 10px;
         left: 50%;
     }
+
     .button {
         width: 40%;
         font-size: 25px;
         margin: 15px 15px 15px 30%;
     }
+
     p {
         color: black;
         margin: 15px;
         font-size: 20px;
     }
+
     .edit {
         text-decoration: none;
         display: inline-block;
@@ -54,16 +60,39 @@
         font-family: Futura;
         transition: .3s ease-in-out;
     }
+
     .edit {
         color: saddlebrown;
         text-shadow: 1px 0 black;
     }
+
     .edit:hover {
         transform: rotate(-5deg);
     }
+
+    .bookreq {
+        text-decoration: none;
+        display: inline-block;
+        letter-spacing: 1px;
+        margin: 10px;
+        font-size: 24px;
+        font-family: Futura;
+        transition: .3s ease-in-out;
+    }
+
+    .bookreq {
+        color: saddlebrown;
+        text-shadow: 1px 0 black;
+    }
+
+    .bookreq:hover {
+        transform: rotate(-5deg);
+    }
+
     a {
         color: black;
     }
+
     .photo {
         width: 200px;
         height: 200px;
@@ -73,6 +102,7 @@
         background-position: center;
         display: inline-block;
     }
+
     table {
         border: none;
         border-radius: 10px;
@@ -80,14 +110,17 @@
         background-color: rgba(214, 184, 150, 0.8);
         margin: 1% 10px 10px 25%;
     }
+
     tr {
         border: none;
         text-align: left;
     }
+
     td {
         border: none;
         text-align: left;
     }
+
     img {
         width: 300px;
         height: auto;
@@ -95,59 +128,59 @@
     }
 </style>
 
-    {% if not user.is_staff %}
-    <h2>Patron card information</h2>
+<div class="container">
+    <h2>Card information</h2>
 
-    {% elif user.is_staff %}
-    <h2>Librarian information</h2>
-    {% endif %}
-    <table>
-        <tr>
-            <td>
-                <p>
+    <p>
+
         {% for field, value in fields %}
-            {% if value|length <= 2000 %}
-                {{ field }}: {{ value }}
-{% endif %}
-            <br>
+        {% if value|length <= 2000 %}
+        {{ field }}: {{ value }}
+        {% endif %}
+        <br>
         {% endfor %}
     </p>
 
-
-            </td>
-            <td>
-                <div class="photo">
+    </td>
+    <td>
+        <div class="photo">
         </div>
-            </td>
-        </tr>
+    </td>
+    </tr>
     </table>
-<div class="container">
-{% if not user.is_staff and not user.is_anonymous %}
-    <p>
-        <strong>Documents in used:</strong>
-    </p>
-    <form action="/user/return_copies/" method="post">
-        <ul>
-            {% for copy in copies %}
-            <li>
-                <a href="/{{copy.doc.id}}">{{ copy }}</a>
-                <input type="checkbox" name="{{copy.id}}"> <br>
-                {{ copy.time_left }}<br>
-            </li>
-            {% endfor %}
-        </ul>
-        <input class="button" type="submit" value="Return back">
+    <div class="container">
+
+        {% if not user.is_anonymous %}
+
+        <p>
+            <strong>Documents in used:</strong>
+        </p>
+        <div>
+            <ul>
+                {% for copy in copies %}
+                <li>
+                    <a href="/{{copy.doc.id}}">{{ copy }}</a>
+                    {{ copy.time_left }}<br>
+                    {% if user.is_staff %}
+                    <a class="btn" href="/requests/takebook/?copy_id={{copy.id}}">Take book</a>
+                    {% endif %}
+                    <a class="btn" href="/requests/renew/?copy_id={{copy.id}}">Renew</a><br>
+                </li>
+                {% endfor %}
+            </ul>
+            {% csrf_token %}
+        </div>
         {% csrf_token %}
-    </form>
-    {% csrf_token %}
-    {% endif %}
+        {% endif %}
 
-    {% if user.is_staff %}
-    <a class="edit" href="/user/edit/">Edit profile</a>
-    {% endif %}
+        {% if user.is_staff %}
+        <a class="edit" href="/user/edit/">Edit profile</a>
+        {% endif %}
 
-    <br>
+
+        <br>
+    </div>
+
+
+    {% endblock %}
 </div>
-
-
-{% endblock  %}

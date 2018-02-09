@@ -1,5 +1,6 @@
 from django.conf.urls import url
 from . import views
+from BookRequests import views as requests_views
 from Documents.models import *
 
 urlpatterns = [
@@ -7,7 +8,6 @@ urlpatterns = [
     url(r'^$', views.IndexView.as_view(), name='index'),
     #user stuff
     url(r'^(?P<pk>\d+)/$', views.document_detail, name='document_detail'),
-    url(r'^(?P<pk>\d+)/checkout/$', views.checkout, name='checkout'),
     #librarian stuff
     url(r'^(?P<pk>\d+)/update/$', views.update_doc, name='update_doc'),
     url(r'^(?P<pk>\d+)/delete/$', views.del_doc, name='del_doc'),
