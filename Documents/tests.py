@@ -7,7 +7,7 @@ import datetime
 from UserCards.views import user_card_info
 
 
-class IntroductionToProgrammingTestCase(TestCase):
+class TC(TestCase):
 
     def test_TC1(self):
         #initial state
@@ -103,7 +103,7 @@ class IntroductionToProgrammingTestCase(TestCase):
         checkout(request, b.id)
 
         returning_date = f.documentcopy_set.get(doc=b).returning_date
-        should_be_today = returning_date - datetime.timedelta(days=14) # day or returning minus 2 weeks
+        should_be_today = returning_date - datetime.timedelta(days=28) # day or returning minus 28 days
         should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
 
         self.assertEqual(should_be_today, datetime.date.today())
@@ -137,7 +137,7 @@ class IntroductionToProgrammingTestCase(TestCase):
         self.assertEqual(len(b.documentcopy_set.all()), 2)
         self.assertEqual(len(s1.documentcopy_set.filter(doc=b)), 1) # s1 has b
         self.assertEqual(len(s2.documentcopy_set.filter(doc=b)), 1) # s2 has b
-        self.assertEqual(len(s3.documentcopy_set.filter(doc=b)), 0) # s3 has no b
+        self.assertEqual(len(s3.documentcopy_set.filter(doc=b)), 0) #  s3 has no b
 
     def test_TC6(self):
         p = User.objects.create_user('username', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
@@ -212,9 +212,11 @@ class IntroductionToProgrammingTestCase(TestCase):
         # The library has at least one patron (Faculty) 'f' and one patron (Student) 's', and a librarian. It also has book 'b'
         # that is best seller
         student = User.objects.create_user('s', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
+        UserProfile.objects.create(user=student, phone_number=123, status='student', address='1-103')
         faculty = User.objects.create_user('f', 'exampl2@mail.ru', '123456qwerty', first_name='F', last_name='L')
         librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qwerty', first_name='F', last_name='L',
                                              is_staff=True)
+
         book = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
                                    edition=1, copies=1, authors='sadf', cover='cover', publisher='pub', is_bestseller=True)
 
@@ -239,7 +241,7 @@ class IntroductionToProgrammingTestCase(TestCase):
 
         librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qwerty', first_name='F', last_name='L',
                                              is_staff=True)
-        UserProfile.objects.create(user=librarian, phone_number=123, status='student', address='1-103')
+        UserProfile.objects.create(user=librarian, phone_number=123, status='librarian', address='1-103')
 
         A = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
                                    edition=1, copies=1, authors='sadf', cover='cover', publisher='pub')
@@ -266,5 +268,6 @@ class IntroductionToProgrammingTestCase(TestCase):
         self.assertEqual(number_copies_patron_has, 1)
 
         student.documentcopy_set.get(id=A.id) # will raise error if copy of A doesn't exist
+
 
 
