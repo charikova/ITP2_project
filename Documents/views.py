@@ -18,23 +18,14 @@ class IndexView(ListView):
             model = determine_model(self.request.GET.get('type'))
             kwargs, exkwargs = dict(), dict()
             args, exargs = list(), list()
-
             get_request = self.request.GET
-            containing = ('' if get_request.get('case') else 'i') + 'contains'
-
-            if get_request.get('match'):
-                if get_request.get('authors'):  # by author
-                    kwargs['authors__' + containing] = get_request.get('authors')
-                if get_request.get('keywords'): # by keywords
-                    kwargs['keywords__' + containing] = get_request.get('keywords')
-                if get_request.get('title'):    # by title
-                    kwargs['title__' + containing] = get_request.get('title')
-            else:
-                exec('args.append(Q() {0} {1} {2})'.format(
-                    "| Q(**{'authors__' + containing: get_request.get('authors')})" if get_request.get('authors') else "",
-                    "| Q(**{'keywords__' + containing: get_request.get('keywords')})" if get_request.get('keywords') else "",
-                    "| Q(**{'title__' + containing: get_request.get('title')})" if get_request.get('title') else ""
-                ))
+            mo = '&' if get_request.get('match') else '|'
+            # try add all search criteria (e.g. by title) if this criteria was sent in get request
+            exec('args.append(Q() {0} {1} {2})'.format(
+                mo+" Q(**{'authors__icontains': get_request.get('authors')})" if get_request.get('authors') else "",
+                mo+"Q(**{'keywords__icontains': get_request.get('keywords')})" if get_request.get('keywords') else "",
+                mo+"Q(**{'title__icontains': get_request.get('title')})" if get_request.get('title') else ""
+            ))
             if get_request.get('available'):  # by availability
                 exkwargs['copies'] = 0
             if get_request.get('room'):
@@ -46,11 +37,9 @@ class IndexView(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['case'] = self.request.GET.get('case')
         context['title'] = self.request.GET.get('title')
-        context['q'] = self.request.GET.get('q')
-        context['available'] = self.request.GET.get('available')
         context['match'] = self.request.GET.get('match')
+        context['available'] = self.request.GET.get('available')
         context['authors'] = self.request.GET.get('authors')
         context['room'] = self.request.GET.get('room')
         context['level'] = self.request.GET.get('level')
