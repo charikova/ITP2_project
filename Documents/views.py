@@ -1,9 +1,6 @@
-from django.shortcuts import render, redirect
-from .models import *
 from django.views.generic import ListView
 from django.db.models import Q
-from django.shortcuts import get_object_or_404, Http404
-import datetime
+from django.shortcuts import get_object_or_404
 from Documents.librarian_view import *
 
 
@@ -19,23 +16,30 @@ class IndexView(ListView):
     def get_queryset(self):
         query = self.request.GET.get('q')
         if query:
+            model = determine_model(self.request.GET.get('type'))
             kwargs, exkwargs = dict(), dict()
             args, exargs = list(), list()
 
             case_sensitive = '' if self.request.GET.get('case') else 'i'
             containing = case_sensitive + ('exact' if self.request.GET.get('match') else 'contains')
+            get_request = self.request.GET
 
-            if self.request.GET.get('title') and self.request.GET.get('authors'): # by title & author
+            if get_request.get('title') and get_request.get('authors'): # by title & author
                 args.append(Q(**{'title__'+containing: query}) | Q(**{'authors__'+containing: query}))
-            elif self.request.GET.get('title'):   # by title
-                kwargs['title__' + containing] = query
-            elif self.request.GET.get('authors'): # by author
+            elif get_request.get('authors'):  # by author
                 kwargs['authors__' + containing] = query
-            if self.request.GET.get('available'): # by availability
+            elif get_request.get('keywords'): # by keywords
+                kwargs['keywords__' + containing] = query
+            else:                             # by title
+                kwargs['title__' + containing] = query
+            if get_request.get('available'):  # by availability
                 exkwargs['copies'] = 0
-            return Document.objects.filter(*args, **kwargs).exclude(*exargs, **exkwargs)
+            if get_request.get('room'):
+                kwargs['room'] = int(get_request.get('room'))
+            if get_request.get('level'):
+                kwargs['level'] = int(get_request.get('level'))
+            return model.objects.filter(*args, **kwargs).exclude(*exargs, **exkwargs)
         return super(IndexView, self).get_queryset()
-
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -45,6 +49,10 @@ class IndexView(ListView):
         context['available'] = self.request.GET.get('available')
         context['match'] = self.request.GET.get('match')
         context['authors'] = self.request.GET.get('authors')
+        context['room'] = self.request.GET.get('room')
+        context['level'] = self.request.GET.get('level')
+        context['keywords'] = self.request.GET.get('keywords')
+        context['types'] = [Type.type for Type in Document.__subclasses__()]
         return context
 
 
@@ -70,34 +78,15 @@ def document_detail(request, pk):
     return render(request, 'Documents/doc_inf.html', context)
 
 
-# @need_logged_in
-# def checkout(request, pk):
-#     """
-#     when user check out doc -> find this doc via pk(id), create an instance of document_copy
-#     which will be linked to this document and to user
-#     """
-#     doc = get_object_or_404(Document, pk=pk)
-#     user = request.user
-#     if user.is_staff:
-#         raise Http404('staff can not take documents')
-#     if doc.is_reference:
-#         raise Http404("reference book can not be checked out")
-#     if user.documentcopy_set.filter(doc=doc): # if user already has this doc
-#         return redirect('/{0}/'.format(pk))
-#     if doc.copies > 0:
-#         doc.copies -= 1
-#         doc.save()
-#         days = 21 # for student
-#         if doc.type == "AVFile" or doc.type == "JournalArticle":
-#             days = 14
-#         elif user.userprofile.status == 'faculty':
-#             days = 28
-#         elif doc.is_bestseller:
-#             days = 14
-#         new_copy = DocumentCopy(doc=doc,
-#                                 checked_up_by_whom=user, returning_date=(
-#                 datetime.date.today() + datetime.timedelta(days=days)).strftime("%Y-%m-%d"))
-#
-#         new_copy.save()
-#     return redirect('/{0}/'.format(pk)) # go back to doc page
-
+def determine_model(type):
+    """
+    Determines model by type
+    :param type: string value which defined in every subclass of Document
+    :return: model class which has type, Document model if nothing was found
+    """
+    model = Document
+    for Type in Document.__subclasses__():
+        if Type.type == type:
+            model = Type
+            break
+    return model

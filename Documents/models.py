@@ -17,6 +17,8 @@ class Document(models.Model):
     type = models.CharField(max_length=100, default='Document')
     is_bestseller = models.BooleanField(default=False)
     is_reference = models.BooleanField(default=False)
+    level = models.PositiveIntegerField(default=1)
+    room = models.PositiveIntegerField(default=1)
 
     def __str__(self):
         return "{}; authors: {}".format(self.title, self.authors)
@@ -49,8 +51,6 @@ class DocumentCopy(models.Model):
     date = models.DateTimeField(default=str(datetime.datetime.today().strftime("%Y-%m-%d %H:%M")))
     returning_date = models.DateTimeField(default=str(datetime.datetime.today().strftime("%Y-%m-%d %H:%M")))
     time_left = models.CharField(null=True, max_length=250)
-    level = models.PositiveIntegerField(default=1)
-    room = models.PositiveIntegerField(default=1)
     fine_price = models.IntegerField(null=True)
 
     class Meta:
