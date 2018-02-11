@@ -53,7 +53,8 @@
     <div class="container" align="left">
     <form>
         <div class="form-group">
-            <input type="text" class="form-control" {% if q %} value={{q}} {% endif %} name="q" placeholder="Search">
+            Expanded search
+            <input type="text" class="form-control" {% if q %} value="{{q}}" {% endif %} name="q" placeholder="Search">
             <input type="submit" class="btn btn-default" value="Search">
         </div>
         By authors <input type="checkbox" name="authors" {% if authors %} checked {% endif %}> <br>

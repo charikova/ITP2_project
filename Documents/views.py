@@ -45,7 +45,6 @@ class IndexView(ListView):
         context['available'] = self.request.GET.get('available')
         context['match'] = self.request.GET.get('match')
         context['authors'] = self.request.GET.get('authors')
-        print(self.request.GET.get('q'))
         return context
 
 
