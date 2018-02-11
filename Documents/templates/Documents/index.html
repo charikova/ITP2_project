@@ -52,29 +52,25 @@
 
     <div class="container" align="left">
         <form>
-            <div class="form-group">
-                Expanded search
-                <input type="search" class="form-control" {% if q %} value="{{q}}" {% endif %} name="q"
-                       placeholder="Search">
-                <input type="submit" class="btn btn-default" value="Search">
-            </div>
+            <strong>Expanded search</strong><br>
             By type <select name="type">
             <option>All</option>
             {% for type in types %}
             <option>{{type}}</option>
             {% endfor %}
         </select> <br>
-            By authors <input type="checkbox" name="authors" {% if authors %} checked {% endif %}> <br>
-            By title <input type="checkbox" name="title" {% if title %} checked {% endif %}><br>
-            By keywords <input type="checkbox" name="keywords" {% if keywords %} checked {% endif %}><br>
-            Match case <input type="checkbox" name="case" {% if case %} checked {% endif %}><br>
-            Full match <input type="checkbox" name="match" {% if match %} checked {% endif %}><br>
-            Available <input type="checkbox" name="available" {% if available %} checked {% endif %}><br>
+            By title <input type="text" name="title" {% if title %} value="{{title}}" {% endif %}><br>
+            By authors <input type="text" name="authors" {% if authors %} value="{{authors}}" {% endif %}> <br>
+            By keywords <input type="text" name="keywords" {% if keywords %} value="{{keywords}}" {% endif %}><br>
             {% if user.is_staff %}
             Room <input type="number" name="room" {% if room %} value="{{room}}" {% endif %}><br>
             Level <input type="number" name="level" {% if level %} value="{{level}}" {% endif %}><br>
             {% endif %}
-
+            Match case <input type="checkbox" name="case" {% if case %} checked {% endif %}><br>
+            Full match <input type="checkbox" name="match" {% if match %} checked {% endif %}><br>
+            Available <input type="checkbox" name="available" {% if available %} checked {% endif %}><br>
+            <input type="reset" class="btn btn-default" value="Reset">
+            <input type="submit" class="btn btn-default" value="Search">
         </form>
     </div>
     <br>

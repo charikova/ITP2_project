@@ -14,24 +14,27 @@ class IndexView(ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        query = self.request.GET.get('q')
-        if query:
+        if self.request.GET:
             model = determine_model(self.request.GET.get('type'))
             kwargs, exkwargs = dict(), dict()
             args, exargs = list(), list()
 
-            case_sensitive = '' if self.request.GET.get('case') else 'i'
-            containing = case_sensitive + ('exact' if self.request.GET.get('match') else 'contains')
             get_request = self.request.GET
+            containing = ('' if get_request.get('case') else 'i') + 'contains'
 
-            if get_request.get('title') and get_request.get('authors'): # by title & author
-                args.append(Q(**{'title__'+containing: query}) | Q(**{'authors__'+containing: query}))
-            elif get_request.get('authors'):  # by author
-                kwargs['authors__' + containing] = query
-            elif get_request.get('keywords'): # by keywords
-                kwargs['keywords__' + containing] = query
-            else:                             # by title
-                kwargs['title__' + containing] = query
+            if get_request.get('match'):
+                if get_request.get('authors'):  # by author
+                    kwargs['authors__' + containing] = get_request.get('authors')
+                if get_request.get('keywords'): # by keywords
+                    kwargs['keywords__' + containing] = get_request.get('keywords')
+                if get_request.get('title'):    # by title
+                    kwargs['title__' + containing] = get_request.get('title')
+            else:
+                exec('args.append(Q() {0} {1} {2})'.format(
+                    "| Q(**{'authors__' + containing: get_request.get('authors')})" if get_request.get('authors') else "",
+                    "| Q(**{'keywords__' + containing: get_request.get('keywords')})" if get_request.get('keywords') else "",
+                    "| Q(**{'title__' + containing: get_request.get('title')})" if get_request.get('title') else ""
+                ))
             if get_request.get('available'):  # by availability
                 exkwargs['copies'] = 0
             if get_request.get('room'):
