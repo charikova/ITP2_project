@@ -19,7 +19,7 @@ class Document(models.Model):
     is_reference = models.BooleanField(default=False)
 
     def __str__(self):
-        return "{}; authors: {}".format(self.title, self.price, self.authors)
+        return "{}; authors: {}".format(self.title, self.authors)
 
 
 class Book(Document):

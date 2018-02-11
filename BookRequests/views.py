@@ -40,22 +40,6 @@ def make_new(request):
     return redirect('/' + str(doc_id))
 
 
-#         doc.copies -= 1
-#         doc.save()
-#         days = 21 # for student
-#         if doc.type == "AVFile" or doc.type == "JournalArticle":
-#             days = 14
-#         elif user.userprofile.status == 'faculty':
-#             days = 28
-#         elif doc.is_bestseller:
-#             days = 14
-#         new_copy = DocumentCopy(doc=doc,
-#                                 checked_up_by_whom=user, returning_date=(
-#                 datetime.date.today() + datetime.timedelta(days=days)).strftime("%Y-%m-%d"))
-#
-#         new_copy.save()
-
-
 @required_staff
 def approve_request(request):
     """
@@ -64,7 +48,7 @@ def approve_request(request):
     user = User.objects.get(pk=request.GET.get('user_id'))
     doc_request = Request.objects.get(pk=request.GET.get('req_id'))
     doc = doc_request.doc
-    if doc.copies > 0:
+    if not doc.is_reference and doc.copies > 0:
         doc.copies -= 1
         doc.save()
         days = 21  # for student
@@ -77,7 +61,7 @@ def approve_request(request):
         documents_models.DocumentCopy.create(doc=doc,
                                 checked_up_by_whom=user, returning_date=(
                 datetime.date.today() + datetime.timedelta(days=days)).strftime("%Y-%m-%d"))
-        doc_request.delete()
+    doc_request.delete()
     return redirect('/requests')
 
 

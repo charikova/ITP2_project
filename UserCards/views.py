@@ -120,3 +120,6 @@ class AllUsersView(ListView):
         else:
             return redirect('/')
 
+
+    def get_queryset(self):
+        return User.objects.order_by('username')

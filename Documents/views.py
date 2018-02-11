@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import *
 from django.views.generic import ListView
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, Http404
 import datetime
 from Documents.librarian_view import *
@@ -14,6 +15,38 @@ class IndexView(ListView):
     model = Document
     context_object_name = 'documents'
     paginate_by = 10
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            kwargs, exkwargs = dict(), dict()
+            args, exargs = list(), list()
+
+            case_sensitive = '' if self.request.GET.get('case') else 'i'
+            containing = case_sensitive + ('exact' if self.request.GET.get('match') else 'contains')
+
+            if self.request.GET.get('title') and self.request.GET.get('authors'): # by title & author
+                args.append(Q(**{'title__'+containing: query}) | Q(**{'authors__'+containing: query}))
+            elif self.request.GET.get('title'):   # by title
+                kwargs['title__' + containing] = query
+            elif self.request.GET.get('authors'): # by author
+                kwargs['authors__' + containing] = query
+            if self.request.GET.get('available'): # by availability
+                exkwargs['copies'] = 0
+            return Document.objects.filter(*args, **kwargs).exclude(*exargs, **exkwargs)
+        return super(IndexView, self).get_queryset()
+
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['case'] = self.request.GET.get('case')
+        context['title'] = self.request.GET.get('title')
+        context['q'] = self.request.GET.get('q')
+        context['available'] = self.request.GET.get('available')
+        context['match'] = self.request.GET.get('match')
+        context['authors'] = self.request.GET.get('authors')
+        print(self.request.GET.get('q'))
+        return context
 
 
 def document_detail(request, pk):
