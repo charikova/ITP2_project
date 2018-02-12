@@ -14,45 +14,66 @@ class IndexView(ListView):
     paginate_by = 5
 
     def get_queryset(self):
-        if self.request.GET:
+        get_request = self.request.GET
+
+        # quick search
+        if get_request.get('q') and get_request.get('q') != 'None':
+            return Document.objects.filter(title__icontains=self.request.GET.get('q'))
+        # expanded search
+        elif any_search_criteria(get_request):
             model = determine_model(self.request.GET.get('type'))
-            kwargs, exkwargs = dict(), dict()
-            args, exargs = list(), list()
-            get_request = self.request.GET
-            print(get_request)
-            mo = '&' if get_request.get('match') == 'on' else '|'
-            # try add all search criteria (e.g. by title) if this criteria was sent in get request
-            exec('args.append(Q() {0} {1} {2})'.format(
-                mo+" Q(**{'authors__icontains': get_request.get('authors')})" if get_request.get('authors') != "None" else "",
-                mo+"Q(**{'keywords__icontains': get_request.get('keywords')})" if get_request.get('keywords') != "None" else "",
-                mo+"Q(**{'title__icontains': get_request.get('title')})" if get_request.get('title') != "None" else ""
-            ))
+            kwargs, exkwargs = dict(), dict() # kwargs for filter query, exkwargs for exclude query
+            args = list() # args for filter query
+            mo = '&' if get_request.get('match') == 'on' else '|' # match operand (either OR or AND)
+
+            # create db query considering match operand. Resulting query should consist of Q() objects splitted
+            # by operands. For example if request contains title and keywords queries db_query will look like
+            # 'Q(title__icontains=title_query) | Q(keywords_icontains=word1_from_keywords) |
+            #  Q(keywords_icontains=word2_from_keywords)'
+            db_query = ''
+            if get_request.get('authors') and get_request.get('authors') != "None":
+                db_query += mo + ('Q(authors__icontains="%s")' % get_request.get("authors"))
+            if get_request.get('title') and get_request.get('title') != "None":
+                db_query += mo + ("Q(title__icontains='%s')" % get_request.get('title'))
+            if get_request.get('keywords') and  get_request.get('keywords') != "None":
+                for word in get_request.get('keywords').split():
+                    db_query += mo + ("Q(keywords__icontains='%s')" % word)
+
+            print(db_query)
+
+            if db_query:
+                exec('args.append({})'.format(db_query[1:])) # add this query to args, which will be used in Document filter
+
             if get_request.get('available') == 'on':  # by availability
                 exkwargs['copies'] = 0
+            if get_request.get('noref') == "on":
+                exkwargs['is_reference'] = True
             if get_request.get('room') and get_request.get('room').isdigit():
                 kwargs['room'] = int(get_request.get('room'))
             if get_request.get('level') and get_request.get('level').isdigit():
                 kwargs['level'] = int(get_request.get('level'))
-            return model.objects.filter(*args, **kwargs).exclude(*exargs, **exkwargs)
+            return model.objects.filter(*args, **kwargs).exclude(**exkwargs).order_by('title')
+
         return Document.objects.order_by('title')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.request.GET.get('title') != "None":
-            context['title'] = self.request.GET.get('title')
-        context['match'] = self.request.GET.get('match') == 'on'
-        context['available'] = self.request.GET.get('available') == 'on'
-        if self.request.GET.get('authors') != "None":
-            context['authors'] = self.request.GET.get('authors')
+        context['title'] = self.request.GET.get('title', '')
+        context['match'] = 'on' if self.request.GET.get('match') == 'on' else ''
+        context['available'] = 'on' if self.request.GET.get('available') == 'on' else ''
+        context['noref'] = 'on' if self.request.GET.get('noref') == 'on' else ''
+        context['authors'] = self.request.GET.get('authors', '')
         context['room'] = self.request.GET.get('room')
         context['level'] = self.request.GET.get('level')
-        if self.request.GET.get('keywords') != "None":
-            context['keywords'] = self.request.GET.get('keywords')
+        context['q'] = self.request.GET.get('q', '')
+        context['keywords'] = self.request.GET.get('keywords', '')
         context['types'] = [Type.type for Type in Document.__subclasses__()]
         if self.request.GET.get('type') in context['types']:
             context['default_type'] = self.request.GET.get('type')
             del context['types'][context['types'].index(self.request.GET.get('type'))]
             context['types'].append('All')
+        else:
+            context['default_type'] = 'All'
         return context
 
 
@@ -71,7 +92,7 @@ def document_detail(request, pk):
     context['doc'] = doc
     context['cover'] = doc.__dict__['cover']
     context['fields'] = list() # rest of fields
-    excess_fields = ['document_ptr_id', '_state', 'id', 'cover', 'keywords']
+    excess_fields = ['document_ptr_id', '_state', 'id', 'cover']
     for key, value in doc.__dict__.items():
         if key not in excess_fields:
             context['fields'].append((key.replace('_', " ").capitalize(), value))
@@ -90,3 +111,14 @@ def determine_model(type):
             model = Type
             break
     return model
+
+
+def any_search_criteria(get_request):
+    criteria = ['title', 'authors', 'keywords', 'room', 'level', 'type']
+    for query, value in get_request.items():
+        if query in criteria:
+            if query == 'type' and value != "All":
+                return True
+            if query != 'type' and value and value != "None" and value != "False":
+                return True
+    return False

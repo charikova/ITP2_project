@@ -51,7 +51,7 @@
     <h1 align="center">Welcome to Innopolka!</h1><br>
 
     <div class="container" align="left">
-        <form>
+        <form action="/" method="GET">
             <strong>Expanded search</strong><br>
             By type <select name="type">
             {% if not default_type %}
@@ -72,6 +72,7 @@
             {% endif %}
             Full match <input type="checkbox" name="match" {% if match %} checked {% endif %}><br>
             Available <input type="checkbox" name="available" {% if available %} checked {% endif %}><br>
+            No reference <input type="checkbox" name="noref" {% if noref %} checked {% endif %}><br>
             <input type="reset" class="btn btn-default" value="Reset">
             <input type="submit" class="btn btn-default" value="Search">
         </form>
@@ -109,7 +110,7 @@
         <div class="paginator">
          <span class="step-links">
             {% if page_obj.has_previous %}
-                <a href="/?type={{type}}&title={{title}}&authors={{authors}}&keywords={{keywords}}&match={{match}}&available={{available}}&page={{ page_obj.previous_page_number }}&room={{room}}&level={{level}}">previous</a>
+                <a href="/?type={{default_type}}&title={{title}}&authors={{authors}}&keywords={{keywords}}&match={{match}}&available={{available}}&noref={{noref}}&page={{ page_obj.previous_page_number }}&q={{q}}&room={{room}}&level={{level}}">previous</a>
             {% endif %}
 
             <span class="current">
@@ -117,7 +118,7 @@
             </span>
 
             {% if page_obj.has_next %}
-                <a href="/?type={{type}}&title={{title}}&authors={{authors}}&keywords={{keywords}}&match={{match}}&available={{available}}&page={{ page_obj.next_page_number }}&room={{room}}&level={{level}}">next</a>
+                <a href="/?type={{default_type}}&title={{title}}&authors={{authors}}&keywords={{keywords}}&match={{match}}&available={{available}}&noref={{noref}}&page={{ page_obj.next_page_number }}&q={{q}}&room={{room}}&level={{level}}">next</a>
             {% endif %}
         </span>
         </div>

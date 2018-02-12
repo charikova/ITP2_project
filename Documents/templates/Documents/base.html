@@ -95,9 +95,9 @@
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <form class="navbar-form navbar-left">
+            <form class="navbar-form navbar-left" action="/">
                 <div class="form-group">
-                    <input type="text" class="form-control" name="q" placeholder="Search by title">
+                    <input type="text" class="form-control" name="q" placeholder="Search by title" {% if q %} value="{{q}}" {% endif %}>
                 </div>
                 <input type="submit" class="btn btn-default" value="Search">
             </form>
