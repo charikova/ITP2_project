@@ -75,7 +75,7 @@
                     <td>{{req.timestamp}}</td>
                     {% if user.is_staff %}
                     <td><a href="/user/?id={{ req.checked_up_by_whom.id }}">{{req.checked_up_by_whom.username}}</a></td>
-                    <td><a class="btn" href="/requests/approve/?user_id={{req.checked_up_by_whom.id}}&req_id={{req.id}}">ubludok</a>
+                    <td><a class="btn" href="/requests/approve/?user_id={{req.checked_up_by_whom.id}}&req_id={{req.id}}">approve</a>
                     </td>
                     {% endif %}
                     <td><a class="btn" href="/requests/refuse/?req_id={{req.id}}">refuse</a></td>

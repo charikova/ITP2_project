@@ -58,9 +58,10 @@ def approve_request(request):
             days = 28
         elif doc.is_bestseller:
             days = 14
-        documents_models.DocumentCopy.create(doc=doc,
+        copy = documents_models.DocumentCopy(doc=doc,
                                 checked_up_by_whom=user, returning_date=(
                 datetime.date.today() + datetime.timedelta(days=days)).strftime("%Y-%m-%d"))
+        copy.save()
     doc_request.delete()
     return redirect('/requests')
 
@@ -76,7 +77,7 @@ def refuse(request):
 
 
 @required_staff
-def takebook(request):
+def return_doc(request):
     """
     taking document back (user has returned his document)
     """

@@ -160,9 +160,10 @@
                     <a href="/{{copy.doc.id}}">{{ copy }}</a>
                     {{ copy.time_left }}<br>
                     {% if user.is_staff %}
-                    <a class="btn" href="/requests/takebook/?copy_id={{copy.id}}">Take book</a>
-                    {% endif %}
+                    <a class="btn" href="/requests/return/?copy_id={{copy.id}}">Return document</a>
+                    {% else %}
                     <a class="btn" href="/requests/renew/?copy_id={{copy.id}}">Renew</a><br>
+                    {% endif %}
                 </li>
                 {% endfor %}
             </ul>

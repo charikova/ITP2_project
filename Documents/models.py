@@ -58,7 +58,7 @@ class DocumentCopy(models.Model):
 
 
     def __str__(self):
-        return "\"" + self.doc.title + '" in ' + str(self.checked_up_by_whom.username)
+        return self.doc.title
 
 
 
