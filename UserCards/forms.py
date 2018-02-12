@@ -11,13 +11,10 @@ USER_STATUSES = [
     [3, "librarian"],
 ]
 
-EDIT_PROFILE_DATA = USER_PROFILE_DATA
-EDIT_PROFILE_DATA.remove('status')
-
 
 class CreateUserForm(UserCreationForm):
-    email = forms.EmailField(required=True)
-    address = forms.CharField(required=True)
+    email = forms.EmailField(required=False)
+    address = forms.CharField(required=False)
     phone_number = forms.IntegerField(required=True)
     photo = forms.FileField(required=False)
     status = forms.ChoiceField(choices=USER_STATUSES, required=True)
@@ -28,9 +25,8 @@ class CreateUserForm(UserCreationForm):
         ]
         model = User
 
-
     def save(self, commit=True):
-        user = super(CreateUserForm, self).save(commit=False)
+        user = super().save(commit=False)
         address = self.cleaned_data['address']
         phone_number = self.cleaned_data['phone_number']
         photo = self.cleaned_data['photo']
@@ -44,15 +40,16 @@ class CreateUserForm(UserCreationForm):
                 user.is_staff = True
                 lib_group = Group.objects.get(name='Librarian')
                 lib_group.user_set.add(user)
+                lib_group.save()
 
 
 class EditPatronForm(UserChangeForm):
-    address = forms.CharField(required=True)
-    phone_number = forms.IntegerField(required=True)
-    photo = forms.CharField(required=True)
+    address = forms.CharField(required=False)
+    phone_number = forms.IntegerField(required=False)
+    photo = forms.CharField(required=False)
+    status = forms.ChoiceField(choices=USER_STATUSES, required=True)
 
     class Meta(CreateUserForm.Meta):
         fields = [
-            'username', 'first_name', 'last_name', 'email',  *EDIT_PROFILE_DATA
+            'username', 'first_name', 'last_name', 'email', 'password', *USER_PROFILE_DATA
         ]
-

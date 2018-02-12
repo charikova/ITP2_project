@@ -150,8 +150,6 @@
     </table>
     <div>
 
-        {% if not user.is_anonymous %}
-
         <p>
             <strong>Documents in used:</strong>
         </p>
@@ -171,10 +169,12 @@
             {% csrf_token %}
         </div>
         {% csrf_token %}
+
+        {% if user.is_staff %}
+        <a class="edit" href="/user/edit/{{current_user.id}}">Edit profile</a>
+        <a class="edit" href="/user/delete/{{current_user.id}}" onclick="return confirm('Delete {{current_user.username}}?')">Delete
+            profile</a>
         {% endif %}
-
-        <a class="edit" href="/user/edit/">Edit profile</a>
-
 
         <br>
     </div>

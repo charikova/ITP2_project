@@ -1,15 +1,11 @@
 from django.contrib.auth import authenticate
 from django.shortcuts import render, redirect
+from django.db.models import Q
 from django.views.generic import View, ListView
-
-from Documents.librarian_view import need_logged_in
+from Documents.librarian_view import need_logged_in, required_staff
 from .forms import *
 import datetime
 
-
-class UserList(ListView):
-    template_name = 'UserCards/user_list.html'
-    model = User
 
 class CreateUserView(View):
     """
@@ -31,22 +27,40 @@ class CreateUserView(View):
                 password = form.cleaned_data['password1']
                 user = authenticate(username=username, password=password)
                 user.save()
-                return redirect("/")
+                return redirect("/user/all")
             return redirect('/user/create_user/')
 
 
 class EditCardView(View):
 
-    def post(self, request):
-        form = EditPatronForm(request.POST, instance=request.user)
-        print(form)
+    def post(self, request, id):
+        user = User.objects.get(id=id)
+        form = EditPatronForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            return redirect('/user/')
+            for field in USER_PROFILE_DATA:
+                exec('user.userprofile.{0} = form.cleaned_data["{0}"]'.format(field))
+            if user.userprofile.status == 'librarian':
+                user.is_staff = True
+            else:
+                user.is_staff = False
+            user.userprofile.save()
+            user.save()
+            if user.userprofile.status == "librarian":
+                lib_group = Group.objects.get(name='Librarian')
+                lib_group.user_set.add(user)
+                lib_group.save()
+            return redirect('/user/?id='+str(id))
 
-    def get(self, request):
-        form = EditPatronForm(instance=request.user)
+    def get(self, request, id):
+        form = EditPatronForm(instance=User.objects.get(id=id))
         return render(request, 'UserCards/edit.html', {'form': form})
+
+
+@required_staff
+def delete_user(request, id):
+    User.objects.get(id=id).delete()
+    return redirect('/user/all')
 
 
 @need_logged_in
@@ -55,9 +69,11 @@ def user_card_info(request):
     shows users their information and docs they currently checking out with time left to return them back
     """
     user = request.user
-    if request.GET.get('id') is not None:
+    context = dict()
+    if request.GET.get('id') is not None: # only librarians are allowed to see user profile by id
         if request.user.is_staff:
             user = User.objects.get(id=request.GET.get('id'))
+            context['current_user'] = user
         else:
             return redirect('/')
 
@@ -104,14 +120,14 @@ def user_card_info(request):
 
         document_copy.save()
 
-    context = {'fields': fields, 'copies': user.documentcopy_set.all()}
+    context['fields'] =  fields
+    context['copies'] = user.documentcopy_set.all()
     return render(request, 'UserCards/index.html', context)
 
 
 class AllUsersView(ListView):
     model = User
-    template_name = 'UserCards/all_users.html'
-    paginate_by = 15
+    template_name = 'UserCards/user_list.html'
     context_object_name = 'users'
 
     def get(self, request, *args, **kwargs):
@@ -120,6 +136,16 @@ class AllUsersView(ListView):
         else:
             return redirect('/')
 
-
     def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return User.objects.filter(Q(**{'username__icontains': query}) |
+                                       Q(**{'first_name__icontains': query}) |
+                                       Q(**{'last_name__icontains': query}))
         return User.objects.order_by('username')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['q'] = self.request.GET.get('q')
+        return context
+

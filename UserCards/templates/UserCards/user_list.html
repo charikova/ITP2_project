@@ -4,16 +4,15 @@
 
 
 {% block body  %}
-<link rel="stylesheet" type="text/css" href="{% static 'UserCards/login_signup_style.css' %}" />
 
 <style>
     .container {
         background-color: rgba(214, 184, 150, 0.8);
         color: saddlebrown;
         font-size: 15px;
-        margin:0 auto;
-        overflow:visible;
-        position:absolute;
+        margin: 0 auto;
+        overflow: visible;
+        position: absolute;
         left: 37%;
         top: 35%;
         width: 26%;
@@ -49,14 +48,20 @@
     }
 </style>
 
+<h2>User List</h2><br>
 <div class="container">
-    <h2>User List</h2><br>
-<form method="post" >
-    {% for user in object_list %}
-    <a href="/user/?id={{user.id}}">{{user.username}}</a> <br>
-    {% endfor %}
-    {% csrf_token %}
+<form method="GET">
+    <strong>Search for users</strong><br>
+    <input type="text" placeholder="by username|name|surname" name="q" {% if q %}
+           value="{{q}}" {% endif %}>
+    <input type="submit" class="btn btn-default" value="Search">
 </form>
+    <form>
+        {% for user in object_list %}
+        <a href="/user/?id={{user.id}}">{{user.username}}</a> <br>
+        {% endfor %}
+        {% csrf_token %}
+    </form>
 </div>
 
 

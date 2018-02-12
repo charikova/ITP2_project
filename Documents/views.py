@@ -11,7 +11,7 @@ class IndexView(ListView):
     template_name = 'Documents/index.html'
     model = Document
     context_object_name = 'documents'
-    paginate_by = 10
+    paginate_by = 5
 
     def get_queryset(self):
         if self.request.GET:
@@ -19,32 +19,40 @@ class IndexView(ListView):
             kwargs, exkwargs = dict(), dict()
             args, exargs = list(), list()
             get_request = self.request.GET
-            mo = '&' if get_request.get('match') else '|'
+            print(get_request)
+            mo = '&' if get_request.get('match') == 'on' else '|'
             # try add all search criteria (e.g. by title) if this criteria was sent in get request
             exec('args.append(Q() {0} {1} {2})'.format(
-                mo+" Q(**{'authors__icontains': get_request.get('authors')})" if get_request.get('authors') else "",
-                mo+"Q(**{'keywords__icontains': get_request.get('keywords')})" if get_request.get('keywords') else "",
-                mo+"Q(**{'title__icontains': get_request.get('title')})" if get_request.get('title') else ""
+                mo+" Q(**{'authors__icontains': get_request.get('authors')})" if get_request.get('authors') != "None" else "",
+                mo+"Q(**{'keywords__icontains': get_request.get('keywords')})" if get_request.get('keywords') != "None" else "",
+                mo+"Q(**{'title__icontains': get_request.get('title')})" if get_request.get('title') != "None" else ""
             ))
-            if get_request.get('available'):  # by availability
+            if get_request.get('available') == 'on':  # by availability
                 exkwargs['copies'] = 0
-            if get_request.get('room'):
+            if get_request.get('room') and get_request.get('room').isdigit():
                 kwargs['room'] = int(get_request.get('room'))
-            if get_request.get('level'):
+            if get_request.get('level') and get_request.get('level').isdigit():
                 kwargs['level'] = int(get_request.get('level'))
             return model.objects.filter(*args, **kwargs).exclude(*exargs, **exkwargs)
-        return super(IndexView, self).get_queryset()
+        return Document.objects.order_by('title')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = self.request.GET.get('title')
-        context['match'] = self.request.GET.get('match')
-        context['available'] = self.request.GET.get('available')
-        context['authors'] = self.request.GET.get('authors')
+        if self.request.GET.get('title') != "None":
+            context['title'] = self.request.GET.get('title')
+        context['match'] = self.request.GET.get('match') == 'on'
+        context['available'] = self.request.GET.get('available') == 'on'
+        if self.request.GET.get('authors') != "None":
+            context['authors'] = self.request.GET.get('authors')
         context['room'] = self.request.GET.get('room')
         context['level'] = self.request.GET.get('level')
-        context['keywords'] = self.request.GET.get('keywords')
+        if self.request.GET.get('keywords') != "None":
+            context['keywords'] = self.request.GET.get('keywords')
         context['types'] = [Type.type for Type in Document.__subclasses__()]
+        if self.request.GET.get('type') in context['types']:
+            context['default_type'] = self.request.GET.get('type')
+            del context['types'][context['types'].index(self.request.GET.get('type'))]
+            context['types'].append('All')
         return context
 
 
