@@ -8,9 +8,13 @@ Patrons can survey diffrent documents on the main page and leave requests for th
 approve or refuse their requests. 
 
 # Usage
-After installation you can simply run this website by running this command
+After you installation of django framework via
+     
+     pip3 install django
+     
+You can simply run website using fallowing command
 
-     python manage.py runserver
+     python manage.py runserver    //In case you have python2 and python3 run: python3 manage.py runserver    
   
 # Architecture of the website
 ![alt text](https://github.com/charikova/innopolka/blob/master/architecture%20project.png)
