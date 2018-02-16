@@ -11,6 +11,5 @@ urlpatterns = [
     url(r'^logout/$', logout, {'next_page': '/user/login/'}, name='logout'),
     url(r'^edit/(?P<id>\d+)$', views.EditCardView.as_view(), name='edit'),
     url(r'^delete/(?P<id>\d+)$', views.delete_user, name='delete_user'),
-    url(r'^list/$', views.AllUsersView.as_view(), name='list'),
 
 ]

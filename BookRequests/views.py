@@ -30,10 +30,10 @@ def make_new(request):
     """
     doc_id = request.GET['doc']
     doc = documents_models.Document.objects.get(id=doc_id)
-    # make sure there are no requests for this doc earlier
-    req_exist = len(request.user.request_set.filter(doc=doc))
-    if not req_exist:
-        if doc.copies > 0:
+    user_can_request = not len(request.user.request_set.filter(doc=doc)) and \
+                       not len(request.user.documentcopy_set.filter(doc=doc))
+    if user_can_request:
+        if doc.copies > 0 and not doc.is_reference:
             doc_request = Request(doc=documents_models.Document.objects.get(id=doc_id),
                           checked_up_by_whom=request.user, timestamp=datetime.datetime.now())
             doc_request.save()

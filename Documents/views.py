@@ -30,19 +30,27 @@ class IndexView(ListView):
             # by operands. For example if request contains title and keywords queries db_query will look like
             # 'Q(title__icontains=title_query) | Q(keywords_icontains=word1_from_keywords) |
             #  Q(keywords_icontains=word2_from_keywords)'
-            db_query = ''
+            db_query = Q()
             if get_request.get('authors') and get_request.get('authors') != "None":
-                db_query += mo + ('Q(authors__icontains="%s")' % get_request.get("authors"))
+                for word in get_request.get('authors').split():
+                    if mo == '|':
+                        db_query |= Q(authors__icontains=word)
+                    else:
+                        db_query &= Q(authors__icontains=word)
             if get_request.get('title') and get_request.get('title') != "None":
-                db_query += mo + ("Q(title__icontains='%s')" % get_request.get('title'))
-            if get_request.get('keywords') and  get_request.get('keywords') != "None":
+                for word in get_request.get('title').split():
+                    if mo == '|':
+                        db_query |= Q(title__icontains=word)
+                    else:
+                        db_query &= Q(title__icontains=word)
+            if get_request.get('keywords') and get_request.get('keywords') != "None":
                 for word in get_request.get('keywords').split():
-                    db_query += mo + ("Q(keywords__icontains='%s')" % word)
+                    if mo == '|':
+                        db_query |= Q(keywords__icontains=word)
+                    else:
+                        db_query &= Q(keywords__icontains=word)
 
-            print(db_query)
-
-            if db_query:
-                exec('args.append({})'.format(db_query[1:])) # add this query to args, which will be used in Document filter
+            args.append(db_query)
 
             if get_request.get('available') == 'on':  # by availability
                 exkwargs['copies'] = 0
@@ -87,8 +95,10 @@ def document_detail(request, pk):
             doc = Type.objects.get(pk=pk)
     context = dict()
     if not request.user.is_anonymous:
-        context['user_has_doc'] = len(request.user.documentcopy_set.all().filter(
-                doc=Document.objects.get(id=int(request.path.replace('/', ''))))) # args that will be sent to doc_inf.html
+        context['user_has_doc'] = len(request.user.documentcopy_set.filter(
+                doc=doc))  # args that will be sent to doc_inf.html
+        context['user_has_req'] = len(request.user.request_set.filter(doc=doc))
+        print(context['user_has_req'])
     context['doc'] = doc
     context['cover'] = doc.__dict__['cover']
     context['fields'] = list() # rest of fields

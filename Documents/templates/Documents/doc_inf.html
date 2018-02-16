@@ -151,6 +151,8 @@
     <a class="button" href="/requests/make_new/?doc={{doc.id}}" onclick="
         if ({{user_has_doc}})
             return alert('You already have this document');
+        else if ({{user_has_req}})
+            return alert('You already have request for this document')
         else
             return confirm('Sure you want to check out {{doc.title}}?');
 
