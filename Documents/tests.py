@@ -2,7 +2,8 @@ from django.test import TestCase
 from UserCards.models import UserProfile
 from django.http import HttpRequest, Http404
 from .models import *
-from Documents.views import checkout
+from BookRequests.views import make_new, approve_request
+import BookRequests
 import datetime
 from UserCards.views import user_card_info
 
@@ -10,19 +11,24 @@ from UserCards.views import user_card_info
 class TC(TestCase):
 
     def test_TC1(self):
-        #initial state
+        #  initial state
         p = User.objects.create_user('username', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
         UserProfile.objects.create(user=p, phone_number=123, status='student', address='1-103')
         l = User.objects.create_user('username2', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L', is_staff=True)
-        UserProfile.objects.create(user=l, phone_number=123, status='student', address='1-103')
+        UserProfile.objects.create(user=l, phone_number=123, status='librarian', address='1-103')
         b = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
                                 edition=1, copies=2, authors='sadf', cover='cover', publisher='pub')
         self.assertEqual(b.copies, 2)
 
         request = HttpRequest()
-        request.method = 'GET'
+        request.GET['doc'] = b.id
         request.user = p
-        checkout(request, b.id)
+        make_new(request)
+
+        request.GET['user_id'] = p.id
+        request.GET['req_id'] = p.request_set.get(doc=b).id
+        request.user = l
+        approve_request(request)
 
         patron_has_one_copy = len(p.documentcopy_set.filter(doc=b)) == 1
         library_has_one_copy = len(Document.objects.filter(title='title')) == 1
@@ -33,11 +39,10 @@ class TC(TestCase):
         request = HttpRequest()
         request.method = "GET"
         request.user = l
-        request.path = '/user/?id=' + str(p.id) # sees patron's page
+        request.path = '/user/?id=' + str(p.id)  # sees patron's page
         response = user_card_info(request)
         self.assertEqual(response.status_code, 200) # librarian has access to see this page
         self.assertEqual(b.title in str(response.content), True) # there are exist title of this book in response content
-
 
     def test_TC2(self):
         #library has patron and librarian
@@ -51,11 +56,11 @@ class TC(TestCase):
         self.assertEqual(have_book, False)
 
         request = HttpRequest()
-        request.method = "GET"
+        request.GET['doc'] = 1000  # 1000 id doesn't exist (user tries to checkout book that doesn't exist)
         request.user = p
         try:
-            checkout(request, 1000) # 1000 id doesn't exist (user tries to checkout book that doesn't exist)
-        except Http404: # expected state: 404 error
+            make_new(request)
+        except Http404:  # expected state: 404 error
             pass
         else:
             raise Exception('should raise 404')
@@ -75,9 +80,14 @@ class TC(TestCase):
 
         # faculty checks out book
         request = HttpRequest()
-        request.method = "GET"
+        request.GET['doc'] = book.id
         request.user = faculty
-        checkout(request, book.id)
+        make_new(request)
+
+        request.GET['user_id'] = faculty.id
+        request.GET['req_id'] = faculty.request_set.get(doc=book).id
+        request.user = librarian
+        approve_request(request)
 
         # faculty has 4 weeks to return this book since today
         returning_date = faculty.documentcopy_set.get(doc=book).returning_date
@@ -94,13 +104,21 @@ class TC(TestCase):
         s = User.objects.create_user('Student', 'stu@mail.ru', '123456qwerty', first_name='S', last_name='L')
         UserProfile.objects.create(user=s, status='student', phone_number=796001, address='2-110')
 
+        l = User.objects.create_user('Librarian', 'stu@mail.ru', '123456qwerty', first_name='S', last_name='L', is_staff=True)
+        UserProfile.objects.create(user=l, status='librarian', phone_number=796001, address='2-110')
+
         b = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
                                 edition=1, copies=2, authors='sadf', cover='cover', publisher='pub', is_bestseller=True)
 
         request = HttpRequest()
-        request.method = 'GET'
+        request.GET['doc'] = b.id
         request.user = f
-        checkout(request, b.id)
+        make_new(request)
+
+        request.GET['user_id'] = f.id
+        request.GET['req_id'] = f.request_set.get(doc=b).id
+        request.user = l
+        approve_request(request)
 
         returning_date = f.documentcopy_set.get(doc=b).returning_date
         should_be_today = returning_date - datetime.timedelta(days=28) # day or returning minus 28 days
@@ -115,6 +133,8 @@ class TC(TestCase):
                                       last_name='L')
         s3 = User.objects.create_user('Student3', 'Student3@mail.ru', '123456qwerty', first_name='Student3',
                                       last_name='L')
+        l = User.objects.create_user('Librarian', 'Student3@mail.ru', '123456qwerty', first_name='Student3',
+                                      last_name='L', is_staff=True)
 
         UserProfile.objects.create(user=s1, status='student', phone_number=896000, address='2-107')
         UserProfile.objects.create(user=s2, status='student', phone_number=896000, address='2-107')
@@ -124,20 +144,36 @@ class TC(TestCase):
                                 edition=1, copies=2, authors='sadf', cover='cover', publisher='pub', is_bestseller=True)
 
         request = HttpRequest()
-        request.method = 'GET'
+        request.GET['doc'] = b.id
         request.user = s1
-        checkout(request, b.id)
+        make_new(request)
+
+        request.GET['user_id'] = s1.id
+        request.GET['req_id'] = s1.request_set.get(doc=b).id
+        request.user = l
+        approve_request(request)
 
         request.user = s2
-        checkout(request, b.id)
+        make_new(request)
+        request.GET['user_id'] = s2.id
+        request.GET['req_id'] = s2.request_set.get(doc=b).id
+        request.user = l
+        approve_request(request)
 
         request.user = s3
-        checkout(request, b.id)
+        make_new(request)
+        request.GET['user_id'] = s3.id
+        try:
+            request.GET['req_id'] = s3.request_set.get(doc=b).id
+        except:  # expected state: cant find such request
+            pass
+        else:
+            raise Exception('should cant find such request')
 
         self.assertEqual(len(b.documentcopy_set.all()), 2)
-        self.assertEqual(len(s1.documentcopy_set.filter(doc=b)), 1) # s1 has b
-        self.assertEqual(len(s2.documentcopy_set.filter(doc=b)), 1) # s2 has b
-        self.assertEqual(len(s3.documentcopy_set.filter(doc=b)), 0) #  s3 has no b
+        self.assertEqual(len(s1.documentcopy_set.filter(doc=b)), 1)  # s1 has b
+        self.assertEqual(len(s2.documentcopy_set.filter(doc=b)), 1)  # s2 has b
+        self.assertEqual(len(s3.documentcopy_set.filter(doc=b)), 0)  # s3 has no b
 
     def test_TC6(self):
         p = User.objects.create_user('username', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
@@ -148,10 +184,15 @@ class TC(TestCase):
                                 edition=1, copies=2, authors='sadf', cover='cover', publisher='pub', is_bestseller=True)
 
         request = HttpRequest()
-        request.method = 'GET'
+        request.GET['doc'] = b.id
         request.user = p
-        checkout(request, b.id) # check it out twice
-        checkout(request, b.id)
+        make_new(request)  # request it out twice
+        make_new(request)
+
+        request.GET['user_id'] = p.id
+        request.GET['req_id'] = p.request_set.get(doc=b).id
+        request.user = librarian
+        approve_request(request)
 
         self.assertEqual(len(b.documentcopy_set.all()), 1)
 
@@ -168,14 +209,24 @@ class TC(TestCase):
                                    edition=1, copies=2, authors='sadf', cover='cover', publisher='pub')
 
         request = HttpRequest()
-        request.method = "GET"
+        request.GET['doc'] = b1.id
         request.user = p1
-        checkout(request, b1.id)
+        make_new(request)
+
+        request.user = librarian
+        request.GET['user_id'] = p1.id
+        request.GET['req_id'] = p1.request_set.get(doc=b1).id
+        approve_request(request)
 
         request = HttpRequest()
-        request.method = "GET"
+        request.GET['doc'] = b1.id
         request.user = p2
-        checkout(request, b1.id)
+        make_new(request)
+
+        request.GET['user_id'] = p2.id
+        request.GET['req_id'] = p2.request_set.get(doc=b1).id
+        request.user = librarian
+        approve_request(request)
 
         p1_has_one_copy = len(p1.documentcopy_set.filter(doc=b1)) == 1
         p2_has_one_copy = len(p2.documentcopy_set.filter(doc=b1)) == 1
@@ -197,9 +248,14 @@ class TC(TestCase):
         book = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
                                    edition=1, copies=2, authors='sadf', cover='cover', publisher='pub')
         request = HttpRequest()
-        request.method = "GET"
+        request.GET['doc'] = book.id
         request.user = student
-        checkout(request, book.id)
+        make_new(request)
+
+        request.GET['user_id'] = student.id
+        request.GET['req_id'] = student.request_set.get(doc=book).id
+        request.user = librarian
+        approve_request(request)
 
         returning_date = student.documentcopy_set.get(doc=book).returning_date
         should_be_today = returning_date - datetime.timedelta(days=21)
@@ -222,9 +278,14 @@ class TC(TestCase):
 
         # 's' checks out book 'b'
         request = HttpRequest()
-        request.method = "GET"
+        request.GET['doc'] = book.id
         request.user = student
-        checkout(request, book.id)
+        make_new(request)
+
+        request.GET['user_id'] = student.id
+        request.GET['req_id'] = student.request_set.get(doc=book).id
+        request.user = librarian
+        approve_request(request)
 
         # The book is checked out by 's' with returning time of 2 weeks (from the day it was checked out)
         returning_date = student.documentcopy_set.get(doc=book).returning_date
@@ -252,22 +313,29 @@ class TC(TestCase):
 
         # The patron tries to check out the book A and reference book B.
         request = HttpRequest()
-        request.method = "GET"
+        request.GET['doc'] = A.id
         request.user = student
-        checkout(request, A.id) # everything ok
+        make_new(request)  # everything ok
 
+        request.GET['user_id'] = student.id
+        request.GET['req_id'] = student.request_set.get(doc=A).id
+        request.user = librarian
+        approve_request(request)
+
+        request.GET['doc'] = B.id
+        request.user = student
+        make_new(request)  # request will not be created because of reference book
         try:
-            checkout(request, B.id) # try to checkout reference book
-        except Http404: # expected state: 404 error
+            request.GET['user_id'] = student.id
+            request.GET['req_id'] = student.request_set.get(doc=A).id
+        except:  # expected state: cant find such request and therefore cant approve
             pass
         else:
-            raise Exception('should be 404')
+            raise Exception
 
         # The system allows to check out only the book A. The reference book B is not available for checking out
         number_copies_patron_has = len(student.documentcopy_set.all())
         self.assertEqual(number_copies_patron_has, 1)
 
         student.documentcopy_set.get(id=A.id) # will raise error if copy of A doesn't exist
-
-
 
