@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
+from django.http import Http404
 from Documents.librarian_view import required_staff, need_logged_in
 from django.contrib.auth.models import User
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView
 import Documents.models as documents_models
 from .models import Request
 import datetime
@@ -28,8 +29,12 @@ def make_new(request):
     """
     creates new request from user
     """
-    doc_id = request.GET['doc']
-    doc = documents_models.Document.objects.get(id=doc_id)
+    doc_id = request.GET.get('doc')
+    try:
+        doc = documents_models.Document.objects.get(id=doc_id)
+    except:
+        raise Http404('You cannot request this document')
+
     user_can_request = not len(request.user.request_set.filter(doc=doc)) and \
                        not len(request.user.documentcopy_set.filter(doc=doc))
     if user_can_request:
@@ -45,8 +50,11 @@ def approve_request(request):
     """
     gives book to particular user
     """
-    user = User.objects.get(pk=request.GET.get('user_id'))
-    doc_request = Request.objects.get(pk=request.GET.get('req_id'))
+    try:
+        user = User.objects.get(pk=request.GET.get('user_id'))
+        doc_request = Request.objects.get(pk=request.GET.get('req_id'))
+    except:
+        return Http404
     doc = doc_request.doc
     if not doc.is_reference and doc.copies > 0:
         doc.copies -= 1

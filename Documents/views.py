@@ -98,14 +98,15 @@ def document_detail(request, pk):
         context['user_has_doc'] = len(request.user.documentcopy_set.filter(
                 doc=doc))  # args that will be sent to doc_inf.html
         context['user_has_req'] = len(request.user.request_set.filter(doc=doc))
-        print(context['user_has_req'])
     context['doc'] = doc
     context['cover'] = doc.__dict__['cover']
-    context['fields'] = list() # rest of fields
+    context['fields'] = list()  # rest of fields
     excess_fields = ['document_ptr_id', '_state', 'id', 'cover']
+    if not request.user.is_staff:
+        excess_fields += ['is_reference', 'is_bestseller', 'room', 'level']
     for key, value in doc.__dict__.items():
         if key not in excess_fields:
-            context['fields'].append((key.replace('_', " ").capitalize(), value))
+            context['fields'].append((key.replace('is', '').replace('_', " ").capitalize(), value))
     return render(request, 'Documents/doc_inf.html', context)
 
 
