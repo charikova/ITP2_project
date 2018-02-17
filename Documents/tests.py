@@ -8,7 +8,7 @@ import datetime
 from UserCards.views import user_card_info
 
 
-class TC(TestCase):
+class Delivery1(TestCase):
 
     def test_TC1(self):
         #  initial state
