@@ -151,8 +151,10 @@ function httpGet(theUrl)
                     <a class="btn" href="/requests/return/?copy_id={{copy.id}}">Return document</a>
                     {% else %}
                     <button class="btn" onclick="
-                       alert(httpGet('/requests/renew/?copy_id={{copy.id}}'));
-
+                       var response = httpGet('/requests/renew/?copy_id={{copy.id}}').toString();
+                       alert(response);
+                       if (response.substr(0, 3) === 'You') // when response starts with YOU then returning date updated
+                           window.location.reload(false);
 ">Renew</button><br>
                     {% endif %}
                 </li>

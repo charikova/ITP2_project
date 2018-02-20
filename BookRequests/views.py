@@ -122,6 +122,6 @@ def renew(request):
         ))
     else:
         copy.returning_date = datetime.datetime.today() + datetime.timedelta(days=8)
-        copy.save()
         copy.renewed = True
+        copy.save()
         return HttpResponse('You successfully renewed {} for 1 (one) week'.format(copy.doc.title))

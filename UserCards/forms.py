@@ -6,9 +6,9 @@ from .models import UserProfile, USER_PROFILE_DATA
 
 
 USER_STATUSES = [
-    [1, "student"],
-    [2, "faculty"],
-    [3, "librarian"],
+    ["student", "student"],
+    ["faculty", "faculty"],
+    ["librarian", "librarian"],
 ]
 
 
@@ -28,7 +28,7 @@ class CreateUserForm(UserCreationForm):
         user = super().save(commit=False)
         address = self.cleaned_data['address']
         phone_number = self.cleaned_data['phone_number']
-        status = dict(USER_STATUSES)[int(self.cleaned_data['status'])]
+        status = self.cleaned_data['status']
         if status == "librarian":
             user.is_staff = True
         if commit:
