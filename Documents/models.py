@@ -52,6 +52,7 @@ class DocumentCopy(models.Model):
     returning_date = models.DateTimeField(default=str(datetime.datetime.today().strftime("%Y-%m-%d %H:%M")))
     time_left = models.CharField(null=True, max_length=250)
     fine_price = models.IntegerField(null=True)
+    renewed = models.BooleanField(default=False)
 
     class Meta:
         verbose_name_plural = 'Document copies'
