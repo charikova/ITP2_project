@@ -1,0 +1,25 @@
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checked out documents</title>
+</head>
+<body>
+    <table>
+        <tr>
+            <th class="cen">Document</th>
+            <th class="cen">Author</th>
+            <th class="cen">Checked out by whom</th>
+            <th class="cen">Returning date</th>
+        </tr>
+        <tr>
+            {% for doc in document %}
+                <td><a href="/{{ doc.doc.id }}/">{{ doc.doc.title }}</a></td>
+                <td>{{ doc.doc.authors }}</td>
+                <td>{{ doc.checked_up_by_whom }}</td>
+                <td>{{ doc.returning_date}}</td>
+                </tr>
+            {% endfor %}
+    </table>
+</body>
+</html>

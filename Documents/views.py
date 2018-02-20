@@ -133,3 +133,7 @@ def any_search_criteria(get_request):
             if query != 'type' and value and value != "None" and value != "False":
                 return True
     return False
+
+def checked_out_docs(request):
+    document = DocumentCopy.objects.all()
+    return render(request, 'Documents/checked_out_docs.html', context = {'document': document})

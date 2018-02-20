@@ -13,5 +13,7 @@ urlpatterns = [
     url(r'^(?P<pk>\d+)/delete/$', views.del_doc, name='del_doc'),
     url(r'^create/$', views.create_doc, name='create_doc'),
     url(r'^add_doc/$', views.add_doc, name='add_doc'),
+    url(r'^checked_out_docs/$', views.checked_out_docs, name='checked_out_docs'),
+
 
 ]
