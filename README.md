@@ -8,14 +8,28 @@ Patrons can survey diffrent documents on the main page and leave requests for th
 approve or refuse their requests. 
 
 # Usage
+## Installation
 After you installation of django framework via
      
      pip3 install django
-     
+## Running
 You can simply run website using fallowing command
 
-     python manage.py runserver    //In case you have python2 and python3 run: python3 manage.py runserver    
-  
+     python manage.py runserver    #In case you have python2 and python3 run: python3 manage.py runserver    
+     
+## Sign in/up
+In order to create new admin(admin has all permissions of librarian and even more) run
+
+     python manage.py createsuperuser
+     
+Fill out all required fields and get logged-in in website
+
+## Testing
+We have some unit tests, which are needed to suit all requirements. They are placed in Documents/tests.py. Execute those via
+
+     python manage.py test Documents.tests.Delivery1 # Use Delivery[number of delivery] to run one of the deliveries test
+
+
 # Architecture of the website
 ![alt text](https://github.com/charikova/innopolka/blob/master/architecture%20project.png)
 # Implementation
