@@ -52,11 +52,6 @@
         font-size: 20px;
     }
 
-    a {
-        color: white;
-        padding-left: ;
-    }
-
     table {
         border: none;
         border-radius: 10px;
@@ -82,62 +77,65 @@
     }
 
     .button {
-	-moz-box-shadow:inset 0px 1px 0px 0px #dcecfb;
-	-webkit-box-shadow:inset 0px 1px 0px 0px #dcecfb;
-	box-shadow:inset 0px 1px 0px 0px #dcecfb;
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #d69065), color-stop(1, #80b5ea) );
-	background:-moz-linear-gradient( center top, #d69065 5%, #80b5ea 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#d69065', endColorstr='#80b5ea');
-	background-color:#d69065;
-	-webkit-border-top-left-radius:0px;
-	-moz-border-radius-topleft:0px;
-	border-top-left-radius:0px;
-	-webkit-border-top-right-radius:0px;
-	-moz-border-radius-topright:0px;
-	border-top-right-radius:0px;
-	-webkit-border-bottom-right-radius:0px;
-	-moz-border-radius-bottomright:0px;
-	border-bottom-right-radius:0px;
-	-webkit-border-bottom-left-radius:0px;
-	-moz-border-radius-bottomleft:0px;
-	border-bottom-left-radius:0px;
-	text-indent:0;
-	border:1px solid #84bbf3;
-	display:inline-block;
-	color:#ffffff;
-	font-family:Arial;
-	font-size:15px;
-	font-weight:normal;
-	font-style:normal;
-	height:40px;
-	line-height:40px;
-	width:100px;
-	text-decoration:none;
-	text-align:center;
-	text-shadow:1px 1px 0px #528ecc;
-}
-.button:hover {
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #80b5ea), color-stop(1, #d69065) );
-	background:-moz-linear-gradient( center top, #80b5ea 5%, #d69065 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#80b5ea', endColorstr='#d69065');
-	background-color:#80b5ea;
-}.button:active {
-	position:relative;
-	top:1px;
-}
-/* This button was generated using CSSButtonGenerator.com */
+        -moz-box-shadow: inset 0px 1px 0px 0px #dcecfb;
+        -webkit-box-shadow: inset 0px 1px 0px 0px #dcecfb;
+        box-shadow: inset 0px 1px 0px 0px #dcecfb;
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #d69065), color-stop(1, #80b5ea));
+        background: -moz-linear-gradient(center top, #d69065 5%, #80b5ea 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d69065', endColorstr='#80b5ea');
+        background-color: #d69065;
+        -webkit-border-top-left-radius: 0px;
+        -moz-border-radius-topleft: 0px;
+        border-top-left-radius: 0px;
+        -webkit-border-top-right-radius: 0px;
+        -moz-border-radius-topright: 0px;
+        border-top-right-radius: 0px;
+        -webkit-border-bottom-right-radius: 0px;
+        -moz-border-radius-bottomright: 0px;
+        border-bottom-right-radius: 0px;
+        -webkit-border-bottom-left-radius: 0px;
+        -moz-border-radius-bottomleft: 0px;
+        border-bottom-left-radius: 0px;
+        text-indent: 0;
+        border: 1px solid #84bbf3;
+        display: inline-block;
+        color: #ffffff;
+        font-family: Arial;
+        font-size: 15px;
+        font-weight: normal;
+        font-style: normal;
+        height: 40px;
+        line-height: 40px;
+        width: 100px;
+        text-decoration: none;
+        text-align: center;
+        text-shadow: 1px 1px 0px #528ecc;
+    }
+
+    .button:hover {
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #80b5ea), color-stop(1, #d69065));
+        background: -moz-linear-gradient(center top, #80b5ea 5%, #d69065 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#80b5ea', endColorstr='#d69065');
+        background-color: #80b5ea;
+    }
+
+    .button:active {
+        position: relative;
+        top: 1px;
+    }
+
+    /* This button was generated using CSSButtonGenerator.com */
 
 
 </style>
 
 <script type="text/javascript">
-function httpGet(theUrl)
-{
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
-    xmlHttp.send( null );
-    return xmlHttp.responseText;
-}
+    function httpGet(theUrl) {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", theUrl, false); // false for synchronous request
+        xmlHttp.send(null);
+        return xmlHttp.responseText;
+    }
 </script>
 
 <div class="container">
@@ -155,14 +153,15 @@ function httpGet(theUrl)
     </table>
 
     {% if user.is_staff %}
-    <a class="button" href="update/">Update</a> <br>
+    <a class="button" href="update/">Update</a>
     <a class="button" href="delete/" onclick="return confirm('Delete {{doc.title}}?')">Delete</a>
     {% elif user.is_authenticated and not doc.is_reference %}
     <button class="button" onclick="
         var response = httpGet('/requests/make_new/?doc={{doc.id}}');
         alert(response);
 
-        ">Request</button>
+        ">Request
+    </button>
     {% endif %}
     {% endblock %}
 

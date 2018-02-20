@@ -33,7 +33,7 @@
         left: 50%;
     }
 
-    h2 {
+    h2{
         color: black;
         font-size: 40px;
         text-align: center;
@@ -50,7 +50,13 @@
 <h2>Card edit</h2>
 
 <form action="" method="post">
-    {{ form.as_p }}
+    <h4>Username:</h4> <div align="center">{{ form.username }}</div> <br>
+    <h4>First name:</h4> <div align="center">{{ form.first_name }}</div><br>
+    <h4>Last name:</h4> <div align="center">{{ form.last_name }}</div><br>
+    <h4>Email:</h4> <div align="center">{{ form.email }}</div><br>
+    <h4>Status:</h4> <div align="center">{{ form.status }}</div><br>
+    <h4>Phone:</h4> <div align="center">{{ form.phone_number }}</div><br>
+    <h4>Address:</h4> <div align="center">{{ form.address }}</div><br>
     <input class="button" type="submit" value="Edit">
     {% csrf_token %}
 </form>

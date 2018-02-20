@@ -129,3 +129,10 @@ def any_search_criteria(get_request):
             if query != 'type' and value and value != "None" and value != "False":
                 return True
     return False
+
+
+class CheckedOutDocsView(ListView):
+    model = DocumentCopy
+    template_name = 'Documents/checked_out_docs.html'
+    context_object_name = 'document_copies'
+    paginate_by = 20

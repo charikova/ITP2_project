@@ -48,5 +48,6 @@ class EditPatronForm(UserChangeForm):
 
     class Meta(CreateUserForm.Meta):
         fields = [
-            'username', 'first_name', 'last_name', 'email', 'password', *USER_PROFILE_DATA
+            'username', 'first_name', 'last_name', 'email', 'password', * USER_PROFILE_DATA
         ]
+

@@ -1,0 +1,26 @@
+{% extends 'Documents/base.html'  %}
+
+{% load staticfiles %}
+{% block body  %}
+<title>Checked out documents</title>
+
+
+<table>
+    <tr>
+        <th class="cen">Document</th>
+        <th class="cen">Author</th>
+        <th class="cen">User</th>
+        <th class="cen">Returning date</th>
+    </tr>
+    <tr>
+        {% for copy in document_copies %}
+        <td><a href="/{{ doc.doc.id }}/">{{ copy.doc.title }}</a></td>
+        <td>{{ copy.doc.authors }}</td>
+        <td><a href="/user/?id={{copy.checked_up_by_whom.id}}">{{ copy.checked_up_by_whom }}</a></td>
+        <td>{{ copy.returning_date}}</td>
+        <td><a class="btn" href="/requests/return/?copy_id={{copy.id}}">Return</a></td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

@@ -116,7 +116,6 @@ def renew(request):
         copy = user.documentcopy_set.get(id=request.GET.get('copy_id'))
     except:
         return HttpResponse('forbidden')
-    is_there_requests = len(copy.doc.request_set.all())
     returning_date = user.documentcopy_set.get(doc=copy.doc).returning_date
     returning_date = datetime.datetime(year=returning_date.year,
                                        month=returning_date.month,
@@ -125,7 +124,7 @@ def renew(request):
     time_left = returning_date - datetime.datetime.today()
     if copy.renewed:
         return HttpResponse('Sorry, but you already have renewed this document')
-    elif is_there_requests:
+    elif copy.doc.copies == 0 and len(copy.doc.request_set.all()):
         return HttpResponse('Sorry, but this document has outstanding requests')
     elif time_left.days > 1:
         return HttpResponse('Sorry, but You will have access to renew this document only in {} days'.format(

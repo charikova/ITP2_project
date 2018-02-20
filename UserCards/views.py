@@ -55,7 +55,9 @@ class EditCardView(View):
     def get(self, request, id):
         init_fields = {'address': User.objects.get(id=id).userprofile.address,
                        'status': User.objects.get(id=id).userprofile.status,
-                       'phone_number': User.objects.get(id=id).userprofile.phone_number,}
+                       'phone_number': User.objects.get(id=id).userprofile.phone_number,
+                       'password': User.objects.get(id=id).password
+                       }
         form = EditPatronForm(instance=User.objects.get(id=id), initial=init_fields)
         return render(request, 'UserCards/edit.html', {'form': form})
 
