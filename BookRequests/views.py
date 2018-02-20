@@ -92,16 +92,24 @@ def return_doc(request):
     """
     taking document back (user has returned his document)
     """
-    copy_instance = documents_models.DocumentCopy.objects.get(pk=request.GET.get('copy_id'))
+    try:
+        copy_instance = documents_models.DocumentCopy.objects.get(pk=request.GET.get('copy_id'))
+    except:
+        return redirect('/')
     user_id = copy_instance.checked_up_by_whom.id
     copy_instance.doc.copies += 1
     copy_instance.doc.save()
     copy_instance.delete()
-    return redirect('/user/?user_id=' + str(user_id))
+    return redirect('/user/?id=' + str(user_id))
 
 
 @need_logged_in
 def renew(request):
+    """
+    updates returning date of document for one additional week
+    (if days left less then 1, no outstanding requests and it was not renewed before)
+
+    """
     user = request.user
     copy = None
     try:
@@ -116,13 +124,13 @@ def renew(request):
                                        hour=returning_date.hour)
     time_left = returning_date - datetime.datetime.today()
     if copy.renewed:
-        return HttpResponse('Sorry, but you already have renewed this document', status=204)
+        return HttpResponse('Sorry, but you already have renewed this document')
     elif is_there_requests:
-        return HttpResponse('Sorry, but this document has outstanding requests', status=204)
+        return HttpResponse('Sorry, but this document has outstanding requests')
     elif time_left.days > 1:
         return HttpResponse('Sorry, but You will have access to renew this document only in {} days'.format(
             time_left.days - 1
-        ), status=204)
+        ))
     else:
         copy.returning_date = datetime.datetime.today() + datetime.timedelta(days=8)
         copy.renewed = True
