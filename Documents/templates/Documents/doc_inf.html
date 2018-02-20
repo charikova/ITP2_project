@@ -130,6 +130,16 @@
 
 </style>
 
+<script type="text/javascript">
+function httpGet(theUrl)
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
+}
+</script>
+
 <div class="container">
     <h2>Document information</h2>
     <table>
@@ -148,15 +158,11 @@
     <a class="button" href="update/">Update</a> <br>
     <a class="button" href="delete/" onclick="return confirm('Delete {{doc.title}}?')">Delete</a>
     {% elif user.is_authenticated and not doc.is_reference %}
-    <a class="button" href="/requests/make_new/?doc={{doc.id}}" onclick="
-        if ({{user_has_doc}})
-            return alert('You already have this document');
-        else if ({{user_has_req}})
-            return alert('You already have request for this document')
-        else
-            return confirm('Sure you want to check out {{doc.title}}?');
+    <button class="button" onclick="
+        var response = httpGet('/requests/make_new/?doc={{doc.id}}');
+        alert(response);
 
-        ">Request</a>
+        ">Request</button>
     {% endif %}
     {% endblock %}
 

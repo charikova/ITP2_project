@@ -35,14 +35,17 @@ def make_new(request):
     except:
         raise Http404('You cannot request this document')
 
-    user_can_request = not len(request.user.request_set.filter(doc=doc)) and \
-                       not len(request.user.documentcopy_set.filter(doc=doc))
-    if user_can_request:
-        if doc.copies > 0 and not doc.is_reference:
-            doc_request = Request(doc=documents_models.Document.objects.get(id=doc_id),
-                          checked_up_by_whom=request.user, timestamp=datetime.datetime.now())
-            doc_request.save()
-    return redirect('/' + str(doc_id))
+    if len(request.user.request_set.filter(doc=doc)):
+        return HttpResponse('Sorry, but You already have request for this document')
+    elif len(request.user.documentcopy_set.filter(doc=doc)):
+        return HttpResponse('Sorry, but You already have this document')
+    elif doc.is_reference:
+        return HttpResponse('Sorry, but this document is reference')
+    else:
+        doc_request = Request(doc=documents_models.Document.objects.get(id=doc_id),
+                      checked_up_by_whom=request.user, timestamp=datetime.datetime.now())
+        doc_request.save()
+        return HttpResponse('Successfully created new request')
 
 
 @required_staff
@@ -113,13 +116,13 @@ def renew(request):
                                        hour=returning_date.hour)
     time_left = returning_date - datetime.datetime.today()
     if copy.renewed:
-        return HttpResponse('Sorry, but you already have renewed this document')
+        return HttpResponse('Sorry, but you already have renewed this document', status=204)
     elif is_there_requests:
-        return HttpResponse('Sorry, but this document has outstanding requests')
+        return HttpResponse('Sorry, but this document has outstanding requests', status=204)
     elif time_left.days > 1:
         return HttpResponse('Sorry, but You will have access to renew this document only in {} days'.format(
             time_left.days - 1
-        ))
+        ), status=204)
     else:
         copy.returning_date = datetime.datetime.today() + datetime.timedelta(days=8)
         copy.renewed = True

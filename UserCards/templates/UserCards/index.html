@@ -153,7 +153,7 @@ function httpGet(theUrl)
                     <button class="btn" onclick="
                        var response = httpGet('/requests/renew/?copy_id={{copy.id}}').toString();
                        alert(response);
-                       if (response.substr(0, 3) === 'You') // when response starts with YOU then returning date updated
+                       if (response.substr(0, 3) === 'You') // refresh to see new returning date
                            window.location.reload(false);
 ">Renew</button><br>
                     {% endif %}

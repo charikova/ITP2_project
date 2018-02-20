@@ -94,10 +94,10 @@ def document_detail(request, pk):
         if Type.objects.filter(pk=pk):
             doc = Type.objects.get(pk=pk)
     context = dict()
-    if not request.user.is_anonymous:
-        context['user_has_doc'] = len(request.user.documentcopy_set.filter(
-                doc=doc))  # args that will be sent to doc_inf.html
-        context['user_has_req'] = len(request.user.request_set.filter(doc=doc))
+    # if not request.user.is_anonymous:
+    #     context['user_has_doc'] = len(request.user.documentcopy_set.filter(
+    #             doc=doc))  # args that will be sent to doc_inf.html
+    #     context['user_has_req'] = len(request.user.request_set.filter(doc=doc))
     context['doc'] = doc
     context['cover'] = doc.__dict__['cover']
     context['fields'] = list()  # rest of fields
