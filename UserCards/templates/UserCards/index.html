@@ -93,16 +93,6 @@
         color: black;
     }
 
-    .photo {
-        width: 200px;
-        height: 200px;
-        background: white url("{{user.photo}}");
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center;
-        display: inline-block;
-    }
-
     table {
         border: none;
         border-radius: 10px;
@@ -121,12 +111,17 @@
         text-align: left;
     }
 
-    img {
-        width: 300px;
-        height: auto;
-        margin-top: 1%;
-    }
 </style>
+
+<script type="text/javascript">
+function httpGet(theUrl)
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
+}
+</script>
 
 <div class="container">
     <h2>Card information</h2>
@@ -141,13 +136,6 @@
         {% endfor %}
     </p>
 
-    </td>
-    <td>
-        <div class="photo">
-        </div>
-    </td>
-    </tr>
-    </table>
     <div>
 
         <p>
@@ -162,7 +150,10 @@
                     {% if user.is_staff %}
                     <a class="btn" href="/requests/return/?copy_id={{copy.id}}">Return document</a>
                     {% else %}
-                    <a class="btn" href="/requests/renew/?copy_id={{copy.id}}">Renew</a><br>
+                    <button class="btn" onclick="
+                       alert(httpGet('/requests/renew/?copy_id={{copy.id}}'));
+
+">Renew</button><br>
                     {% endif %}
                 </li>
                 {% endfor %}
@@ -173,7 +164,8 @@
 
         {% if user.is_staff %}
         <a class="edit" href="/user/edit/{{current_user.id}}">Edit profile</a>
-        <a class="edit" href="/user/delete/{{current_user.id}}" onclick="return confirm('Delete {{current_user.username}}?')">Delete
+        <a class="edit" href="/user/delete/{{current_user.id}}"
+           onclick="return confirm('Delete {{current_user.username}}?')">Delete
             profile</a>
         {% endif %}
 

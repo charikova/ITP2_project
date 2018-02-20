@@ -1,5 +1,5 @@
 from django.shortcuts import redirect
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from Documents.librarian_view import required_staff, need_logged_in
 from django.contrib.auth.models import User
 from django.views.generic import ListView
@@ -100,8 +100,28 @@ def return_doc(request):
 @need_logged_in
 def renew(request):
     user = request.user
-    copy = user.documentcopy_set.filter(id=request.GET.get('copy_id'))
-    if copy:
-        copy = copy[0]
-        # update date
-    return redirect('/' + str(copy.doc.id))
+    copy = None
+    try:
+        copy = user.documentcopy_set.get(id=request.GET.get('copy_id'))
+    except:
+        return HttpResponse('forbidden')
+    is_there_requests = len(copy.doc.request_set.all())
+    returning_date = user.documentcopy_set.get(doc=copy.doc).returning_date
+    returning_date = datetime.datetime(year=returning_date.year,
+                                       month=returning_date.month,
+                                       day=returning_date.day,
+                                       hour=returning_date.hour)
+    time_left = returning_date - datetime.datetime.today()
+    if copy.renewed:
+        return HttpResponse('Sorry, but you already have renewed this document')
+    elif is_there_requests:
+        return HttpResponse('Sorry, but this document has outstanding requests')
+    elif time_left.days > 1:
+        return HttpResponse('Sorry, but You will have access to renew this document only in {} days'.format(
+            time_left.days - 1
+        ))
+    else:
+        copy.returning_date = datetime.datetime.today() + datetime.timedelta(days=8)
+        copy.save()
+        copy.renewed = True
+        return HttpResponse('You successfully renewed {} for 1 (one) week'.format(copy.doc.title))
