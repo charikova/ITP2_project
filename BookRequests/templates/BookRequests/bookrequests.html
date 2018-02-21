@@ -20,31 +20,30 @@
             font-size: 50px;
         }
 
-    .cen {
-        text-align: center;
-        font-size: 20px;
-    }
+        .cen {
+            text-align: center;
+            font-size: 20px;
+        }
 
-    table {
-        border: none;
-        border-radius: 10px;
-    }
+        table {
+            border: none;
+            border-radius: 10px;
+        }
 
-    tr {
-        border: none;
-        text-align: left;
-    }
+        tr {
+            border: none;
+            text-align: left;
+        }
 
-    td {
-        border: none;
-        text-align: center;
-        border-top: 1px solid saddlebrown;
-    }
+        td {
+            border: none;
+            text-align: center;
+            border-top: 1px solid saddlebrown;
+        }
 
-    a {
-        color: black;
-    }
-
+        a {
+            color: black;
+        }
 
 
     </style>
@@ -75,7 +74,8 @@
                     <td>{{req.timestamp}}</td>
                     {% if user.is_staff %}
                     <td><a href="/user/?id={{ req.checked_up_by_whom.id }}">{{req.checked_up_by_whom.username}}</a></td>
-                    <td><a class="btn" href="/requests/approve/?user_id={{req.checked_up_by_whom.id}}&req_id={{req.id}}">approve</a>
+                    <td><a class="btn"
+                           href="/requests/approve/?user_id={{req.checked_up_by_whom.id}}&req_id={{req.id}}">approve</a>
                     </td>
                     {% endif %}
                     <td><a class="btn" href="/requests/refuse/?req_id={{req.id}}">refuse</a></td>

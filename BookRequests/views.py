@@ -100,7 +100,7 @@ def return_doc(request):
     copy_instance.doc.copies += 1
     copy_instance.doc.save()
     copy_instance.delete()
-    return redirect('/user/?id=' + str(user_id))
+    return redirect('/user?id=' + str(user_id))
 
 
 @need_logged_in

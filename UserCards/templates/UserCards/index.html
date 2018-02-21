@@ -114,13 +114,12 @@
 </style>
 
 <script type="text/javascript">
-function httpGet(theUrl)
-{
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
-    xmlHttp.send( null );
-    return xmlHttp.responseText;
-}
+    function httpGet(theUrl) {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("GET", theUrl, false); // false for synchronous request
+        xmlHttp.send(null);
+        return xmlHttp.responseText;
+    }
 </script>
 
 <div class="container">
@@ -148,14 +147,18 @@ function httpGet(theUrl)
                     <a href="/{{copy.doc.id}}">{{ copy }}</a>
                     {{ copy.time_left }}<br>
                     {% if user.is_staff %}
-                    <a class="btn" href="/requests/return/?copy_id={{copy.id}}">Return document</a>
+                    <a class="btn" href="/requests/return/?copy_id={{copy.id}}" onclick="
+                    return confirm('Return {{copy.doc.title}} from {{copy.checked_up_by_whom.username}} back?');
+">Return document</a>
                     {% else %}
                     <button class="btn" onclick="
                        var response = httpGet('/requests/renew/?copy_id={{copy.id}}').toString();
                        alert(response);
                        if (response.substr(0, 3) === 'You') // refresh to see new returning date
                            window.location.reload(false);
-">Renew</button><br>
+">Renew
+                    </button>
+                    <br>
                     {% endif %}
                 </li>
                 {% endfor %}

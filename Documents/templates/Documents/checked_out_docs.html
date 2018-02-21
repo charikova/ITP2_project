@@ -1,9 +1,41 @@
 {% extends 'Documents/base.html'  %}
 
 {% load staticfiles %}
-{% block body  %}
 <title>Checked out documents</title>
+{% block body  %}
 
+<style>
+        h1 {
+            font-size: 50px;
+        }
+
+        .cen {
+            text-align: center;
+            font-size: 20px;
+        }
+
+        table {
+            border: none;
+            border-radius: 10px;
+        }
+
+        tr {
+            border: none;
+            text-align: left;
+        }
+
+        td {
+            border: none;
+            text-align: center;
+            border-top: 1px solid saddlebrown;
+        }
+
+        a {
+            color: black;
+        }
+
+
+    </style>
 
 <table>
     <tr>
@@ -14,11 +46,13 @@
     </tr>
     <tr>
         {% for copy in document_copies %}
-        <td><a href="/{{ doc.doc.id }}/">{{ copy.doc.title }}</a></td>
+        <td><a href="/{{ copy.doc.id }}/">{{ copy.doc.title }}</a></td>
         <td>{{ copy.doc.authors }}</td>
-        <td><a href="/user/?id={{copy.checked_up_by_whom.id}}">{{ copy.checked_up_by_whom }}</a></td>
+        <td><a href="/user/?id={{ copy.checked_up_by_whom.id }}">{{ copy.checked_up_by_whom }}</a></td>
         <td>{{ copy.returning_date}}</td>
-        <td><a class="btn" href="/requests/return/?copy_id={{copy.id}}">Return</a></td>
+        <td><a class="btn" href="/requests/return/?copy_id={{ copy.id }}" onclick="
+        return confirm('Return {{copy.doc.title}} from {{copy.checked_up_by_whom.username}} back?');
+">Return</a></td>
     </tr>
     {% endfor %}
 </table>
