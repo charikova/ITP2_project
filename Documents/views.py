@@ -11,7 +11,7 @@ class IndexView(ListView):
     template_name = 'Documents/index.html'
     model = Document
     context_object_name = 'documents'
-    paginate_by = 5
+    paginate_by = 15
 
     def get_queryset(self):
         get_request = self.request.GET
@@ -22,9 +22,9 @@ class IndexView(ListView):
         # expanded search
         elif any_search_criteria(get_request):
             model = determine_model(self.request.GET.get('type'))
-            kwargs, exkwargs = dict(), dict() # kwargs for filter query, exkwargs for exclude query
-            args = list() # args for filter query
-            mo = '&' if get_request.get('match') == 'on' else '|' # match operand (either OR or AND)
+            kwargs, exkwargs = dict(), dict()  # kwargs for filter query, exkwargs for exclude query
+            args = list()  # args for filter query
+            mo = '&' if get_request.get('match') == 'on' else '|'  # match operand (either OR or AND)
 
             # create db query considering match operand. Resulting query should consist of Q() objects splitted
             # by operands. For example if request contains title and keywords queries db_query will look like
@@ -94,16 +94,12 @@ def document_detail(request, pk):
         if Type.objects.filter(pk=pk):
             doc = Type.objects.get(pk=pk)
     context = dict()
-    if not request.user.is_anonymous:
-        context['user_has_doc'] = len(request.user.documentcopy_set.filter(
-                doc=doc))  # args that will be sent to doc_inf.html
-        context['user_has_req'] = len(request.user.request_set.filter(doc=doc))
     context['doc'] = doc
     context['cover'] = doc.__dict__['cover']
     context['fields'] = list()  # rest of fields
     excess_fields = ['document_ptr_id', '_state', 'id', 'cover']
     if not request.user.is_staff:
-        excess_fields += ['is_reference', 'is_bestseller', 'room', 'level']
+        excess_fields += ['is_reference', 'is_bestseller', 'room', 'level', 'keywords']
     for key, value in doc.__dict__.items():
         if key not in excess_fields:
             context['fields'].append((key.replace('is', '').replace('_', " ").capitalize(), value))
@@ -133,3 +129,15 @@ def any_search_criteria(get_request):
             if query != 'type' and value and value != "None" and value != "False":
                 return True
     return False
+
+
+class CheckedOutDocsView(ListView):
+    model = DocumentCopy
+    template_name = 'Documents/checked_out_docs.html'
+    context_object_name = 'document_copies'
+    paginate_by = 20
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_staff:
+            return super().get(request, *args, **kwargs)
+        return redirect('/')

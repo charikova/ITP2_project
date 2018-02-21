@@ -123,7 +123,7 @@
 
                     <tr>
                         {% for doc in documents %}
-                            <td><img src={{ doc.cover }}></td>
+                        <td><a href="/{{ doc.id }}/"><img src={{ doc.cover }}></a></td>
                             <td><a href="/{{ doc.id }}/">{{ doc.title }}</a></td>
                             <td>{{ doc.authors }}</td>
                             <td>{{ doc.copies }}</td>

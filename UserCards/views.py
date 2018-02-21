@@ -56,7 +56,8 @@ class EditCardView(View):
         init_fields = {'address': User.objects.get(id=id).userprofile.address,
                        'status': User.objects.get(id=id).userprofile.status,
                        'phone_number': User.objects.get(id=id).userprofile.phone_number,
-                       'photo': User.objects.get(id=id).userprofile.photo}
+                       'password': User.objects.get(id=id).password
+                       }
         form = EditPatronForm(instance=User.objects.get(id=id), initial=init_fields)
         return render(request, 'UserCards/edit.html', {'form': form})
 
@@ -124,7 +125,7 @@ def user_card_info(request):
 
         document_copy.save()
 
-    context['fields'] =  fields
+    context['fields'] = fields
     context['copies'] = user.documentcopy_set.all()
     return render(request, 'UserCards/index.html', context)
 
