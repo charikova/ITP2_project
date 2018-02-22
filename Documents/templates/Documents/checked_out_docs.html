@@ -37,6 +37,10 @@
             color: black;
         }
 
+        button {
+            vertical-align: center;
+            margin: 1%;
+        }
 
     </style>
 <h1> Checked Out Documents</h1>
@@ -53,7 +57,7 @@
         <td>{{ copy.doc.authors }}</td>
         <td><a href="/user/?id={{ copy.checked_up_by_whom.id }}">{{ copy.checked_up_by_whom }}</a></td>
         <td>{{ copy.returning_date}}</td>
-        <td><a class="btn" href="/requests/return/?copy_id={{ copy.id }}" onclick="
+        <td><a class="button" href="/requests/return/?copy_id={{ copy.id }}" onclick="
         return confirm('Return {{copy.doc.title}} from {{copy.checked_up_by_whom.username}} back?');
 ">Return</a></td>
     </tr>

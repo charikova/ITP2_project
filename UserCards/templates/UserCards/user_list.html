@@ -41,11 +41,6 @@
         text-align: center;
     }
 
-    .button {
-        width: 40%;
-        font-size: 25px;
-        margin: 15px 15px 15px 30%;
-    }
 </style>
 
 <h2>User List</h2><br>
@@ -54,7 +49,7 @@
     <strong>Search for users</strong><br>
     <input type="text" placeholder="by username|name|surname" name="q" {% if q %}
            value="{{q}}" {% endif %}>
-    <input type="submit" class="btn btn-default" value="Search">
+    <input type="submit" class="button" value="Search">
 </form>
     <form>
         {% for user in object_list %}
