@@ -142,15 +142,24 @@ class AllUsersView(ListView):
             return redirect('/')
 
     def get_queryset(self):
-        query = self.request.GET.get('q')
+        query = self.request.GET.get('uq')
+        in_patrons = self.request.GET.get('p')
+        in_labs = self.request.GET.get('l')
+        db_query = Q(is_staff=None)
+        if in_patrons:
+            db_query |= Q(is_staff=False)
+        if in_labs:
+            db_query |= Q(is_staff=True)
         if query:
-            return User.objects.filter(Q(**{'username__icontains': query}) |
-                                       Q(**{'first_name__icontains': query}) |
-                                       Q(**{'last_name__icontains': query}))
-        return User.objects.order_by('username')
+            db_query &= (Q(username__icontains=query) |
+                                       Q(first_name__icontains=query) |
+                                       Q(last_name__icontains=query))
+        return User.objects.filter(db_query).order_by('username')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['q'] = self.request.GET.get('q')
+        context['uq'] = self.request.GET.get('uq')
+        context['p'] = self.request.GET.get('p')
+        context['l'] = self.request.GET.get('l')
         return context
 
