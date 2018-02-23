@@ -70,6 +70,10 @@
                 width: 15%;
             }
 
+            .small {
+                width: 40%;
+            }
+
         </style>
 
 
@@ -79,7 +83,7 @@
         <h3 align="center">Documents available: </h3>
         <form action="/" method="GET">
             <table class="search">
-                <th><strong><center>Expanded search:</center></strong></th>
+                <th colspan="9"><strong><center>Expanded search</center></strong></th>
                 <tr>
                     <td>
                         By type <select name="type" class="input">
@@ -118,18 +122,13 @@
                     </td>
                     {% if user.is_staff %}
                         <td>
-                            Room <input type="number" name="room" {% if room %} value="{{ room }}" {% endif %}>
+                            Room <input class="small" type="number" name="room" {% if room %} value="{{ room }}" {% endif %}>
                         </td>
                         <td>
-                            Level <input type="number" name="level" {% if level %} value="{{ level }}" {% endif %}>
+                            Level <input class="small" type="number" name="level" {% if level %} value="{{ level }}" {% endif %}>
                         </td>
                     {% endif %}
 
-
-                    {% if user.is_staff %}
-                        Room <input type="number" name="room" {% if room %} value="{{ room }}" {% endif %}>
-                        Level <input type="number" name="level" {% if level %} value="{{ level }}" {% endif %}>
-                    {% endif %}
 
                         <td>
                             <input type="reset" class="button" value="Reset">
@@ -139,8 +138,6 @@
                         </td>
                 </tr>
             </table>
-
-
         </form>
         </div>
         <form action="" method="post">
