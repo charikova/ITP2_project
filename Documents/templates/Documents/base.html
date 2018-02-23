@@ -11,107 +11,101 @@
     <link rel="stylesheet" type="text/css" href="{% static 'Documents/style.css' %}"/>
 
     <style>
-        .container {
-            background-color: rgba(214, 184, 150, 0.8);
-            color: saddlebrown;
-            font-size: 15px;
-            margin: 0 auto;
-            overflow: visible;
-            position: absolute;
-            left: 38%;
-            top: 25%;
-            width: 24%;
-            border-radius: 10px;
-        }
+    .container {
+        background-color: rgba(214, 184, 150, 0.8);
+        color: saddlebrown;
+        font-size: 15px;
+        margin:0 auto;
+        overflow:visible;
+        position:absolute;
+        left: 38%;
+        top: 25%;
+        width: 24%;
+        border-radius: 10px;
+    }
 
-        form {
-            padding: 5px;
-            color: black;
-            font-size: 15px;
-            margin: 5px;
-        }
+    form {
+        padding: 5px;
+        color: black;
+        font-size: 15px;
+        margin: 5px;
+    }
 
-        input {
-            background-color: floralwhite;
-            border: 2px solid saddlebrown;
-            border-radius: 5px;
-            margin: 0 0 0 10px;
-            left: 50%;
-        }
+    input {
+        background-color: floralwhite;
+        border: 2px solid saddlebrown;
+        border-radius: 5px;
+        margin: 0 0 0 10px;
+        left: 50%;
+    }
 
-        h2 {
-            color: black;
-            font-size: 40px;
-            text-align: center;
-        }
+    h2 {
+        color: black;
+        font-size: 40px;
+        text-align: center;
+    }
 
-        .button {
-            text-decoration: none;
-            text-align: center;
-            padding: 11px 12px;
-            border: solid 2px #6b2c02;
-            -webkit-border-radius: 15px;
-            -moz-border-radius: 15px;
-            border-radius: 15px;
-            font: 14px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-            font-weight: bold;
-            color: #292208;
-            background-color: #ded192;
-            background-image: -moz-linear-gradient(top, #ded192 0%, #c49543 100%);
-            background-image: -webkit-linear-gradient(top, #ded192 0%, #c49543 100%);
-            background-image: -o-linear-gradient(top, #ded192 0%, #c49543 100%);
-            background-image: -ms-linear-gradient(top, #ded192 0%, #c49543 100%);
-            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#c49543', endColorstr='#c49543', GradientType=0);
-            background-image: linear-gradient(top, #ded192 0%, #c49543 100%);
-            -webkit-box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
-            -moz-box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
-            box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
+    .button{text-decoration:none; text-align:center;
+ padding:11px 12px;
+ border:solid 2px #6b2c02;
+ -webkit-border-radius:15px;
+ -moz-border-radius:15px;
+ border-radius: 15px;
+ font:14px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+ font-weight:bold;
+ color:#292208;
+ background-color:#ded192;
+ background-image: -moz-linear-gradient(top, #ded192 0%, #c49543 100%);
+ background-image: -webkit-linear-gradient(top, #ded192 0%, #c49543 100%);
+ background-image: -o-linear-gradient(top, #ded192 0%, #c49543 100%);
+ background-image: -ms-linear-gradient(top, #ded192 0% ,#c49543 100%);
+ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c49543', endColorstr='#c49543',GradientType=0 );
+ background-image: linear-gradient(top, #ded192 0% ,#c49543 100%);
+ -webkit-box-shadow:1px 1px 2px #bababa, inset 0px 0px 1px #969393;
+ -moz-box-shadow: 1px 1px 2px #bababa,  inset 0px 0px 1px #969393;
+ box-shadow:1px 1px 2px #bababa, inset 0px 0px 1px #969393;
 
-        }
+  }.button:hover{
+ padding:11px 12px;
+ border:solid 2px #6b2c02;
+ -webkit-border-radius:15px;
+ -moz-border-radius:15px;
+ border-radius: 15px;
+ font:14px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+ font-weight:bold;
+ color:#000000;
+ background-color:#d4c05b;
+ background-image: -moz-linear-gradient(top, #d4c05b 0%, #a37424 100%);
+ background-image: -webkit-linear-gradient(top, #d4c05b 0%, #a37424 100%);
+ background-image: -o-linear-gradient(top, #d4c05b 0%, #a37424 100%);
+ background-image: -ms-linear-gradient(top, #d4c05b 0% ,#a37424 100%);
+ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a37424', endColorstr='#a37424',GradientType=0 );
+ background-image: linear-gradient(top, #d4c05b 0% ,#a37424 100%);
+ -webkit-box-shadow:1px 1px 2px #bababa, inset 0px 0px 1px #969393;
+ -moz-box-shadow: 1px 1px 2px #bababa,  inset 0px 0px 1px #969393;
+ box-shadow:1px 1px 2px #bababa, inset 0px 0px 1px #969393;
 
-        .button:hover {
-            padding: 11px 12px;
-            border: solid 2px #6b2c02;
-            -webkit-border-radius: 15px;
-            -moz-border-radius: 15px;
-            border-radius: 15px;
-            font: 14px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-            font-weight: bold;
-            color: #000000;
-            background-color: #d4c05b;
-            background-image: -moz-linear-gradient(top, #d4c05b 0%, #a37424 100%);
-            background-image: -webkit-linear-gradient(top, #d4c05b 0%, #a37424 100%);
-            background-image: -o-linear-gradient(top, #d4c05b 0%, #a37424 100%);
-            background-image: -ms-linear-gradient(top, #d4c05b 0%, #a37424 100%);
-            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a37424', endColorstr='#a37424', GradientType=0);
-            background-image: linear-gradient(top, #d4c05b 0%, #a37424 100%);
-            -webkit-box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
-            -moz-box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
-            box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
+ }.button:active{
+ padding:11px 12px;
+ border:solid 3px #6b2c02;
+ -webkit-border-radius:15px;
+ -moz-border-radius:15px;
+ border-radius: 15px;
+ font:14px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+ font-weight:bold;
+ color:#292208;
+ background-color:#ffe66b;
+ background-image: -moz-linear-gradient(top, #ffe66b 0%, #b07d25 100%);
+ background-image: -webkit-linear-gradient(top, #ffe66b 0%, #b07d25 100%);
+ background-image: -o-linear-gradient(top, #ffe66b 0%, #b07d25 100%);
+ background-image: -ms-linear-gradient(top, #ffe66b 0% ,#b07d25 100%);
+ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b07d25', endColorstr='#b07d25',GradientType=0 );
+ background-image: linear-gradient(top, #ffe66b 0% ,#b07d25 100%);
+ -webkit-box-shadow:1px 1px 2px #bababa, inset 0px 0px 1px #969393;
+ -moz-box-shadow: 1px 1px 2px #bababa,  inset 0px 0px 1px #969393;
+ box-shadow:1px 1px 2px #bababa, inset 0px 0px 1px #969393;
 
-        }
-
-        .button:active {
-            padding: 11px 12px;
-            border: solid 3px #6b2c02;
-            -webkit-border-radius: 15px;
-            -moz-border-radius: 15px;
-            border-radius: 15px;
-            font: 14px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-            font-weight: bold;
-            color: #292208;
-            background-color: #ffe66b;
-            background-image: -moz-linear-gradient(top, #ffe66b 0%, #b07d25 100%);
-            background-image: -webkit-linear-gradient(top, #ffe66b 0%, #b07d25 100%);
-            background-image: -o-linear-gradient(top, #ffe66b 0%, #b07d25 100%);
-            background-image: -ms-linear-gradient(top, #ffe66b 0%, #b07d25 100%);
-            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#b07d25', endColorstr='#b07d25', GradientType=0);
-            background-image: linear-gradient(top, #ffe66b 0%, #b07d25 100%);
-            -webkit-box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
-            -moz-box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
-            box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
-
-        }
+ }
 
     </style>
 
@@ -133,19 +127,19 @@
 
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_staff %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="/user/" id="dropdown01" data-toggle="dropdown"
-                           aria-haspopup="true" aria-expanded="false">Librarian</a>
-                        <div class="dropdown-menu" aria-labelledby="dropdown01">
-                            <a class="dropdown-item" href="/add_doc/">Add document</a> <br>
-                            <a class="dropdown-item" href="/admin">Admin site</a> <br>
-                            <a class="dropdown-item" href="/user/create_user/">Create new user</a> <br>
-                            <a class="dropdown-item" href="/requests/">Requests</a> <br>
-                            <a class="dropdown-item" href="/user/all">All users</a> <br>
-                            <a class="dropdown-item" href="/checked_out_docs/">Checked out documents</a>
-                        </div>
-                    </ul>
-                {% endif %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="/user/" id="dropdown01" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">Librarian</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdown01">
+                        <a class="dropdown-item" href="/add_doc/">Add document</a> <br>
+                        <a class="dropdown-item" href="/admin">Admin site</a> <br>
+                        <a class="dropdown-item" href="/user/create_user/">Create new user</a> <br>
+                        <a class="dropdown-item" href="/requests/">Requests</a> <br>
+                        <a class="dropdown-item" href="/user/all">All users</a> <br>
+                        <a class="dropdown-item" href="/checked_out_docs/">Checked out documents</a>
+                    </div>
+            </ul>
+            {% endif %}
 
         </div>
 
@@ -153,20 +147,19 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <form class="navbar-form navbar-left" action="/">
                 <div class="form-group">
-                    <input type="text" class="form-control" name="q" placeholder="Search by title" {% if q %}
-                           value="{{ q }}" {% endif %}>
+                    <input type="text" class="form-control" name="q" placeholder="Search by title" {% if q %} value="{{q}}" {% endif %}>
                 </div>
                 <input type="submit" class="btn btn-default" value="Search">
             </form>
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_anonymous %}
-                    <li><a href="/user/login">Log In</a></li>
+                <li><a href="/user/login">Log In</a></li>
                 {% elif user.is_authenticated %}
-                    {% if not user.is_staff %}
-                        <li><a href="/requests/">My requests</a></li>
-                    {% endif %}
-                    <li><a href="/user/">{{ user.username }}</a></li>
-                    <li><a href="/user/logout">Log Out</a></li>
+                {% if not user.is_staff %}
+                <li><a href="/requests/">My requests</a></li>
+                {% endif %}
+                <li><a href="/user/">{{user.username}}</a></li>
+                <li><a href="/user/logout">Log Out</a></li>
                 {% endif %}
             </ul>
         </div><!-- /.navbar-collapse -->
@@ -177,15 +170,15 @@
 {% block body %}
 
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-            crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-            crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-            crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 
 
 {% endblock %}
