@@ -191,19 +191,19 @@
             <form class="navbar-form navbar-left" action="/">
                 <div class="form-group">
                     <input type="text" class="form-control" name="q" placeholder="Search by title" {% if q %}
-                           value="{{q}}" {% endif %}>
+                           value="{{ q }}" {% endif %}>
                 </div>
                 <input type="submit" class="btn btn-default" value="Search">
             </form>
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_anonymous %}
-                <li><a href="/user/login">Log In</a></li>
+                    <li><a href="/user/login">Log In</a></li>
                 {% elif user.is_authenticated %}
-                {% if not user.is_staff %}
-                <li><a href="/requests/">My requests</a></li>
-                {% endif %}
-                <li><a href="/user/">{{user.username}}</a></li>
-                <li><a href="/user/logout">Log Out</a></li>
+                    {% if not user.is_staff %}
+                        <li><a href="/requests/">My requests</a></li>
+                    {% endif %}
+                    <li><a href="/user/">{{ user.username }}</a></li>
+                    <li><a href="/user/logout">Log Out</a></li>
                 {% endif %}
             </ul>
         </div><!-- /.navbar-collapse -->
@@ -214,15 +214,15 @@
 {% block body %}
 
 
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
 
 
 {% endblock %}

@@ -122,55 +122,57 @@
     <p>
 
         {% for field, value in fields %}
-        {% if value|length <= 2000 %}
         {{ field }}: {{ value }}
-        {% endif %}
         <br>
         {% endfor %}
     </p>
 
     <div>
 
-        <p>
-            <strong>Documents in used:</strong>
-        </p>
-        <div>
-            <ul>
-                {% for copy in copies %}
-                <li>
-                    <a href="/{{copy.doc.id}}">{{ copy }}</a>
+        <table class="used-docs">
+            <th colspan="3"><h3>Documents in used:</h3></th>
+            {% for copy in copies %}
+                <tr>
+                <td>
+                    <a href="/{{ copy.doc.id }}">{{ copy }}</a>
+                </td>
+                <td>
                     {{ copy.time_left }}<br>
-                    {% if user.is_staff %}
-                    <a class="button" href="/requests/return/?copy_id={{copy.id}}" onclick="
-                    return confirm('Return {{copy.doc.title}} from {{copy.checked_up_by_whom.username}} back?');
-">Return document</a>
-                    {% else %}
-                    <button class="button" onclick="
-                       var response = httpGet('/requests/renew/?copy_id={{copy.id}}').toString();
-                       alert(response);
-                       if (response.substr(0, 3) === 'You') // refresh to see new returning date
-                           window.location.reload(false);
-">Renew
-                    </button>
+                </td>
+                {% if user.is_staff %}
+                    <td><a class="button" href="/requests/return/?copy_id={{ copy.id }}" onclick="
+                            return confirm('Return {{ copy.doc.title }} from {{ copy.checked_up_by_whom.username }} back?');
+                            ">Return document</a></td>
+                {% else %}
+                    <td>
+                        <button class="button" onclick="
+                                var response = httpGet('/requests/renew/?copy_id={{ copy.id }}').toString();
+                                alert(response);
+                                if (response.substr(0, 3) === 'You') // refresh to see new returning date
+                                window.location.reload(false);
+                                ">Renew
+                        </button>
+                    </td>
                     <br>
-                    {% endif %}
+                {% endif %}
                 </li>
-                {% endfor %}
+                </tr>
+            {% endfor %}
             </ul>
             {% csrf_token %}
-        </div>
+        </table>
         {% csrf_token %}
 
         {% if user.is_staff %}
-        <a class="edit" href="/user/edit/{{current_user.id}}">Edit profile</a>
-        <a class="edit" href="/user/delete/{{current_user.id}}"
-           onclick="return confirm('Delete {{current_user.username}}?')">Delete
-            profile</a>
+            <a class="edit" href="/user/edit/{{ current_user.id }}">Edit profile</a>
+            <a class="edit" href="/user/delete/{{ current_user.id }}"
+               onclick="return confirm('Delete {{ current_user.username }}?')">Delete
+                profile</a>
         {% endif %}
 
         <br>
     </div>
 
 
-    {% endblock %}
+{% endblock %}
 </div>
