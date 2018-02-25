@@ -7,6 +7,8 @@
 <style>
         h1 {
             font-size: 50px;
+            text-align: center;
+            margin-bottom: 2%;
         }
 
         .cen {
@@ -17,6 +19,7 @@
         table {
             border: none;
             border-radius: 10px;
+            margin-left: 10%;
         }
 
         tr {
@@ -34,9 +37,13 @@
             color: black;
         }
 
+        button {
+            vertical-align: center;
+            margin: 1%;
+        }
 
     </style>
-
+<h1> Checked Out Documents</h1>
 <table>
     <tr>
         <th class="cen">Document</th>
@@ -50,7 +57,7 @@
         <td>{{ copy.doc.authors }}</td>
         <td><a href="/user/?id={{ copy.checked_up_by_whom.id }}">{{ copy.checked_up_by_whom }}</a></td>
         <td>{{ copy.returning_date}}</td>
-        <td><a class="btn" href="/requests/return/?copy_id={{ copy.id }}" onclick="
+        <td><a class="button" href="/requests/return/?copy_id={{ copy.id }}" onclick="
         return confirm('Return {{copy.doc.title}} from {{copy.checked_up_by_whom.username}} back?');
 ">Return</a></td>
     </tr>

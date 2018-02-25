@@ -39,12 +39,6 @@
         left: 50%;
     }
 
-    .button {
-        width: 40%;
-        font-size: 25px;
-        margin: 15px 15px 15px 30%;
-    }
-
     p {
         color: black;
         margin: 15px;
@@ -147,11 +141,11 @@
                     <a href="/{{copy.doc.id}}">{{ copy }}</a>
                     {{ copy.time_left }}<br>
                     {% if user.is_staff %}
-                    <a class="btn" href="/requests/return/?copy_id={{copy.id}}" onclick="
+                    <a class="button" href="/requests/return/?copy_id={{copy.id}}" onclick="
                     return confirm('Return {{copy.doc.title}} from {{copy.checked_up_by_whom.username}} back?');
 ">Return document</a>
                     {% else %}
-                    <button class="btn" onclick="
+                    <button class="button" onclick="
                        var response = httpGet('/requests/renew/?copy_id={{copy.id}}').toString();
                        alert(response);
                        if (response.substr(0, 3) === 'You') // refresh to see new returning date

@@ -43,7 +43,7 @@ def make_new(request):
         return HttpResponse('Sorry, but this document is reference')
     else:
         doc_request = Request(doc=documents_models.Document.objects.get(id=doc_id),
-                      checked_up_by_whom=request.user, timestamp=datetime.datetime.now())
+                              checked_up_by_whom=request.user, timestamp=datetime.datetime.now())
         doc_request.save()
         return HttpResponse('Successfully created new request')
 
@@ -70,8 +70,8 @@ def approve_request(request):
         elif doc.is_bestseller:
             days = 14
         copy = documents_models.DocumentCopy(doc=doc,
-                                checked_up_by_whom=user, returning_date=(
-                datetime.date.today() + datetime.timedelta(days=days)).strftime("%Y-%m-%d"))
+                                             checked_up_by_whom=user, returning_date=(
+                    datetime.date.today() + datetime.timedelta(days=days)).strftime("%Y-%m-%d"))
         copy.save()
     doc_request.delete()
     return redirect('/requests')
@@ -115,7 +115,18 @@ def renew(request):
     try:
         copy = user.documentcopy_set.get(id=request.GET.get('copy_id'))
     except:
-        return HttpResponse('forbidden')
+        return redirect('/' + str(copy.doc.id))
+    requests = copy.doc.request_set.all()
+    if len(requests) == 0 and (datetime.datetime.now() - datetime.datetime.strptime(str(copy.returning_date),
+                                                                                    "%Y-%m-%d %H:%M")).seconds < 21600:
+        copy.returning_date = datetime.datetime.today() + datetime.timedelta(days=7)
+        copy.save()
+    else:
+        pass
+    return redirect('/' + str(copy.doc.id))
+    return HttpResponse('forbidden')
+
+
     returning_date = user.documentcopy_set.get(doc=copy.doc).returning_date
     returning_date = datetime.datetime(year=returning_date.year,
                                        month=returning_date.month,

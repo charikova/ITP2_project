@@ -42,11 +42,6 @@
         text-align: center;
     }
 
-    .button {
-        width: 40%;
-        font-size: 25px;
-        margin: 15px 15px 15px 30%;
-    }
 </style>
 
 <h2>User List</h2><br>
@@ -59,7 +54,8 @@
            checked {% endif %}><br>
     Librarians: <input type="checkbox" name="l" class="btn btn-default" {% if l %}
            checked {% endif %} ><br>
-    <input type="submit" class="btn btn-default" value="Search">
+    <input type="submit" class="button" value="Search">
+
 </form>
     <form>
         {% for user in object_list %}

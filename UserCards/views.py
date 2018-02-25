@@ -108,7 +108,7 @@ def user_card_info(request):
                (document_copy.returning_date - datetime.datetime.now(UTC())).seconds
 
         if temp >= 3600:
-            document_copy.time_left = "Time to return: " + str(int(temp / 3600)) + "h:" + str(int(temp % 3600 / 60))+"m"
+            document_copy.time_left = "Time to return: " + str(int(temp / (3600*24))) + "days " + str(int(temp % (3600*24) / 3600)) + "h:" + str(int(temp % 3600 / 60))+"m"
         elif 3600 > temp >= 60:
             document_copy.time_left = "Time to return: " + str(int(temp / 60)) + "m"
         elif 60 > temp > 0:

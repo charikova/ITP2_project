@@ -11,46 +11,144 @@
     <link rel="stylesheet" type="text/css" href="{% static 'Documents/style.css' %}"/>
 
     <style>
-    .container {
-        background-color: rgba(214, 184, 150, 0.8);
-        color: saddlebrown;
-        font-size: 15px;
-        margin:0 auto;
-        overflow:visible;
-        position:absolute;
-        left: 38%;
-        top: 25%;
-        width: 24%;
-        border-radius: 10px;
-    }
+        body {
+            font-family: Futura;
+            color: white;
+            background: url("../../static/Documents/background.jpg") no-repeat fixed center center;
+            background-size: cover;
+        }
 
-    form {
-        padding: 5px;
-        color: black;
-        font-size: 15px;
-        margin: 5px;
-    }
+        table {
+            border: 3px solid saddlebrown;
+            border-radius: 5px;
+            width: 80%;
+            background-color: rgba(214, 184, 150, 0.8);
+            color: black;
+            empty-cells: hide;
+            text-align: center;
+            margin: 10px;
 
-    input {
-        background-color: floralwhite;
-        border: 2px solid saddlebrown;
-        border-radius: 5px;
-        margin: 0 0 0 10px;
-        left: 50%;
-    }
+        }
 
-    h2 {
-        color: black;
-        font-size: 40px;
-        text-align: center;
-    }
+        tr {
+            border: 1px solid saddlebrown;
+            text-align: center;
+        }
 
-    .button {
-        width: 40%;
-        font-size: 25px;
-        margin: 15px 15px 15px 30%;
+        td {
+            border: 1px solid saddlebrown;
+            padding: 10px;
+            font-size: 20px;
+            color: black;
+        }
 
-    }
+        img {
+            height: 100px;
+            position: center;
+            opacity: 1;
+        }
+
+        .container {
+            background-color: rgba(214, 184, 150, 0.8);
+            color: saddlebrown;
+            font-size: 15px;
+            margin: 0 auto;
+            overflow: visible;
+            position: absolute;
+            left: 38%;
+            top: 25%;
+            width: 24%;
+            border-radius: 10px;
+        }
+
+        form {
+            padding: 5px;
+            color: black;
+            font-size: 15px;
+            margin: 5px;
+        }
+
+        input {
+            background-color: floralwhite;
+            border: 2px solid saddlebrown;
+            border-radius: 5px;
+            margin: 0 0 0 10px;
+            left: 50%;
+        }
+
+        h2 {
+            color: black;
+            font-size: 40px;
+            text-align: center;
+        }
+
+        .button {
+            text-decoration: none;
+            text-align: center;
+            padding: 11px 12px;
+            border: solid 2px #6b2c02;
+            -webkit-border-radius: 15px;
+            -moz-border-radius: 15px;
+            border-radius: 15px;
+            font: 14px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+            font-weight: bold;
+            color: #292208;
+            background-color: #ded192;
+            background-image: -moz-linear-gradient(top, #ded192 0%, #c49543 100%);
+            background-image: -webkit-linear-gradient(top, #ded192 0%, #c49543 100%);
+            background-image: -o-linear-gradient(top, #ded192 0%, #c49543 100%);
+            background-image: -ms-linear-gradient(top, #ded192 0%, #c49543 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#c49543', endColorstr='#c49543', GradientType=0);
+            background-image: linear-gradient(top, #ded192 0%, #c49543 100%);
+            -webkit-box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
+            -moz-box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
+            box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
+
+        }
+
+        .button:hover {
+            padding: 11px 12px;
+            border: solid 2px #6b2c02;
+            -webkit-border-radius: 15px;
+            -moz-border-radius: 15px;
+            border-radius: 15px;
+            font: 14px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+            font-weight: bold;
+            color: #000000;
+            background-color: #d4c05b;
+            background-image: -moz-linear-gradient(top, #d4c05b 0%, #a37424 100%);
+            background-image: -webkit-linear-gradient(top, #d4c05b 0%, #a37424 100%);
+            background-image: -o-linear-gradient(top, #d4c05b 0%, #a37424 100%);
+            background-image: -ms-linear-gradient(top, #d4c05b 0%, #a37424 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a37424', endColorstr='#a37424', GradientType=0);
+            background-image: linear-gradient(top, #d4c05b 0%, #a37424 100%);
+            -webkit-box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
+            -moz-box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
+            box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
+
+        }
+
+        .button:active {
+            padding: 11px 12px;
+            border: solid 3px #6b2c02;
+            -webkit-border-radius: 15px;
+            -moz-border-radius: 15px;
+            border-radius: 15px;
+            font: 14px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+            font-weight: bold;
+            color: #292208;
+            background-color: #ffe66b;
+            background-image: -moz-linear-gradient(top, #ffe66b 0%, #b07d25 100%);
+            background-image: -webkit-linear-gradient(top, #ffe66b 0%, #b07d25 100%);
+            background-image: -o-linear-gradient(top, #ffe66b 0%, #b07d25 100%);
+            background-image: -ms-linear-gradient(top, #ffe66b 0%, #b07d25 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#b07d25', endColorstr='#b07d25', GradientType=0);
+            background-image: linear-gradient(top, #ffe66b 0%, #b07d25 100%);
+            -webkit-box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
+            -moz-box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
+            box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
+
+        }
 
     </style>
 
@@ -92,7 +190,8 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <form class="navbar-form navbar-left" action="/">
                 <div class="form-group">
-                    <input type="text" class="form-control" name="q" placeholder="Search by title" {% if q %} value="{{q}}" {% endif %}>
+                    <input type="text" class="form-control" name="q" placeholder="Search by title" {% if q %}
+                           value="{{q}}" {% endif %}>
                 </div>
                 <input type="submit" class="btn btn-default" value="Search">
             </form>
@@ -111,7 +210,6 @@
     </div><!-- /.container-fluid -->
 </nav>
 
-<a href="mailto:b.meyer@innopolis.ru?subject=ITP project BS1-7&body=Dear Bertrand Meyer, ">Support</a>​
 
 {% block body %}
 
