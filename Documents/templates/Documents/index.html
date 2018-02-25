@@ -45,6 +45,7 @@
 
             a {
                 color: black;
+                text-decoration: none;
             }
 
             .search {
@@ -74,9 +75,31 @@
                 width: 40%;
             }
 
+            .paginator {
+                margin-left: 45%;
+                margin-top: 0;
+                border-radius: 15px;
+                border-collapse: separate;
+                border-spacing: 5px;
+                background-color: rgba(214, 184, 150, 0);
+                width: 10%;
+            }
+
+            .td-paginator {
+                background-color: rgba(214, 184, 150, 0.8);
+                width: 10px;
+                text-decoration: none;
+            }
+
+            td:hover {
+                cursor: pointer;
+            }
+
+            . a:hover {
+                text-decoration: none;
+            }
+
         </style>
-
-
 
         <h1 align="center">Welcome to Innopolka!</h1><br>
 
@@ -167,26 +190,32 @@
                 {% csrf_token %}
             </div>
         </form>
-
-
-        <div align="center">
-        <div class="pagination">
-
-            {% if page_obj.has_previous %}
-                <a href="?page={{ page_obj.previous_page_number }}">←</a>
-            {% endif %}
-            {% for num in page_obj.paginator.page_range %}
-                {% if num == page_obj.number %}
-                    <span class="current"><b>{{ num }}</b></span>
-                {% else %}
-                    <a href="?page={{ num }}"> {{ num }}</a>
+        <table class="paginator">
+            <tr>
+                {% if page_obj.has_previous %}
+                    <td class="td-paginator button">
+                        <a href="?page={{ page_obj.previous_page_number }}">←</a>
+                    </td>
                 {% endif %}
-            {% endfor %}
+                {% for num in page_obj.paginator.page_range %}
+                    {% if num == page_obj.number %}
+                        <td class="td-paginator button">
+                            <span class="current"><b>{{ num }}</b></span>
+                        </td>
+                    {% else %}
+                        <td class="td-paginator button">
+                            <a href="?page={{ num }}"> {{ num }}</a>
+                        </td>
+                    {% endif %}
+                {% endfor %}
 
-            {% if page_obj.has_next %}
-                <a href="?page={{ article_list.next_page_number }}">→</a>
-            {% endif %}
-        </div>
+                {% if page_obj.has_next %}
+                    <td class="td-paginator button">
+                        <a href="?page={{ article_list.next_page_number }}">→</a>
+                    </td>
+                {% endif %}
+            </tr>
+        </table>
 
 
 
