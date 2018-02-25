@@ -83,7 +83,9 @@
         <h3 align="center">Documents available: </h3>
         <form action="/" method="GET">
             <table class="search">
-                <th colspan="9"><strong><center>Expanded search</center></strong></th>
+                <th colspan="9"><strong>
+                    <center>Expanded search</center>
+                </strong></th>
                 <tr>
                     <td>
                         By type <select name="type" class="input">
@@ -104,7 +106,7 @@
                     </td>
                     <td>
                         By authors: <input class="input" type="text" name="authors" {% if authors %}>
-                                    value="{{ authors }}" {% endif %}
+                        value="{{ authors }}" {% endif %}
                     </td>
                     <td>
                         By keywords: <input class="input" type="text" name="keywords" {% if keywords %}
@@ -122,20 +124,22 @@
                     </td>
                     {% if user.is_staff %}
                         <td>
-                            Room <input class="small" type="number" name="room" {% if room %} value="{{ room }}" {% endif %}>
+                            Room <input class="small" type="number" name="room" {% if room %}
+                                        value="{{ room }}" {% endif %}>
                         </td>
                         <td>
-                            Level <input class="small" type="number" name="level" {% if level %} value="{{ level }}" {% endif %}>
+                            Level <input class="small" type="number" name="level" {% if level %}
+                                         value="{{ level }}" {% endif %}>
                         </td>
                     {% endif %}
 
 
-                        <td>
-                            <input type="reset" class="button" value="Reset">
-                        </td>
-                        <td>
-                            <input type="submit" class="button" value="Search">
-                        </td>
+                    <td>
+                        <input type="reset" class="button" value="Reset">
+                    </td>
+                    <td>
+                        <input type="submit" class="button" value="Search">
+                    </td>
                 </tr>
             </table>
         </form>
@@ -166,22 +170,24 @@
 
 
         <div align="center">
-            <div class="paginator">
-         <span class="step-links">
+        <div class="pagination">
+
             {% if page_obj.has_previous %}
-                <a href="/?type={{ default_type }}&title={{ title }}&authors={{ authors }}&keywords={{ keywords }}&match={{ match }}&available={{ available }}&noref={{ noref }}&page={{ page_obj.previous_page_number }}&q={{ q }}&room={{ room }}&level={{ level }}">previous</a>
+                <a href="?page={{ page_obj.previous_page_number }}">←</a>
             {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+                {% if num == page_obj.number %}
+                    <span class="current"><b>{{ num }}</b></span>
+                {% else %}
+                    <a href="?page={{ num }}"> {{ num }}</a>
+                {% endif %}
+            {% endfor %}
 
-             <span class="current">
-                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-            </span>
-
-             {% if page_obj.has_next %}
-                 <a href="/?type={{ default_type }}&title={{ title }}&authors={{ authors }}&keywords={{ keywords }}&match={{ match }}&available={{ available }}&noref={{ noref }}&page={{ page_obj.next_page_number }}&q={{ q }}&room={{ room }}&level={{ level }}">next</a>
-             {% endif %}
-        </span>
-            </div>
+            {% if page_obj.has_next %}
+                <a href="?page={{ article_list.next_page_number }}">→</a>
+            {% endif %}
         </div>
+
 
 
     {% endblock %}
