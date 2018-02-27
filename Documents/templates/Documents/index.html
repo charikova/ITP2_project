@@ -194,26 +194,18 @@
         <table class="paginator">
             <tr>
                 {% if page_obj.has_previous %}
-                    <td class="td-paginator button">
-                        <a href="?page={{ page_obj.previous_page_number }}">←</a>
-                    </td>
+                    <td class="td-paginator button"><a href="?page={{ page_obj.previous_page_number }}">←</a></td>
                 {% endif %}
                 {% for num in page_obj.paginator.page_range %}
                     {% if num == page_obj.number %}
-                        <td class="td-paginator button">
-                            <span class="current"><b>{{ num }}</b></span>
-                        </td>
+                        <td class="td-paginator button"><span class="current"><b>{{ num }}</b></span></td>
                     {% else %}
-                        <td class="td-paginator button">
-                            <a href="?page={{ num }}"> {{ num }}</a>
-                        </td>
+                        <td class="td-paginator button"><a href="?page={{ num }}"> {{ num }}</a></td>
                     {% endif %}
                 {% endfor %}
 
                 {% if page_obj.has_next %}
-                    <td class="td-paginator button">
-                        <a href="?page={{ article_list.next_page_number }}">→</a>
-                    </td>
+                    <td class="td-paginator button"><a href="?page={{ article_list.next_page_number }}">→</a></td>
                 {% endif %}
             </tr>
         </table>
