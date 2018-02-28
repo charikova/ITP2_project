@@ -1,7 +1,7 @@
 # innopolka
 Python-Django implemetion of Library Management System website: 
-Introduction to Programming project by students of BS1-7 group, team: Danil Ginzburg, Nikita Nigmatulina,
-Maria Charikova, Roman
+Introduction to Programming project by students of BS1-7 group, team: Danil Ginzburg, Nikita Nigmatulin,
+Maria Charikova, Roman Bogachev
 
 # The way it works
 Patrons can survey diffrent documents on the main page and leave requests for them. Librarins (staff) can whether 
@@ -63,11 +63,11 @@ Notice, that each inherited document should have "type" attribute that will be u
 creation this kind of document. 
 
 # Users 
-<ul>
-  <li> Student </li>Have permission to <strong>Check out</strong> documents for 3 weeks and is able to renew documents
-  <li> Faculty </li>Have permission to <strong>Check out</strong> documents for 4 weeks and is able to renew documents
-  <li> Librarian </li>Is allowed to add/delete/update any document. Can add/del/modify patrons and their permissions as well.
-</ul>
+     <ul>
+       <li> Student </li>Have permission to <strong>Check out</strong> documents for 3 weeks and is able to renew documents
+       <li> Faculty </li>Have permission to <strong>Check out</strong> documents for 4 weeks and is able to renew documents
+       <li> Librarian </li>Is allowed to add/delete/update any document. Can add/del/modify patrons and their permissions as well.
+     </ul>
 
 We are using <a href="https://docs.djangoproject.com/en/2.0/topics/auth/">built-in user model</a> provied by 
 django framework. This model have common user's fields like username, password, email and etc. But in order 
