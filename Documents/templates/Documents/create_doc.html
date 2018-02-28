@@ -1,60 +1,54 @@
-{% extends 'Documents/base.html'  %}
+{% extends 'Documents/base.html' %}
 
 {% load staticfiles %}
-{% block body  %}
+{% block body %}
 
-<style>
-    .container {
-        background-color: rgba(214, 184, 150, 0.8);
-        color: saddlebrown;
-        font-size: 15px;
-        overflow:visible;
-        position:absolute;
-        left: 32.5%;
-        top: 10%;
-        width: 35%;
-        border-radius: 10px;
-        margin: 0 auto 2%;
-    }
+    <style>
+        .container {
+            background-color: rgba(214, 184, 150, 0.8);
+            color: saddlebrown;
+            font-size: 15px;
+            overflow: visible;
+            position: absolute;
+            left: 35%;
+            top: 10%;
+            width: 30%;
+            border-radius: 10px;
+            margin: 1% auto 2%;
+        }
 
-    form {
-        padding: 5px;
-        color: black;
-        font-size: 15px;
-        margin: 5px;
-    }
+        form {
+            padding: 5px;
+            color: black;
+            font-size: 15px;
+            margin: 5px;
+        }
 
-    input {
-        background-color: floralwhite;
-        border: 2px solid saddlebrown;
-        border-radius: 5px;
-        margin: 0 0 0 10px;
-        left: 50%;
-    }
+        input {
+            background-color: floralwhite;
+            border: 2px solid saddlebrown;
+            border-radius: 5px;
+            left: 50%;
+            margin: 2% 0 2% 10px;
+        }
 
-    h2 {
-        color: black;
-        font-size: 40px;
-        text-align: center;
-    }
+        h2 {
+            color: black;
+            font-size: 40px;
+            text-align: center;
+        }
 
+        p {
+            color: black;
+        }
 
-    p {
-        color: black;
-    }
+        .black {
+            color: black;
+            width: 98%;
+            margin: 1%;
+        }
 
-    .button {
-        width: 30%;
-        font-size: 25px;
-        margin: 15px 15px 15px 35%;
-        color: black;
-    }
-
-    .black {
-        color: black;
-    }
-
-</style>
+    </style>
 
 <form action="" method="post">
     <div class="container">
@@ -76,3 +70,4 @@
 </form>
 
 {% endblock %}
+

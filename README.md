@@ -1,7 +1,7 @@
 # innopolka
 Python-Django implemetion of Library Management System website: 
-Introduction to Programming project by students of BS1-7 group, team: Danil Ginzburg, Nikita Nigmatulina,
-Maria Charikova, Roman
+Introduction to Programming project by students of BS1-7 group, team: Danil Ginzburg, Nikita Nigmatulin,
+Maria Charikova, Roman Bogachev
 
 # The way it works
 Patrons can survey diffrent documents on the main page and leave requests for them. Librarins (staff) can whether 
@@ -63,11 +63,11 @@ Notice, that each inherited document should have "type" attribute that will be u
 creation this kind of document. 
 
 # Users 
-<ul>
-  <li> Student </li>Have permission to <strong>Check out</strong> documents for 3 weeks and is able to renew documents
-  <li> Faculty </li>Have permission to <strong>Check out</strong> documents for 4 weeks and is able to renew documents
-  <li> Librarian </li>Is allowed to add/delete/update any document. Can add/del/modify patrons and their permissions as well.
-</ul>
+     <ul>
+       <li> Student </li>Have permission to <strong>Check out</strong> documents for 3 weeks and is able to renew documents
+       <li> Faculty </li>Have permission to <strong>Check out</strong> documents for 4 weeks and is able to renew documents
+       <li> Librarian </li>Is allowed to add/delete/update any document. Can add/del/modify patrons and their permissions as well.
+     </ul>
 
 We are using <a href="https://docs.djangoproject.com/en/2.0/topics/auth/">built-in user model</a> provied by 
 django framework. This model have common user's fields like username, password, email and etc. But in order 
@@ -93,23 +93,22 @@ and other users. For example feature del_doc which deletes document form databas
          doc = Document.objects.get(id=id)
          doc.delete()
          return redirect('/')
-
-
-                     
- ## html rendering
- In depence on user's permissions django renders html in different way. 
- All html files have special django insertions (syntax is similar to python code)
- 
+         
+         
+## html rendering
      {% if user.is_anonymous %} # execute if user is guest
           <a href="/user/login"> Log In </a>
      {% elif user.is_authenticated %} # execute if user is not a guest
           <a href="/user/"> {{user.username}} </a>
           <a href="/user/logout"> Log Out </a>
-     {% endif %}
-     {% if user.is_staff %} # execute if user is librarian
-          <a href="/add_doc/">Add document</a>
      {% endif %}
-         
+     {% if user.is_staff %} # execute if user is librarian
+          <a href="/add_doc/">Add document</a>
+     {% endif %}
+
+ In depence on user's permissions django renders html in different way. 
+ All html files have special django insertions (syntax is similar to python code)
+      
 ## Booking System (Document Copy)
     class DocumentCopy(models.Model):
     """
@@ -123,5 +122,25 @@ and other users. For example feature del_doc which deletes document form databas
 Every time user check out document - new copy object is created. Basicly it is not a document, it is
 an object that keeps links to particluar document and to holder of this document. Also DocumentCopy
 keeps other data like level, room, time it was checked out, etc.
+
+## Return system
+    @required_staff
+    def return_doc(request):
+        """
+        taking document back (user has returned his document)
+        """
+        try:
+            copy_instance = documents_models.DocumentCopy.objects.get(pk=request.GET.get('copy_id'))
+        except:
+            return redirect('/')
+        user_id = copy_instance.checked_up_by_whom.id
+        copy_instance.doc.copies += 1
+        copy_instance.doc.save()
+        copy_instance.delete()
+        return redirect('/user?id=' + str(user_id))
+
+Only librarian can approve that a book has been returned, thus only librarian can see "return book" button. Every time this button
+is pressed the document copy object is deleted and number of available copies of the document is increased by 1.
+
 
 
