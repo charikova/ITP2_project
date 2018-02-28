@@ -93,23 +93,22 @@ and other users. For example feature del_doc which deletes document form databas
          doc = Document.objects.get(id=id)
          doc.delete()
          return redirect('/')
-
-
-                     
- ## html rendering
- In depence on user's permissions django renders html in different way. 
- All html files have special django insertions (syntax is similar to python code)
- 
+         
+         
+## html rendering
      {% if user.is_anonymous %} # execute if user is guest
           <a href="/user/login"> Log In </a>
      {% elif user.is_authenticated %} # execute if user is not a guest
           <a href="/user/"> {{user.username}} </a>
           <a href="/user/logout"> Log Out </a>
-     {% endif %}
-     {% if user.is_staff %} # execute if user is librarian
-          <a href="/add_doc/">Add document</a>
      {% endif %}
-         
+     {% if user.is_staff %} # execute if user is librarian
+          <a href="/add_doc/">Add document</a>
+     {% endif %}
+
+ In depence on user's permissions django renders html in different way. 
+ All html files have special django insertions (syntax is similar to python code)
+      
 ## Booking System (Document Copy)
     class DocumentCopy(models.Model):
     """
