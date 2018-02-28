@@ -13,211 +13,203 @@
 
     {% block body %}
 
-    <link rel="stylesheet" type="text/css" href="{% static 'Documents/style.css' %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'Documents/style.css' %}"/>
 
-    <style>
-        h1 {
-            font-size: 50px;
-            margin: 0;
-        }
+        <style>
+            h1 {
+                font-size: 50px;
+                margin: 0;
+            }
 
-        .cen {
-            text-align: center;
-            font-size: 20px;
-        }
+            .cen {
+                text-align: center;
+                font-size: 20px;
+            }
 
-        table {
-            border: none;
-            border-radius: 10px;
-        }
+            table {
+                border: none;
+                border-radius: 10px;
+            }
 
-        tr {
-            border: none;
-            text-align: left;
-        }
+            tr {
+                border: none;
+                text-align: left;
+            }
 
-        td {
-            border: none;
-            text-align: center;
-            border-top: 1px solid saddlebrown;
-            background: none;
-        }
+            td {
+                border: none;
+                text-align: center;
+                border-top: 1px solid saddlebrown;
+                background: none;
+            }
 
-        a {
-            color: black;
-            text-decoration: none;
-        }
+            a {
+                color: black;
+                text-decoration: none;
+            }
 
-        .search {
-            width: 99%;
-            background-color: rgba(214, 184, 150, 0.8);
-            border-radius: 10px;
-            margin: 0.5%;
-        }
+            .search {
+                width: 99%;
+                background-color: rgba(214, 184, 150, 0.8);
+                border-radius: 10px;
+                margin: 0.5%;
+            }
 
-        caption {
-            color: white;
-            margin: 2%;
-            font-size: 20px;
-        }
+            caption {
+                color: white;
+                margin: 2%;
+                font-size: 20px;
+            }
 
-        .input {
-            text-align: left;
-            margin: 0;
-            width: 80%;
-        }
+            .input {
+                text-align: left;
+                margin: 0;
+                width: 80%;
+            }
 
-        .wide {
-            width: 15%;
-        }
+            .wide {
+                width: 15%;
+            }
 
-        .small {
-            width: 40%;
-        }
+            .small {
+                width: 40%;
+            }
 
-        .paginator {
-            margin-left: 45%;
-            margin-top: 0;
-            border-radius: 15px;
-            border-collapse: separate;
-            border-spacing: 5px;
-            background-color: rgba(214, 184, 150, 0);
-            width: 10%;
-        }
+            .paginator {
+                margin-left: 45%;
+                margin-top: 0;
+                border-radius: 15px;
+                border-collapse: separate;
+                border-spacing: 5px;
+                background-color: rgba(214, 184, 150, 0);
+                width: 10%;
+            }
 
-        .td-paginator {
-            background-color: rgba(214, 184, 150, 0.8);
-            width: 10px;
-            text-decoration: none;
-        }
+            .td-paginator {
+                background-color: rgba(214, 184, 150, 0.8);
+                width: 10px;
+                text-decoration: none;
+            }
 
-        td:hover {
-            cursor: pointer;
-        }
+            td:hover {
+                cursor: pointer;
+            }
 
-        . a:hover {
-            text-decoration: none;
-        }
+            . a:hover {
+                text-decoration: none;
+            }
 
 
-    </style>
+        </style>
 
-    <h1 align="center">Welcome to Innopolka!</h1><br>
+        <h1 align="center">Welcome to Innopolka!</h1><br>
 
-    <h3 align="center">Documents available: </h3>
-    <form action="/" method="GET">
-        <table class="search">
-            <th colspan="9"><strong>
-                <center>Expanded search</center>
-            </strong></th>
-            <tr>
-                <td>
-                    By type <select name="type" class="input">
+        <h3 align="center">Documents available: </h3>
+        <form action="/" method="GET">
+            <table class="search">
+                <th colspan="9"><strong>
+                    <center>Expanded search</center>
+                </strong></th>
+                <tr>
+                    <td>
+                        By type <select name="type" class="input">
 
-                    {% if not default_type %}
-                    <option>All</option>
-                    {% else %}
-                    <option>{{ default_type }}</option>
+                        {% if not default_type %}
+                            <option>All</option>
+                        {% else %}
+                            <option>{{ default_type }}</option>
+                        {% endif %}
+                        {% for type in types %}
+                            <option>{{ type }}</option>
+                        {% endfor %}
+                    </select>
+                    </td>
+                    <td>
+                        By title: <input class="input" type="text" name="title" {% if title %}
+                                         value="{{ title }}" {% endif %}>
+                    </td>
+                    <td>
+                        By authors: <input class="input" type="text" name="authors" {% if authors %}>
+                        value="{{ authors }}" {% endif %}
+                    </td>
+                    <td>
+                        By keywords: <input class="input" type="text" name="keywords" {% if keywords %}
+                                            value="{{ keywords }}" {% endif %}>
+                    </td>
+                    <td class="wide">
+                        <div class="right">
+                            Full match <input type="checkbox" class="right" name="match" {% if match %}
+                                              checked {% endif %}> </br>
+                            Available <input type="checkbox" name="available" {% if available %}
+                                             checked {% endif %}> </br>
+                            No reference <input type="checkbox" name="noref" {% if noref %} checked {% endif %}>
+
+                        </div>
+                    </td>
+                    {% if user.is_staff %}
+                        <td>
+                            Room <input class="small" type="number" name="room" {% if room %}
+                                        value="{{ room }}" {% endif %}>
+                        </td>
+                        <td>
+                            Level <input class="small" type="number" name="level" {% if level %}
+                                         value="{{ level }}" {% endif %}>
+                        </td>
                     {% endif %}
-                    {% for type in types %}
-                    <option>{{ type }}</option>
-                    {% endfor %}
-                </select>
-                </td>
-                <td>
-                    By title: <input class="input" type="text" name="title" {% if title %}
-                                     value="{{ title }}" {% endif %}>
-                </td>
-                <td>
-                    By authors: <input class="input" type="text" name="authors" {% if authors %}
-                    value="{{ authors }}" {% endif %}>
-                </td>
-                <td>
-                    By keywords: <input class="input" type="text" name="keywords" {% if keywords %} value="{{ keywords }}" {% endif %}>
-                </td>
-                <td class="wide">
-                    <div class="right">
-                        Full match <input type="checkbox" class="right" name="match" {% if match %}
-                                          checked {% endif %}> </br>
-                        Available <input type="checkbox" name="available" {% if available %}
-                                         checked {% endif %}> </br>
-                        No reference <input type="checkbox" name="noref" {% if noref %} checked {% endif %}>
 
-                    </div>
-                </td>
-                {% if user.is_staff %}
-                <td>
-                    Room <input class="small" type="number" name="room" {% if room %}
-                                value="{{ room }}" {% endif %}>
-                </td>
-                <td>
-                    Level <input class="small" type="number" name="level" {% if level %}
-                                 value="{{ level }}" {% endif %}>
-                </td>
+
+                    <td>
+                        <input type="reset" class="button" value="Reset">
+                    </td>
+                    <td>
+                        <input type="submit" class="button" value="Search">
+                    </td>
+                </tr>
+            </table>
+        </form>
+        </div>
+        <form action="" method="post">
+            <div align="center">
+                <table>
+
+                    <tr>
+                        <th class="cen" colspan="2">Document</th>
+                        <th class="cen">Authors</th>
+                        <th class="cen">Amount</th>
+                    </tr>
+
+                    <tr>
+                        {% for doc in documents %}
+                            <td><a href="/{{ doc.id }}/"><img src={{ doc.cover }}></a></td>
+                            <td><a href="/{{ doc.id }}/">{{ doc.title }}</a></td>
+                            <td>{{ doc.authors }}</td>
+                            <td>{{ doc.copies }}</td>
+                            </tr>
+                        {% endfor %}
+
+                </table>
+                {% csrf_token %}
+            </div>
+        </form>
+        <table class="paginator">
+            <tr>
+                {% if page_obj.has_previous %}
+                    <td class="td-paginator button"><a href="?page={{ page_obj.previous_page_number }}">←</a></td>
                 {% endif %}
+                {% for num in page_obj.paginator.page_range %}
+                    {% if num == page_obj.number %}
+                        <td class="td-paginator button"><span class="current"><b>{{ num }}</b></span></td>
+                    {% else %}
+                        <td class="td-paginator button"><a href="?page={{ num }}"> {{ num }}</a></td>
+                    {% endif %}
+                {% endfor %}
 
-
-                <td>
-                    <input type="reset" class="button" value="Reset">
-                </td>
-                <td>
-                    <input type="submit" class="button" value="Search">
-                </td>
+                {% if page_obj.has_next %}
+                    <td class="td-paginator button"><a href="?page={{ article_list.next_page_number }}">→</a></td>
+                {% endif %}
             </tr>
         </table>
-    </form>
-</div>
-<form action="" method="post">
-    <div align="center">
-        <table>
-
-            <tr>
-                <th class="cen" colspan="2">Document</th>
-                <th class="cen">Authors</th>
-                <th class="cen">Amount</th>
-            </tr>
-
-            <tr>
-                {% for doc in documents %}
-                <td><a href="/{{ doc.id }}/"><img src={{ doc.cover }}></a></td>
-                <td><a href="/{{ doc.id }}/">{{ doc.title }}</a></td>
-                <td>{{ doc.authors }}</td>
-                <td>{{ doc.copies }}</td>
-            </tr>
-            {% endfor %}
-
-        </table>
-        {% csrf_token %}
-    </div>
-</form>
-<table class="paginator">
-    <tr>
-        {% if page_obj.has_previous %}
-        <td class="td-paginator button">
-            <a href="/?type={{ default_type }}&title={{ title }}&authors={{ authors }}&keywords={{ keywords }}&match={{ match }}&available={{ available }}&noref={{ noref }}&page={{ page_obj.previous_page_number }}&q={{ q }}&room={{ room }}&level={{ level }}">←</a>
-        </td>
-        {% endif %}
-        {% for num in page_obj.paginator.page_range %}
-        {% if num == page_obj.number %}
-        <td class="td-paginator button">
-            <span class="current"><b>{{ num }}</b></span>
-        </td>
-        {% else %}
-        <td class="td-paginator button">
-            <a href="/?type={{ default_type }}&title={{ title }}&authors={{ authors }}&keywords={{ keywords }}&match={{ match }}&available={{ available }}&noref={{ noref }}&page={{ num }}&q={{ q }}&room={{ room }}&level={{ level }}">{{ num }}</a>
-        </td>
-        {% endif %}
-        {% endfor %}
-
-        {% if page_obj.has_next %}
-        <td class="td-paginator button">
-            <a href="/?type={{ default_type }}&title={{ title }}&authors={{ authors }}&keywords={{ keywords }}&match={{ match }}&available={{ available }}&noref={{ noref }}&page={{ page_obj.next_page_number }}&q={{ q }}&room={{ room }}&level={{ level }}">→</a>
-
-        </td>
-        {% endif %}
-    </tr>
-</table>
-{% endblock %}
+    {% endblock %}
 
 
 
