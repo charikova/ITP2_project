@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from . import views
-from BookRequests import views as requests_views
-from Documents.models import *
+from innopolka import settings
+from django import views as django_views
 
 urlpatterns = [
     # main page
@@ -14,5 +14,6 @@ urlpatterns = [
     url(r'^create/$', views.create_doc, name='create_doc'),
     url(r'^add_doc/$', views.add_doc, name='add_doc'),
     url(r'^checked_out_docs/$', views.CheckedOutDocsView.as_view(), name='checked_out_docs'),
+    url(r'(?:.*?/)?(?P<path>(images)/.+)$', django_views.static.serve, {'document_root': settings.STATIC_ROOT}),
 
 ]

@@ -14,7 +14,7 @@
         body {
             font-family: Futura;
             color: white;
-            background: url("../../static/Documents/background.jpg") no-repeat fixed center center;
+            background: url("/Documents/static/images/background.jpg") no-repeat fixed center center;
             background-size: cover;
         }
 
@@ -202,7 +202,7 @@
                     {% if not user.is_staff %}
                         <li><a href="/requests/">My requests</a></li>
                     {% endif %}
-                    <li><a href="/user/">{{ user.username }}</a></li>
+                    <li><a href="/user/?id={{user.id}}">{{ user.username }}</a></li>
                     <li><a href="/user/logout">Log Out</a></li>
                 {% endif %}
             </ul>

@@ -33,6 +33,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+STATIC_ROOT = '/Documents/static/'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -76,9 +78,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'innopolka.wsgi.application'
-
-
-STATIC_URL = '/static/'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
@@ -127,7 +126,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/Documents/static/'
 
 # LOGIN_URL = "/user/login/"
 LOGIN_REDIRECT_URL = '/'

@@ -75,12 +75,13 @@ def user_card_info(request):
     """
     user = request.user
     context = dict()
-    if request.GET.get('id') is not None: # only librarians are allowed to see user profile by id
-        if request.user.is_staff:
-            user = User.objects.get(id=request.GET.get('id'))
-            context['current_user'] = user
-        else:
-            return redirect('/')
+    # only librarians are allowed to see user profile by id
+    if (user.is_staff and user.id != int(request.GET.get('id'))) or \
+            (user.is_authenticated and user.id == int(request.GET.get('id'))):
+        user = User.objects.get(id=request.GET.get('id'))
+        context['current_user'] = user
+    else:
+        return redirect('/')
 
     for profile_field in USER_PROFILE_DATA: # take all data from user's profile and put into user object
         exec('user.{0} = user.userprofile.{0}'.format(profile_field))

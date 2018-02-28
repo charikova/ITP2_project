@@ -71,10 +71,10 @@ def create_doc(request):
     creating document object (in real subclass of Document object) and saving in db
     :param request: url request
     """
-    type = request.GET['type']
+    type_ = request.GET['type']
     model = None
     for cls in Document.__subclasses__():
-        if cls.type == type:
+        if cls.type == type_:
             model = cls
 
     if request.method == "GET":
@@ -85,6 +85,8 @@ def create_doc(request):
     elif request.method == "POST":
         new_doc = model()
         for field, value in request.POST.items():
+            if type(value) == str:  # hack protection
+                value = value.replace('#', '').replace('(', '').replace(')', '').replace(';', '')
             exec('new_doc.{0} = "{1}"'.format(field, value))
         new_doc.save()
         return redirect('/{}/'.format(new_doc.id))
