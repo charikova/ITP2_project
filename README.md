@@ -145,5 +145,3 @@ is pressed the document copy object is deleted and number of available copies of
 
 
 
-
-
