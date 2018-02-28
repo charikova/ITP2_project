@@ -124,4 +124,26 @@ Every time user check out document - new copy object is created. Basicly it is n
 an object that keeps links to particluar document and to holder of this document. Also DocumentCopy
 keeps other data like level, room, time it was checked out, etc.
 
+## Return system
+    @required_staff
+    def return_doc(request):
+        """
+        taking document back (user has returned his document)
+        """
+        try:
+            copy_instance = documents_models.DocumentCopy.objects.get(pk=request.GET.get('copy_id'))
+        except:
+            return redirect('/')
+        user_id = copy_instance.checked_up_by_whom.id
+        copy_instance.doc.copies += 1
+        copy_instance.doc.save()
+        copy_instance.delete()
+        return redirect('/user?id=' + str(user_id))
+
+Only librarian can approve that a book has been returned, thus only librarian can see "return book" button. Every time this button
+is pressed the document copy object is deleted and number of available copies of the document is increased by 1.
+
+
+
+
 
