@@ -1,66 +1,103 @@
-{% extends 'Documents/base.html'  %}
+{% extends 'Documents/base.html' %}
 
 {% load staticfiles %}
-{% block body  %}
+{% block body %}
 
-<style>
-    .container {
-        background-color: rgba(214, 184, 150, 0.8);
-        color: saddlebrown;
-        font-size: 15px;
-        overflow:visible;
-        position:absolute;
-        left: 38%;
-        top: 10%;
-        width: 24%;
-        border-radius: 10px;
-        margin: 0 auto 1%;
-    }
+    <style>
+        .container {
+            background-color: rgba(214, 184, 150, 0.8);
+            color: black;
+            font-size: 15px;
+            overflow: visible;
+            position: absolute;
+            left: 38%;
+            top: 10%;
+            border-radius: 10px;
+            width: auto;
+            margin: 0 auto 1% -5%;
+        }
 
-    form {
-        padding: 5px;
-        color: black;
-        font-size: 15px;
-        margin: 5px;
-    }
+        form {
+            padding: 5px;
+            color: black;
+            font-size: 15px;
+            margin: 5px;
+        }
 
-    input {
-        background-color: floralwhite;
-        border: 2px solid saddlebrown;
-        border-radius: 5px;
-        margin: 0 0 0 10px;
-        left: 50%;
-    }
+        input {
+            background-color: floralwhite;
+            border: 2px solid saddlebrown;
+            border-radius: 5px;
+            margin: 0 0 0 10px;
+            left: 50%;
+            color: black;
+        }
 
-    h2 {
-        color: black;
-        font-size: 40px;
-        text-align: center;
-    }
+        h2 {
+            color: black;
+            font-size: 40px;
+            text-align: center;
+        }
+
+        .edit {
+            background-color: rgba(214, 184, 150, 0);
+            border: none;
+        }
+
+        td {
+            border: none;
+        }
+
+        tr {
+            border: none;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .mar {
+            margin-left: -10%;
+        }
+
+        .wide {
+            width: 120%;
+        }
+
+        .button {
+            margin-left: 10%;
+        }
+
+    </style>
+
+    <div class="container">
+    <h2>Update Document</h2>
+    <table class="edit">
+        <form action="" method="post">
+
+            {% for key, value in fields %}
+                <tr>
+                    {% if key == 'publication_date' %}
+                        <td class="right">{{ key }}:</td>
+                        <td><input class="mar" type="date" name="{{ key }}" value="{{ value }}" placeholder="YYYY-MM-DD"></td>
+                        </tr>
+
+                        <tr>
+                            {% else %}
+                            <td class="right">{{ key }}:</td>
+                            <td><input class="wide" type="text" name="{{ key }}" value="{{ value }}"></td>
+                        </tr>
+
+                    {% endif %}
+            {% endfor %}
+            <tr>
+                <td colspan="2"><center><input class="button" type="submit" name="submit" value="Submit"></center></td>
+            </tr>
+
+            {% csrf_token %}
+        </form>
+    </table>
 
 
-
-</style>
-
-<div class="container">
-    <form action="" method="post">
-
-        {% for key, value in fields %}
-        {% if key == 'publication_date' %}
-        {{key}}:
-        <p><input type="date" name="{{key}}" value="{{value}}" placeholder="YYYY-MM-DD"></p>
-        {% elif key == 'type' %}
-        <input type="text" hidden="hidden" name="{{key}}" value="{{value}}">
-        {% else %}
-        {{key}}:
-        <p>
-            <input type="text" name="{{key}}" value="{{value}}">
-        </p>
-        {% endif %}
-        {%endfor%}
-        <center><input class="button" type="submit" name="submit" value="Submit"></center>
-        {% csrf_token %}
-    </form>
-
-    {% endblock %}
+{% endblock %}
 </div>
