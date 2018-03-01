@@ -1,60 +1,136 @@
-{% extends 'Documents/base.html'  %}
+{% extends 'Documents/base.html' %}
 {% load staticfiles %}
-{% block body  %}
+{% block body %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'UserCards/edit_style.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'UserCards/edit_style.css' %}"/>
 
     <style>
-    .container {
-        background-color: rgba(214, 184, 150, 0.8);
-        color: saddlebrown;
-        font-size: 15px;
-        margin:0 auto;
-        overflow:visible;
-        position:absolute;
-        left: 30%;
-        top: 20%;
-        width: 40%;
-        border-radius: 10px;
-    }
+        .container {
+            background-color: rgba(214, 184, 150, 0.8);
+            color: saddlebrown;
+            font-size: 15px;
+            overflow: visible;
+            position: absolute;
+            left: 30%;
+            top: 20%;
+            width: 34%;
+            border-radius: 10px;
+            margin-top: -4%;
+            margin-bottom: 2%;
+            margin-left: 4%;
+        }
 
-    form {
-        padding: 5px;
-        color: black;
-        font-size: 15px;
-        margin: 5px;
-    }
+        form {
+            color: black;
+            font-size: 15px;
+        }
 
-    input {
-        background-color: floralwhite;
-        border: 2px solid saddlebrown;
-        border-radius: 5px;
-        margin: 0 0 0 10px;
-        left: 50%;
-    }
+        input {
+            background-color: floralwhite;
+            border: 2px solid saddlebrown;
+            border-radius: 5px;
+            left: 50%;
+            width: 90%;
+        }
 
-    h2{
-        color: black;
-        font-size: 40px;
-        text-align: center;
-    }
+        h2 {
+            color: black;
+            font-size: 40px;
+            text-align: center;
+        }
 
-</style>
+        .info {
+            width: 100%;
+            margin-left: 0.5%;
 
-<div class="container">
-<h2>Card edit</h2>
+        }
 
-<form action="" method="post">
-    <h4>Username:</h4> <div align="center">{{ form.username }}</div> <br>
-    <h4>First name:</h4> <div align="center">{{ form.first_name }}</div><br>
-    <h4>Last name:</h4> <div align="center">{{ form.last_name }}</div><br>
-    <h4>Email:</h4> <div align="center">{{ form.email }}</div><br>
-    <h4>Status:</h4> <div align="center">{{ form.status }}</div><br>
-    <h4>Phone:</h4> <div align="center">{{ form.phone_number }}</div><br>
-    <h4>Address:</h4> <div align="center">{{ form.address }}</div><br>
-    <input class="button" type="submit" value="Edit">
-    {% csrf_token %}
-</form>
-</div>
+        .not_wide {
+            width: auto;
+            margin-left: -2%;
+        }
 
-{% endblock  %}
+        table {
+            background-color: rgba(214, 184, 150, 0);
+            border: none;
+        }
+
+        tr {
+           border: none;
+        }
+
+        td {
+           border: none;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .left {
+            text-align: left;
+        }
+
+        .mar {
+            margin-left: 3%;
+        }
+
+
+    </style>
+
+    <div class="container">
+        <h2>Card edit</h2>
+        <table class="info">
+            <form action="" method="post">
+                <tr>
+                    <td class="right"><h4>Username:</h4></td>
+                    <td class="left">
+                        <div>{{ form.username }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="right"><h4>First name:</h4></td>
+                    <td class="left">
+                        <div>{{ form.first_name }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="right"><h4>Last name:</h4></td>
+                    <td class="left">
+                        <div>{{ form.last_name }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="right"><h4>Email:</h4></td>
+                    <td class="left">
+                        <div>{{ form.email }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="right"><h4>Status:</h4></td>
+                    <td class="left">
+                        <div class="mar">{{ form.status }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="right"><h4>Phone:</h4></td>
+                    <td class="left">
+                        <div>{{ form.phone_number }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="right"><h4>Address:</h4></td>
+                    <td class="left">
+                        <div>{{ form.address }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input class="button not_wide" type="submit" value="Edit"></td>
+                    {% csrf_token %}
+            </form>
+        </table>
+
+
+    </div>
+
+{% endblock %}
