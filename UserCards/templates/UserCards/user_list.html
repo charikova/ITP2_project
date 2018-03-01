@@ -1,71 +1,117 @@
-{% extends 'Documents/base.html'  %}
+{% extends 'Documents/base.html' %}
 
 {% load staticfiles %}
 
 
-{% block body  %}
+{% block body %}
 
-<style>
+    <style>
 
-    .container {
-        background-color: rgba(214, 184, 150, 0.8);
-        color: saddlebrown;
-        font-size: 15px;
-        margin: 0 auto;
-        overflow: visible;
-        position: absolute;
-        left: 25%;
-        top: 35%;
-        width: 50%;
-        border-radius: 10px;
-        margin-bottom: 2%;
-    }
+        .container {
+            background-color: rgba(214, 184, 150, 0.8);
+            color: saddlebrown;
+            font-size: 15px;
+            margin: 0 auto;
+            overflow: visible;
+            position: absolute;
+            left: 25%;
+            top: 15%;
+            width: 50%;
+            border-radius: 10px;
+            margin-bottom: 2%;
+        }
 
-    form {
-        padding: 5px;
-        color: black;
-        font-size: 15px;
-        margin: 5px;
-    }
+        form {
+            padding: 5px;
+            color: black;
+            font-size: 15px;
+            margin: 5px;
+        }
 
-    input {
-        background-color: floralwhite;
-        border: 2px solid saddlebrown;
-        border-radius: 5px;
-        margin: 0 0 0 10px;
-        left: 50%;
-    }
+        input {
+            background-color: floralwhite;
+            border: 2px solid saddlebrown;
+            border-radius: 5px;
+            margin: 0 0 0 10px;
+            left: 50%;
+        }
 
-    h2 {
-        color: black;
-        font-size: 40px;
-        text-align: center;
-    }
+        h2 {
+            color: black;
+            font-size: 40px;
+            text-align: center;
+        }
 
-</style>
+        .search {
+            background-color: rgba(214, 184, 150, 0);
+            border: none;
+            width: 100%;
+            margin-left: 0;
+        }
 
-<h2>User List</h2><br>
-<div class="container">
-<form method="GET">
-    <strong>Search for users</strong><br>
-    <input type="text" align="center" placeholder="by username|name|surname" name="uq" {% if uq %}
-           value="{{uq}}" {% endif %}><br>
-    Patrons: <input type="checkbox" name="p" class="btn btn-default" {% if p %}
-           checked {% endif %}><br>
-    Librarians: <input type="checkbox" name="l" class="btn btn-default" {% if l %}
-           checked {% endif %} ><br>
-    <input type="submit" class="button" value="Search">
+        td {
+            border: none;
+            padding: 1%;
+        }
 
-</form>
-    <form>
-        {% for user in object_list %}
-        <a href="/user/?id={{user.id}}">{{user.username}}</a> <br>
-        {% endfor %}
-        {% csrf_token %}
-    </form>
-</div>
+        tr {
+            border: none;
+        }
+
+        th {
+            font-size: 20px;
+        }
+
+        .inp {
+            width: 100%;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .users {
+            font-size: 20px;
+            color: black;
+        }
+
+    </style>
+
+    <div class="container">
+        <h2>User List</h2><br>
+        <form method="GET">
+            <table class="search">
+                <th colspan="4"><strong>Search for users</strong></th>
+                <tr>
+                    <td><input class="inp" type="text" align="center" placeholder="by username|name|surname" name="uq"
+                            {% if uq %}
+                               value="{{ uq }}" {% endif %}></td>
+                    <td class="right">Patrons: <input type="checkbox" name="p" class="btn btn-default" {% if p %}
+                                                      checked {% endif %}></br>Librarians: <input type="checkbox"
+                                                                                                  name="l"
+                                                                                                  class="btn btn-default"
+                            {% if l %}
+                                                                                                  checked {% endif %} ></td>
+                    <td><input type="submit" class="button" value="Search"></td>
+                </tr>
+            </table>
+
+        </form>
+        <form>
+            <ul>
+                {% for user in object_list %}
+                    <li>
+                        <a class="users" href="/user/?id={{ user.id }}">{{ user.username }}</a> <br>
+                    </li>
+
+                {% endfor %}
+                {% csrf_token %}
+            </ul>
+
+        </form>
+    </div>
 
 
-{% endblock  %}
+{% endblock %}
 
 
