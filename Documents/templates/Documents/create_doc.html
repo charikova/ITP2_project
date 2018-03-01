@@ -6,7 +6,7 @@
     <style>
         .container {
             background-color: rgba(214, 184, 150, 0.8);
-            color: saddlebrown;
+            color: black;
             font-size: 15px;
             overflow: visible;
             position: absolute;
@@ -57,8 +57,10 @@
 <form action="" method="post">
     <div class="container">
         <h2>{{model}} Creation</h2>
-        {% for field in fields %}
-        {% if field == 'type' %}
+            {% for field in fields %}
+                {% if field == 'type' %}
+
+
         <input type="text" class="black" name='type' value='{{model}}' hidden="hidden">
         {% else %}
         {{field}}:
