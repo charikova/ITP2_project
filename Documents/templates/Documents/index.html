@@ -43,6 +43,10 @@
                 background: none;
             }
 
+            th {
+                padding-right: 1%;
+            }
+
             a {
                 color: black;
                 text-decoration: none;
@@ -99,6 +103,27 @@
                 text-decoration: none;
             }
 
+            .t1 {
+                width: 20%;
+            }
+
+            .t2 {
+                width: auto;
+            }
+
+            .t3 {
+                width: auto;
+                text-align: right;
+            }
+
+            .t4 {
+                width: 14%;
+            }
+
+            .input {
+                width: 100%;
+            }
+
 
         </style>
 
@@ -111,8 +136,7 @@
                     <center>Expanded search</center>
                 </strong></th>
                 <tr>
-                    <td>
-                        By type <select name="type" class="input">
+                    <td class="t4">By type <select name="type" class="input">
 
                         {% if not default_type %}
                             <option>All</option>
@@ -122,48 +146,31 @@
                         {% for type in types %}
                             <option>{{ type }}</option>
                         {% endfor %}
-                    </select>
-                    </td>
-                    <td>
-                        By title: <input class="input" type="text" name="title" {% if title %}
-                                         value="{{ title }}" {% endif %}>
-                    </td>
-                    <td>
-                        By authors: <input class="input" type="text" name="authors" {% if authors %}>
-                        value="{{ authors }}" {% endif %}
-                    </td>
-                    <td>
-                        By keywords: <input class="input" type="text" name="keywords" {% if keywords %}
-                                            value="{{ keywords }}" {% endif %}>
-                    </td>
-                    <td class="wide">
-                        <div class="right">
-                            Full match <input type="checkbox" class="right" name="match" {% if match %}
+                    </select></td>
+                    <td class="t1">By title: <input class="input" type="text" name="title" {% if title %}
+                                         value="{{ title }}" {% endif %}></td>
+                    <td class="t1">By authors: <input class="input" type="text" name="authors" {% if authors %}
+                        value="{{ authors }}" {% endif %}</td>
+                    <td class="t1">By keywords: <input class="input" type="text" name="keywords" {% if keywords %}
+                                            value="{{ keywords }}" {% endif %}></td>
+                    <td class="wide"><div class="right">
+                            Full match <input class='t3' type="checkbox" class="right" name="match" {% if match %}
                                               checked {% endif %}> </br>
-                            Available <input type="checkbox" name="available" {% if available %}
+                            Available <input class='t3' type="checkbox" name="available" {% if available %}
                                              checked {% endif %}> </br>
-                            No reference <input type="checkbox" name="noref" {% if noref %} checked {% endif %}>
+                            No reference <input class='t3' type="checkbox" name="noref" {% if noref %} checked {% endif %}>
 
-                        </div>
-                    </td>
+                        </div></td>
                     {% if user.is_staff %}
-                        <td>
-                            Room <input class="small" type="number" name="room" {% if room %}
-                                        value="{{ room }}" {% endif %}>
-                        </td>
-                        <td>
-                            Level <input class="small" type="number" name="level" {% if level %}
-                                         value="{{ level }}" {% endif %}>
-                        </td>
+                        <td>Room <input class="small" type="number" name="room" {% if room %}
+                                        value="{{ room }}" {% endif %}></td>
+                        <td>Level <input class="small" type="number" name="level" {% if level %}
+                                         value="{{ level }}" {% endif %}></td>
                     {% endif %}
 
 
-                    <td>
-                        <input type="reset" class="button" value="Reset">
-                    </td>
-                    <td>
-                        <input type="submit" class="button" value="Search">
-                    </td>
+                    <td class="t2"><input type="reset" class="button" value="Reset"></td>
+                    <td class="t2"><input type="submit" class="button" value="Search"></td>
                 </tr>
             </table>
         </form>
@@ -171,7 +178,6 @@
         <form action="" method="post">
             <div align="center">
                 <table>
-
                     <tr>
                         <th class="cen" colspan="2">Document</th>
                         <th class="cen">Authors</th>
@@ -186,7 +192,6 @@
                             <td>{{ doc.copies }}</td>
                             </tr>
                         {% endfor %}
-
                 </table>
                 {% csrf_token %}
             </div>
