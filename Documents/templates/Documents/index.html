@@ -104,7 +104,7 @@
             }
 
             .t1 {
-                width: 20%;
+                width: 17%;
             }
 
             .t2 {
@@ -118,6 +118,10 @@
 
             .t4 {
                 width: 14%;
+            }
+
+            .t5 {
+                width: 10%;
             }
 
             .input {
@@ -162,9 +166,9 @@
 
                         </div></td>
                     {% if user.is_staff %}
-                        <td>Room <input class="small" type="number" name="room" {% if room %}
+                        <td class="t5">Room <input class="small" type="number" name="room" {% if room %}
                                         value="{{ room }}" {% endif %}></td>
-                        <td>Level <input class="small" type="number" name="level" {% if level %}
+                        <td class="t5">Level <input class="small" type="number" name="level" {% if level %}
                                          value="{{ level }}" {% endif %}></td>
                     {% endif %}
 
