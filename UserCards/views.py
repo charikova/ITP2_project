@@ -27,7 +27,7 @@ class CreateUserView(View):
                 password = form.cleaned_data['password1']
                 user = authenticate(username=username, password=password)
                 user.save()
-                return redirect("/user/all")
+                return redirect("/user/all/?p=on&l=on")
             return redirect('/user/create_user/')
 
 
@@ -65,7 +65,7 @@ class EditCardView(View):
 @required_staff
 def delete_user(request, id):
     User.objects.get(id=id).delete()
-    return redirect('/user/all')
+    return redirect('/user/all/?p=on&l=on')
 
 
 @need_logged_in

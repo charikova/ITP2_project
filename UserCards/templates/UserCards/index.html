@@ -179,10 +179,9 @@
         {% if user.is_staff %}
             <table class="edit_del">
                 <tr>
-                    <td><a class="button" href="/user/edit/{{ current_user.id }}">Edit profile</a></td>
+                    <td><a class="button" href="/user/edit/{{ current_user.id }}">Edit</a></td>
                     <td><a class="button" href="/user/delete/{{ current_user.id }}"
-                           onclick="return confirm('Delete {{ current_user.username }}?')">Delete
-                        profile</a></td>
+                           onclick="return confirm('Delete {{ current_user.username }}?')">Delete</a></td>
                 </tr>
             </table>
 

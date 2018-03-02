@@ -96,8 +96,12 @@
             </table>
 
         </form>
+        {% if object_list|length == 0 %}
+                <h3 align="center">Sorry, no users according to your query</h3>
+        {% else %}
         <form>
             <ul>
+
                 {% for user in object_list %}
                     <li>
                         <a class="users" href="/user/?id={{ user.id }}">{{ user.username }}</a> <br>
@@ -106,8 +110,8 @@
                 {% endfor %}
                 {% csrf_token %}
             </ul>
-
         </form>
+        {% endif %}
     </div>
 
 

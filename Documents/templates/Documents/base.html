@@ -199,11 +199,19 @@
                 {% if user.is_anonymous %}
                     <li><a href="/user/login">Log In</a></li>
                 {% elif user.is_authenticated %}
-                    {% if not user.is_staff %}
-                        <li><a href="/requests/">My requests</a></li>
-                    {% endif %}
-                    <li><a href="/user/?id={{user.id}}">{{ user.username }}</a></li>
-                    <li><a href="/user/logout">Log Out</a></li>
+
+                <ul class="nav navbar-nav navbar-right">
+                <li class="nav-item dropdown">
+                    <a class="navbar-brand" href="/user/?id={{user.id}}" id="dropdown02" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">{{ user.first_name }} {{user.last_name}}</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdown01">
+                        <a class="dropdown-item" href="/user/?id={{user.id}}">Profile</a> <br>
+                        {% if not user.is_staff %}
+                        <a class="dropdown-item" href="/requests/">My requests</a> <br>
+                        {% endif %}
+                        <a class="dropdown-item" href="/user/logout">Log Out</a> <br>
+                    </div>
+            </ul>
                 {% endif %}
             </ul>
         </div><!-- /.navbar-collapse -->
