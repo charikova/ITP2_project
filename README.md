@@ -31,7 +31,7 @@ We have some unit tests, which are needed to suit all requirements. They are pla
 
 
 # Architecture of the website
-![alt text](https://github.com/charikova/innopolka/blob/master/architecture%20project.png)
+![alt text](https://github.com/charikova/innopolka/blob/master/main.png)
 # Implementation
 ## Documents
 We store all documents in sqlite3 db provided by default by django framework. 
@@ -108,18 +108,38 @@ and other users. For example feature del_doc which deletes document form databas
 
  In depence on user's permissions django renders html in different way. 
  All html files have special django insertions (syntax is similar to python code)
-      
-## Booking System (Document Copy)
-    class DocumentCopy(models.Model):
-    """
-    copy object which is created when user check out document
-    """
-    doc = models.ForeignKey(Document, blank=True, default=None, on_delete=models.CASCADE) # link to document which is checked out
-    checked_up_by_whom = models.ForeignKey(User, blank=True, default=None, on_delete=models.CASCADE) # link to holder
-    level = models.PositiveIntegerField(default=1)
-    room = models.PositiveIntegerField(default=1)
 
-Every time user check out document - new copy object is created. Basicly it is not a document, it is
+## Book requests
+
+Patron cannot check out book himself, but he can leave a request for a book from library. The librarian can approve or decline request.
+Request is an object that is created in the moment "request" button is pressed and is deleted when the librarian approve\decline it.
+     
+    class Request(models.Model):
+        doc = models.ForeignKey(Document, null=True, default=None, on_delete=models.CASCADE)
+        checked_up_by_whom = models.ForeignKey(User, null=True, default=None, on_delete=models.CASCADE)
+        timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.doc)
+       
+The model itself includes ForeignKey to the document which is requested, ForeignKey to the user who made the request and a timestamp when
+the request was created. 
+
+A request cannot be created if the user already has a request for this particular document, this document is reference or user already
+has this document in use. 
+
+## Booking System (Document Copy)
+ 
+    class DocumentCopy(models.Model):
+     """
+     copy object which is created when user check out document
+     """
+     doc = models.ForeignKey(Document, blank=True, default=None, on_delete=models.CASCADE) # link to document which is checked out
+     checked_up_by_whom = models.ForeignKey(User, blank=True, default=None, on_delete=models.CASCADE) # link to holder
+     level = models.PositiveIntegerField(default=1)
+     room = models.PositiveIntegerField(default=1)
+
+Every time librarian approve book request - new copy object is created. Basicly it is not a document, it is
 an object that keeps links to particluar document and to holder of this document. Also DocumentCopy
 keeps other data like level, room, time it was checked out, etc.
 
@@ -140,7 +160,7 @@ keeps other data like level, room, time it was checked out, etc.
         return redirect('/user?id=' + str(user_id))
 
 Only librarian can approve that a book has been returned, thus only librarian can see "return book" button. Every time this button
-is pressed the document copy object is deleted and number of available copies of the document is increased by 1.
+is pressed the document copy object is deleted and the number of available copies of the document is increased by 1. 
 
 
 
