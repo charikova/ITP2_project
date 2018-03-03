@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>659a342b-e25d-4e3e-ae0e-6eb5635c637f.SCHEMA:main</OriginalElement>
+  <nodes>
+    <node x="814.0" y="0.0">659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.Documents_document</node>
+    <node x="812.0" y="432.5">659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.Documents_avfile</node>
+    <node x="209.0" y="11.0">659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.auth_user</node>
+    <node x="1041.0" y="399.0">659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.Documents_book</node>
+    <node x="244.0" y="399.0">659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.BookRequests_request</node>
+    <node x="0.0" y="388.0">659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.UserCards_userprofile</node>
+    <node x="1270.0" y="399.0">659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.Documents_journalarticle</node>
+    <node x="528.0" y="355.0">659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.Documents_documentcopy</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.Documents_documentcopy" target="659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.auth_user">
+      <point x="-66.0" y="-103.5" />
+      <point x="594.0" y="315.0" />
+      <point x="377.3333333333333" y="315.0" />
+      <point x="67.33333333333331" y="136.5" />
+    </edge>
+    <edge source="659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.BookRequests_request" target="659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.Documents_document">
+      <point x="66.0" y="-59.5" />
+      <point x="442.0" y="325.0" />
+      <point x="834.5" y="325.0" />
+      <point x="-82.0" y="147.5" />
+    </edge>
+    <edge source="659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.Documents_avfile" target="659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.Documents_document">
+      <point x="0.0" y="-26.0" />
+      <point x="0.0" y="147.5" />
+    </edge>
+    <edge source="659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.UserCards_userprofile" target="659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.auth_user">
+      <point x="0.0" y="-70.5" />
+      <point x="112.0" y="335.0" />
+      <point x="242.66666666666669" y="335.0" />
+      <point x="-67.33333333333331" y="136.5" />
+    </edge>
+    <edge source="659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.BookRequests_request" target="659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.auth_user">
+      <point x="-66.0" y="-59.5" />
+      <point x="0.0" y="136.5" />
+    </edge>
+    <edge source="659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.Documents_book" target="659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.Documents_document">
+      <point x="0.0" y="-59.5" />
+      <point x="1145.5" y="335.0" />
+      <point x="957.5" y="335.0" />
+      <point x="41.0" y="147.5" />
+    </edge>
+    <edge source="659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.Documents_documentcopy" target="659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.Documents_document">
+      <point x="66.0" y="-103.5" />
+      <point x="726.0" y="335.0" />
+      <point x="875.5" y="335.0" />
+      <point x="-41.0" y="147.5" />
+    </edge>
+    <edge source="659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.Documents_journalarticle" target="659a342b-e25d-4e3e-ae0e-6eb5635c637f.TABLE:main.Documents_document">
+      <point x="0.0" y="-59.5" />
+      <point x="1395.5" y="325.0" />
+      <point x="998.5" y="325.0" />
+      <point x="82.0" y="147.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.6872160934458144" x="760.5" y="281.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Columns</Category>
+    <Category>Key columns</Category>
+  </Categories>
+</Diagram>
+
