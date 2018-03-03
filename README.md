@@ -31,7 +31,7 @@ We have some unit tests, which are needed to suit all requirements. They are pla
 
 
 # Architecture of the website
-![alt text](https://github.com/charikova/innopolka/blob/master/architecture%20project.png)
+![alt text](https://github.com/charikova/innopolka/blob/master/main.png)
 # Implementation
 ## Documents
 We store all documents in sqlite3 db provided by default by django framework. 
