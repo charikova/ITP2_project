@@ -336,30 +336,33 @@ class Delivery1(TestCase):
         student.documentcopy_set.get(id=A.id) # will raise error if copy of A doesn't exist
 
 class Delivery2(TestCase):
+    librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qwerty', first_name='F', last_name='L',
+                                         is_staff=True)
+    b1 = Book.objects.create(title='Introduction to Algorithms', price=0, publication_date='2009',
+                             edition=3, copies=3,
+                             authors='Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and '
+                                     'Clifford Stein', cover='cover', publisher='MIT Press')
+    b2 = Book.objects.create(title='Design Patterns: Elements of Reusable Object-Oriented Software', price=0,
+                             publication_date='2003', edition=1, copies=2,
+                             authors='Erich Gamma, Ralph Johnson, John Vlissides, Richard Helm', cover='cover',
+                             publisher='Addison-Wesley Professional', is_bestseller=True)
+    b3 = Book.objects.create(title='The Mythical Man-month', price=0, publication_date='1995', edition=2, copies=1,
+                             authors='Brooks,Jr., Frederick P.', cover='cover',
+                             publisher='Addison-Wesley Longman Publishing '
+                                       'Co., Inc.', is_reference=True)
+
+    av1 = AVFile.objects.create(title='Null References: The Billion Dollar Mistake', authors='Tony Hoare')
+    av2 = AVFile.objects.create(title=': Information Entropy', authors='Claude Shannon')
+
+    p1 = User.objects.create_user('f', 'exampl2@mail.ru', '123456qwerty', first_name='Sergey', last_name='Afonso')
+    UserProfile.objects.create(user=p1, phone_number=30001, status='faculty', address='Via Margutta, 3')
+
+    p2 = User.objects.create_user('s', 'exampl2@mail.ru', '123456qwerty', first_name='Nadia', last_name='Teixeira')
+    UserProfile.objects.create(user=p2, phone_number=30002, status='student', address='Via Sacra, 13')
+
+    p3 = User.objects.create_user('s', 'exampl2@mail.ru', '123456qwerty', first_name='Elvira', last_name='Espindola')
+    UserProfile.objects.create(user=p2, phone_number=30003, status='student', address='Via del Corso, 22')
 
     def test_TC1(self):
-        librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qwerty', first_name='F', last_name='L',
-                                             is_staff=True)
-        b1 = Book.objects.create(title='Introduction to Algorithms', price=0, publication_date='2009',
-                                 edition=3, copies=3, authors='Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and '
-                                                             'Clifford Stein', cover='cover', publisher='MIT Press')
-        b2 = Book.objects.create(title='Design Patterns: Elements of Reusable Object-Oriented Software', price=0,
-                                 publication_date='2003', edition=1, copies=2,
-                                 authors='Erich Gamma, Ralph Johnson, John Vlissides, Richard Helm', cover='cover',
-                                 publisher='Addison-Wesley Professional', is_bestseller=True)
-        b3 = Book.objects.create(title='The Mythical Man-month', price=0, publication_date='1995', edition=2, copies=1,
-                                 authors='Brooks,Jr., Frederick P.', cover='cover', publisher='Addison-Wesley Longman Publishing '
-                                 'Co., Inc.', is_reference=True)
 
-        av1=AVFile.objects.create(title='Null References: The Billion Dollar Mistake', authors='Tony Hoare')
-        av2 = AVFile.objects.create(title=': Information Entropy', authors='Claude Shannon')
-
-        p1 = User.objects.create_user('f', 'exampl2@mail.ru', '123456qwerty', first_name='Sergey', last_name='Afonso')
-        UserProfile.objects.create(user=p1, phone_number=30001, status='faculty', address='Via Margutta, 3')
-
-        p2 = User.objects.create_user('s', 'exampl2@mail.ru', '123456qwerty', first_name='Nadia', last_name='Teixeira')
-        UserProfile.objects.create(user=p2, phone_number=30002, status='student', address='Via Sacra, 13')
-
-        p3 = User.objects.create_user('s', 'exampl2@mail.ru', '123456qwerty', first_name='Elvira', last_name='Espindola')
-        UserProfile.objects.create(user=p2, phone_number=30003, status='student', address='Via del Corso, 22')
 
