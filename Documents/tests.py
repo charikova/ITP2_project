@@ -1,9 +1,10 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from UserCards.models import UserProfile
-from django.http import HttpRequest, Http404
+from django.http import HttpRequest, Http404, QueryDict
 from .models import *
 from BookRequests.views import make_new, approve_request
 import BookRequests
+from Documents import librarian_view
 import datetime
 from UserCards.views import user_card_info
 
@@ -334,4 +335,60 @@ class Delivery1(TestCase):
         self.assertEqual(number_copies_patron_has, 1)
 
         student.documentcopy_set.get(id=A.id) # will raise error if copy of A doesn't exist
+
+
+class Delivery2(TestCase):
+
+    b = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
+                            edition=1, copies=2, authors='sadf', cover='cover', publisher='pub')
+
+
+    def test_TC1(self):
+        c = Client()
+        # я хз короче как добавлять доки от имени лабрариана, бред какой-то
+        l = User.objects.create_user('username2', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L',
+                                     is_staff=True)
+
+
+        raise Exception(Book.objects.all())
+
+
+    def test_TC2(self):
+        pass
+
+    def test_TC3(self):
+        pass
+
+    def init_bd(self):
+
+    def test_TC4(self):
+        l = User.objects.create_user('username2', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L',
+                                     is_staff=True)
+        p2 = User.objects.create_user()
+        p3 = User.objects.create_user()
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = l
+
+        request.GET['id'] = p2.id
+        user_card_info(request)
+
+        request.GET['id'] = p3.id
+        response = user_card_info(request)
+        self.assertTrue(all([word in response for word in ['Elvira Espindola','Via del Corso, 22', '30003']]) )
+
+
+    def test_TC5(self):
+        pass
+
+    def test_TC6(self):
+        pass
+
+    def test_TC7(self):
+        pass
+
+    def test_TC8(self):
+        pass
+
+    def test_TC9(self):
 
