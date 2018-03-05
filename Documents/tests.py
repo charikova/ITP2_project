@@ -372,20 +372,30 @@ class Delivery2(TestCase):
                                            last_name='Espindola')
         UserProfile.objects.create(user=self.p3, phone_number=30003, status='student', address='Via del Corso, 22')
 
+        num_of_docs = 0
+        for doc in Document.objects.all():
+            num_of_docs += doc.copies
+        self.assertEqual(len(User.objects.all()), 4)
+        self.assertEqual(num_of_docs, 8)
+
     def test_TC2(self):
-        pass
+        self.test_TC1()
+        self.b1.copies -= 2
+        self.b3.copies -= 1
+        self.p2.delete()
 
     def test_TC3(self):
         pass
 
     def test_TC4(self):
-        self.test_TC1()
+        self.test_TC2()  # run TC2 instead of TC1
         request = HttpRequest()
         request.method = "GET"
         request.user = self.librarian
 
         request.GET['id'] = self.p2.id
         response = user_card_info(request)
+        # check that no such users in library
 
         request.GET['id'] = self.p3.id
         response = user_card_info(request)
