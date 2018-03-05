@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate
 from django.shortcuts import render, redirect
+from django.http import Http404
 from django.db.models import Q
 from django.views.generic import View, ListView
 from Documents.librarian_view import need_logged_in, required_staff
@@ -71,10 +72,12 @@ def delete_user(request, id):
 @need_logged_in
 def user_card_info(request):
     """
-    shows users their information and docs they currently checking out with time left to return them back
+    shows user's information and docs they currently are checking out with time left to return them back
     """
     user = request.user
     context = dict()
+    if request.GET.get('id') is None:
+        return Http404('No such user in library')
     # only librarians are allowed to see user profile by id
     if (user.is_staff and user.id != int(request.GET.get('id'))) or \
             (user.is_authenticated and user.id == int(request.GET.get('id'))):

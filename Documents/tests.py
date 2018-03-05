@@ -339,19 +339,38 @@ class Delivery1(TestCase):
 
 class Delivery2(TestCase):
 
-    b = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
-                            edition=1, copies=2, authors='sadf', cover='cover', publisher='pub')
-
-
     def test_TC1(self):
-        c = Client()
-        # я хз короче как добавлять доки от имени лабрариана, бред какой-то
-        l = User.objects.create_user('username2', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L',
-                                     is_staff=True)
+        self.librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qerty', first_name='F', last_name='L',
+                                                  is_staff=True)
+        self.b1 = Book.objects.create(title='Introduction to Algorithms', price=0,
+                                      publication_date=datetime.datetime.now(),
+                                      edition=3, copies=3,
+                                      authors='Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and '
+                                              'Clifford Stein', cover='cover', publisher='MIT Press')
+        self.b2 = Book.objects.create(title='Design Patterns: Elements of Reusable Object-Oriented Software', price=0,
+                                      publication_date=datetime.datetime.now(), edition=1, copies=2,
+                                      authors='Erich Gamma, Ralph Johnson, John Vlissides, Richard Helm', cover='cover',
+                                      publisher='Addison-Wesley Professional', is_bestseller=True)
+        self.b3 = Book.objects.create(title='The Mythical Man-month', price=0, publication_date=datetime.datetime.now(),
+                                      edition=2, copies=1,
+                                      authors='Brooks,Jr., Frederick P.', cover='cover',
+                                      publisher='Addison-Wesley Longman Publishing '
+                                                'Co., Inc.', is_reference=True)
 
+        self.av1 = AVFile.objects.create(title='Null References: The Billion Dollar Mistake', authors='Tony Hoare', price=0)
+        self.av2 = AVFile.objects.create(title=': Information Entropy', authors='Claude Shannon', price=0)
 
-        raise Exception(Book.objects.all())
+        self.p1 = User.objects.create_user('patron1', 'exampl2@mail.ru', '12356qwerty', first_name='Sergey',
+                                           last_name='Afonso')
+        UserProfile.objects.create(user=self.p1, phone_number=30001, status='faculty', address='Via Margutta, 3')
 
+        self.p2 = User.objects.create_user('patron2', 'exampl2@mail.ru', '12456qwerty', first_name='Nadia',
+                                           last_name='Teixeira')
+        UserProfile.objects.create(user=self.p2, phone_number=30002, status='student', address='Via Sacra, 13')
+
+        self.p3 = User.objects.create_user('patron3', 'exampl2@mail.ru', '23456qwerty', first_name='Elvira',
+                                           last_name='Espindola')
+        UserProfile.objects.create(user=self.p3, phone_number=30003, status='student', address='Via del Corso, 22')
 
     def test_TC2(self):
         pass
@@ -359,23 +378,18 @@ class Delivery2(TestCase):
     def test_TC3(self):
         pass
 
-    def init_bd(self):
-
     def test_TC4(self):
-        l = User.objects.create_user('username2', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L',
-                                     is_staff=True)
-        p2 = User.objects.create_user()
-        p3 = User.objects.create_user()
+        self.test_TC1()
         request = HttpRequest()
         request.method = "GET"
-        request.user = l
+        request.user = self.librarian
 
-        request.GET['id'] = p2.id
-        user_card_info(request)
-
-        request.GET['id'] = p3.id
+        request.GET['id'] = self.p2.id
         response = user_card_info(request)
-        self.assertTrue(all([word in response for word in ['Elvira Espindola','Via del Corso, 22', '30003']]) )
+
+        request.GET['id'] = self.p3.id
+        response = user_card_info(request)
+        self.assertTrue(all([word in response.content for word in [b'Elvira', b'Espindola', b'Via del Corso, 22', b'30003']]) )
 
 
     def test_TC5(self):
@@ -391,4 +405,6 @@ class Delivery2(TestCase):
         pass
 
     def test_TC9(self):
+        pass
+
 
