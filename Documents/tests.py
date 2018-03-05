@@ -39,9 +39,9 @@ class Delivery1(TestCase):
         request = HttpRequest()
         request.method = "GET"
         request.user = l
-        request.path = '/user/?id=' + str(p.id)  # sees patron's page
+        request.GET['id'] = p.id
         response = user_card_info(request)
-        self.assertEqual(response.status_code, 200) # librarian has access to see this page
+        self.assertEqual(response.status_code, 200)  # librarian has access to see this page
         self.assertEqual(b.title in str(response.content), True) # there are exist title of this book in response content
 
     def test_TC2(self):
@@ -64,7 +64,6 @@ class Delivery1(TestCase):
             pass
         else:
             raise Exception('should raise 404')
-
 
     def test_TC3(self):
         # library has s, f, l and book b
@@ -163,12 +162,9 @@ class Delivery1(TestCase):
         request.user = s3
         make_new(request)
         request.GET['user_id'] = s3.id
-        try:
-            request.GET['req_id'] = s3.request_set.get(doc=b).id
-        except:  # expected state: cant find such request
-            pass
-        else:
-            raise Exception('should cant find such request')
+        request.GET['req_id'] = s3.request_set.get(doc=b).id
+        request.user = l
+        approve_request(request)
 
         self.assertEqual(len(b.documentcopy_set.all()), 2)
         self.assertEqual(len(s1.documentcopy_set.filter(doc=b)), 1)  # s1 has b
