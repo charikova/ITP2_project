@@ -341,6 +341,7 @@ class Delivery1(TestCase):
 class Delivery2(TestCase):
 
     def test_TC1(self):
+        
         self.librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qerty', first_name='F', last_name='L',
                                                   is_staff=True)
         self.b1 = Book.objects.create(title='Introduction to Algorithms', price=0,
@@ -386,7 +387,20 @@ class Delivery2(TestCase):
         self.p2.delete()
 
     def test_TC3(self):
-        pass
+        self.test_TC1()
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.librarian
+
+        request.GET['id'] = self.p1.id  # request information about p1
+        response = user_card_info(request)
+        self.assertTrue(
+            all([word in response.content for word in [b'Sergey', b'Afonso', b'Via Margutta, 3', b'30001']]))
+
+        request.GET['id'] = self.p3.id  # request information about p3
+        response = user_card_info(request)
+        self.assertTrue(
+            all([word in response.content for word in [b'Elvira', b'Espindola', b'Via del Corso, 22', b'30003']]))
 
     def test_TC4(self):
         self.test_TC2()
@@ -400,7 +414,9 @@ class Delivery2(TestCase):
 
         request.GET['id'] = self.p3.id
         response = user_card_info(request)
-        self.assertTrue(all([word in response.content for word in [b'Elvira', b'Espindola', b'Via del Corso, 22', b'30003', ]]) )
+        self.assertTrue(
+            all([word in response.content for word in [b'Elvira', b'Espindola', b'Via del Corso, 22', b'30003']]))
+
 
     def test_TC5(self):
         pass
