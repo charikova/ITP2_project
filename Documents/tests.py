@@ -430,8 +430,5 @@ class Delivery2(TestCase):
     def test_TC8(self):
         pass
 
-    def test_TC9(self):
-        subprocess.call('echo 123')
-
 
 
