@@ -460,10 +460,6 @@ class Delivery2(TestCase):
         request.GET['doc'] = self.b2.id
         make_new(request)
 
-        # check if requests have been successfully made
-        number_of_requests = Request.objects.all().count()
-        print(number_of_requests)
-
         # now librarian should approve requests
         request = HttpRequest()
         request.method = "GET"
