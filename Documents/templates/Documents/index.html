@@ -44,8 +44,7 @@
                 border: none;
                 text-align: center;
                 border-top: 1px solid saddlebrown;
-                background: none;
-                font-size: 15px;
+                background: none
             }
 
             th {
@@ -74,7 +73,6 @@
                 text-align: left;
                 margin: 0;
                 width: 80%;
-                font-size: 12px;
             }
 
             .wide {
@@ -82,9 +80,7 @@
             }
 
             .small {
-                width: 100%;
-                text-align: center;
-                margin-left: 0;
+                width: 40%;
             }
 
             .paginator {
@@ -112,11 +108,11 @@
             }
 
             .t1 {
-                width: 15%;
+                width: 17%;
             }
 
             .t2 {
-                width: 5%;
+                width: auto;
             }
 
             .t3 {
@@ -125,19 +121,15 @@
             }
 
             .t4 {
-                width: 13%;
+                width: 14%;
             }
 
             .t5 {
-                width: 5%;
+                width: %;
             }
 
             .input {
                 width: 100%;
-            }
-
-            .small_button {
-                font-size: 12px;
             }
 
 
@@ -189,9 +181,9 @@
                                                     value="{{ level }}" {% endif %}></td>
                     {% endif %}
 
+                    <td class="t2"><input type="reset" class="button" value="Reset"></td>
+-                    <td class="t2"><input type="submit" class="button" value="Search"></td>
 
-                    <td class="t2"><input type="reset" class="button small_button" value="Reset"></td>
-                    <td class="t2"><input type="submit" class="button small_button" value="Search"></td>
                 </tr>
             </table>
         </form>
