@@ -425,7 +425,146 @@ class Delivery2(TestCase):
         pass
 
     def test_TC7(self):
-        pass
+        self.test_TC1()
+
+        # Make requests for books by p1
+        request = HttpRequest()
+        request.GET['doc'] = self.b1.id
+        request.user = self.p1
+        make_new(request)
+
+        request = HttpRequest()
+        request.GET['doc'] = self.b2.id
+        request.user = self.p1
+        make_new(request)
+
+        try:
+            request = HttpRequest()
+            request.GET['doc'] = self.b3.id
+            request.user = self.p1
+            make_new(request)
+        except:
+            pass
+
+        request = HttpRequest()
+        request.GET['doc'] = self.av1.id
+        request.user = self.p1
+        make_new(request)
+
+        # Make requests for books by p2
+        request = HttpRequest()
+        request.GET['doc'] = self.b1.id
+        request.user = self.p2
+        make_new(request)
+
+        request = HttpRequest()
+        request.GET['doc'] = self.b2.id
+        request.user = self.p2
+        make_new(request)
+
+        request = HttpRequest()
+        request.GET['doc'] = self.av2.id
+        request.user = self.p2
+        make_new(request)
+
+        # Accept all requests by labrarian
+        request.GET['user_id'] = self.p1.id
+        request.GET['req_id'] = self.p1.request_set.get(doc=self.b1).id
+        request.user = self.librarian
+        approve_request(request)
+
+        request.GET['user_id'] = self.p1.id
+        request.GET['req_id'] = self.p1.request_set.get(doc=self.b2).id
+        request.user = self.librarian
+        approve_request(request)
+
+        try:
+            request.GET['user_id'] = self.p1.id
+            request.GET['req_id'] = self.p1.request_set.get(doc=self.b3).id
+            request.user = self.librarian
+            approve_request(request)
+        except:
+            pass
+
+        request.GET['user_id'] = self.p1.id
+        request.GET['req_id'] = self.p1.request_set.get(doc=self.av1).id
+        request.user = self.librarian
+        approve_request(request)
+
+        request.GET['user_id'] = self.p2.id
+        request.GET['req_id'] = self.p2.request_set.get(doc=self.b1).id
+        request.user = self.librarian
+        approve_request(request)
+
+        request.GET['user_id'] = self.p2.id
+        request.GET['req_id'] = self.p2.request_set.get(doc=self.b2).id
+        request.user = self.librarian
+        approve_request(request)
+
+        request.GET['user_id'] = self.p2.id
+        request.GET['req_id'] = self.p2.request_set.get(doc=self.av2).id
+        request.user = self.librarian
+        approve_request(request)
+
+
+
+        # Make request to get info about user
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.librarian
+
+        request.GET['id'] = self.p1.id  # request information about p1
+        response = user_card_info(request)
+
+        self.assertTrue(
+            all([word in response.content for word in [b'Sergey', b'Afonso', b'Via Margutta, 3', b'30001']]))
+
+        temp = self.p1.documentcopy_set.filter(doc=self.b1)[0]
+        p1_have_overdue_on_b1_in_21_days = (datetime.datetime.strptime("2018-03-05 00:00", "%Y-%m-%d  %H:%M") -
+                                           datetime.datetime.strptime(temp.returning_date.strftime("%Y-%m-%d %H:%M"),
+                                                                      "%Y-%m-%d  %H:%M")).days == 21
+
+        temp = self.p1.documentcopy_set.filter(doc=self.b2)[0]
+        p1_have_overdue_on_b2_in_21_days = (datetime.datetime.strptime("2018-03-05 00:00", "%Y-%m-%d  %H:%M") -
+                                            datetime.datetime.strptime(
+                                                temp.returning_date.strftime("%Y-%m-%d %H:%M"),
+                                                "%Y-%m-%d  %H:%M")).days == 21
+
+        temp = self.p1.documentcopy_set.filter(doc=self.av1)[0]
+        p1_have_overdue_on_av1_in_14_days = (datetime.datetime.strptime("2018-03-05 00:00", "%Y-%m-%d  %H:%M") -
+                                            datetime.datetime.strptime(
+                                                temp.returning_date.strftime("%Y-%m-%d %H:%M"),
+                                                "%Y-%m-%d  %H:%M")).days == 14
+
+        temp = self.p2.documentcopy_set.filter(doc=self.b1)[0]
+        p2_have_overdue_on_b1_in_21_days = (datetime.datetime.strptime("2018-03-05 00:00", "%Y-%m-%d  %H:%M") -
+                                            datetime.datetime.strptime(
+                                                temp.returning_date.strftime("%Y-%m-%d %H:%M"),
+                                                "%Y-%m-%d  %H:%M")).days == 21
+
+        temp = self.p2.documentcopy_set.filter(doc=self.b2)[0]
+        p2_have_overdue_on_b2_in_21_days = (datetime.datetime.strptime("2018-03-05 00:00", "%Y-%m-%d  %H:%M") -
+                                            datetime.datetime.strptime(
+                                               temp.returning_date.strftime("%Y-%m-%d %H:%M"),
+                                                "%Y-%m-%d  %H:%M")).days == 21
+
+        temp = self.p2.documentcopy_set.filter(doc=self.av2)[0]
+        p2_have_overdue_on_av2_in_14_days = (datetime.datetime.strptime("2018-03-05 00:00", "%Y-%m-%d  %H:%M") -
+                                             datetime.datetime.strptime(
+                                                 temp.returning_date.strftime("%Y-%m-%d %H:%M"),
+                                                 "%Y-%m-%d  %H:%M")).days == 14
+
+        self.assertEqual(p1_have_overdue_on_av1_in_14_days, True)
+        self.assertEqual(p1_have_overdue_on_b2_in_21_days, True)
+        self.assertEqual(p1_have_overdue_on_b1_in_21_days, True)
+        self.assertEqual(p2_have_overdue_on_b1_in_21_days, True)
+        self.assertEqual(p2_have_overdue_on_av2_in_14_days, True)
+        self.assertEqual(p2_have_overdue_on_b2_in_21_days, True)
+
+        request.GET['id'] = self.p2.id  # request information about p3
+        response = user_card_info(request)
+        self.assertTrue(
+            all([word in response.content for word in [b'Elvira', b'Espindola', b'Via del Corso, 22', b'30003']]))
 
     def test_TC8(self):
         self.test_TC1()
