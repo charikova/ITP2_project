@@ -6,6 +6,7 @@ from BookRequests.views import make_new, approve_request
 import BookRequests
 from Documents import librarian_view
 import datetime
+import subprocess
 from UserCards.views import user_card_info
 from django.utils import timezone
 
@@ -340,6 +341,7 @@ class Delivery1(TestCase):
 class Delivery2(TestCase):
 
     def test_TC1(self):
+        
         self.librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qerty', first_name='F', last_name='L',
                                                   is_staff=True)
         self.b1 = Book.objects.create(title='Introduction to Algorithms', price=0,
@@ -385,21 +387,35 @@ class Delivery2(TestCase):
         self.p2.delete()
 
     def test_TC3(self):
-        pass
+        self.test_TC1()
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.librarian
+
+        request.GET['id'] = self.p1.id  # request information about p1
+        response = user_card_info(request)
+        self.assertTrue(
+            all([word in response.content for word in [b'Sergey', b'Afonso', b'Via Margutta, 3', b'30001']]))
+
+        request.GET['id'] = self.p3.id  # request information about p3
+        response = user_card_info(request)
+        self.assertTrue(
+            all([word in response.content for word in [b'Elvira', b'Espindola', b'Via del Corso, 22', b'30003']]))
 
     def test_TC4(self):
-        self.test_TC2()  # run TC2 instead of TC1
+        self.test_TC2()
         request = HttpRequest()
         request.method = "GET"
         request.user = self.librarian
 
         request.GET['id'] = self.p2.id
         response = user_card_info(request)
-        # check that no such users in library
+        self.assertEqual(str(response), 'No such user in library')  # not found such user
 
         request.GET['id'] = self.p3.id
         response = user_card_info(request)
-        self.assertTrue(all([word in response.content for word in [b'Elvira', b'Espindola', b'Via del Corso, 22', b'30003']]) )
+        self.assertTrue(
+            all([word in response.content for word in [b'Elvira', b'Espindola', b'Via del Corso, 22', b'30003']]))
 
 
     def test_TC5(self):
@@ -502,6 +518,7 @@ class Delivery2(TestCase):
         self.assertEqual(p2_have_overdue_on_b1_in_7_days, True)
 
     def test_TC9(self):
-        pass
+        subprocess.call('echo 123')
+
 
 
