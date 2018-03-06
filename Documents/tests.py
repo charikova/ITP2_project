@@ -1,4 +1,6 @@
 from django.test import TestCase, Client
+
+from BookRequests.models import Request
 from UserCards.models import UserProfile
 from django.http import HttpRequest, Http404, QueryDict
 from .models import *
@@ -419,10 +421,86 @@ class Delivery2(TestCase):
 
 
     def test_TC5(self):
-        pass
+        value_error_has_raised = False
+
+        self.test_TC2()
+
+        request = HttpRequest()
+        request.method = "GET"
+
+        try:
+            request.user = self.p2
+            request.GET['doc'] = self.b1.id
+            make_new(request)
+        except ValueError:
+            value_error_has_raised = True
+
+        number_of_requests = Request.objects.all().count()
+
+        self.assertEqual(value_error_has_raised, True)
+        self.assertEqual(number_of_requests, 0)
 
     def test_TC6(self):
-        pass
+        self.test_TC2()
+
+        # p1 leave a request for a book b1
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.p1
+        request.GET['doc'] = self.b1.id
+        make_new(request)
+
+        # p3 leave a request for a book b1
+        request.user = self.p3
+        request.GET['doc'] = self.b1.id
+        make_new(request)
+
+        # p1 leave a request for a book b1
+        request.user = self.p1
+        request.GET['doc'] = self.b2.id
+        make_new(request)
+
+        # check if requests have been successfully made
+        number_of_requests = Request.objects.all().count()
+        print(number_of_requests)
+
+        # now librarian should approve requests
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.librarian
+
+        # approve 1st
+        request.GET['req_id'] = 1
+        request.GET['user_id'] = self.p1.id
+        approve_request(request)
+
+        # approve 2nd
+        request.GET['req_id'] = 2
+        request.GET['user_id'] = self.p3.id
+        approve_request(request)
+
+        # approve 3rd
+        request.GET['req_id'] = 3
+        request.GET['user_id'] = self.p1.id
+        approve_request(request)
+
+        # check p1's info
+        request.GET['id'] = self.p1.id
+        response = user_card_info(request)
+
+        self.assertTrue(
+            all([word in response.content for word in
+                 [b'Sergey', b'Afonso', b'Via Margutta, 3', b'30001', str(self.b1.title).encode(), str(self.b2.title).encode()]]))
+
+
+        # check p3's info
+        request.GET['id'] = self.p3.id
+        response = user_card_info(request)
+
+        self.assertTrue(
+            all([word in response.content for word in
+                 [b'Elvira', b'Espindola', b'Via del Corso, 22', b'30003', str(self.b1.title).encode(), ]]))
+
 
     def test_TC7(self):
         pass
@@ -517,8 +595,8 @@ class Delivery2(TestCase):
         self.assertEqual(p2_have_overdue_on_av1_in_2_days, True)
         self.assertEqual(p2_have_overdue_on_b1_in_7_days, True)
 
-    def test_TC9(self):
-        subprocess.call('echo 123')
+    # def test_TC9(self):
+    #     subprocess.call('echo 123')
 
 
 
