@@ -71,7 +71,7 @@ def approve_request(request):
             days = 14
         copy = documents_models.DocumentCopy(doc=doc,
                                              checked_up_by_whom=user, returning_date=(
-                    datetime.date.today() + datetime.timedelta(days=days)).strftime("%Y-%m-%d"))
+                    datetime.date.today() + datetime.timedelta(days=days)).strftime("%Y-%m-%d %H:%M"))
         copy.save()
     doc_request.delete()
     return redirect('/requests')

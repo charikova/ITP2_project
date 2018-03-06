@@ -8,7 +8,7 @@ from Documents import librarian_view
 import datetime
 import subprocess
 from UserCards.views import user_card_info
-
+from django.utils import timezone
 
 class Delivery1(TestCase):
 
@@ -428,7 +428,94 @@ class Delivery2(TestCase):
         pass
 
     def test_TC8(self):
-        pass
+        self.test_TC1()
+
+        request = HttpRequest()
+        request.GET['doc'] = self.b1.id
+        request.user = self.p1
+        make_new(request)
+
+        request = HttpRequest()
+        request.GET['doc'] = self.b2.id
+        request.user = self.p1
+        make_new(request)
+
+        request.GET['user_id'] = self.p1.id
+        request.GET['req_id'] = self.p1.request_set.get(doc=self.b1).id
+        request.user = self.librarian
+        approve_request(request)
+
+        request.GET['user_id'] = self.p1.id
+        request.GET['req_id'] = self.p1.request_set.get(doc=self.b2).id
+        request.user = self.librarian
+        approve_request(request)
+
+        request = HttpRequest()
+        request.GET['doc'] = self.b1.id
+        request.user = self.p2
+        make_new(request)
+
+        request = HttpRequest()
+        request.GET['doc'] = self.av1.id
+        request.user = self.p2
+        make_new(request)
+
+
+        request.GET['user_id'] = self.p2.id
+        request.GET['req_id'] = self.p2.request_set.get(doc=self.b1).id
+        request.user = self.librarian
+        approve_request(request)
+
+        request.GET['user_id'] = self.p2.id
+        request.GET['req_id'] = self.p2.request_set.get(doc=self.av1).id
+        request.user = self.librarian
+        approve_request(request)
+
+
+        p1_b1 = self.p1.documentcopy_set.filter(doc=self.b1)[0]
+
+        p1_b1.returning_date = (datetime.datetime.strptime("2018-02-09 00:00",
+                                                                                                 '%Y-%m-%d %H:%M') + datetime.timedelta(days=21)).strftime("%Y-%m-%d %H:%M")
+        p1_b1.date = datetime.datetime.strptime("2018-02-09 00:00",
+                                                                                                 "%Y-%m-%d %H:%M").strftime("%Y-%m-%d %H:%M")
+        p1_b1.save()
+
+
+        p1_b2 = self.p1.documentcopy_set.filter(doc=self.b2)[0]
+        p1_b2.returning_date = (datetime.datetime.strptime("2018-02-02 00:00",
+                                                                                                 '%Y-%m-%d %H:%M') + datetime.timedelta(days=21)).strftime("%Y-%m-%d %H:%M")
+        p1_b2.date = datetime.datetime.strptime("2018-02-02 00:00",
+                                                                                                 "%Y-%m-%d %H:%M").strftime("%Y-%m-%d %H:%M")
+        p1_b2.save()
+
+
+        p2_b1 = self.p2.documentcopy_set.filter(doc=self.b1)[0]
+        p2_b1.returning_date = (datetime.datetime.strptime("2018-02-05 00:00",
+                                                                                                 '%Y-%m-%d %H:%M') + datetime.timedelta(days=21)).strftime("%Y-%m-%d %H:%M")
+        p2_b1.date = datetime.datetime.strptime("2018-02-05 00:00",
+                                                                                       "%Y-%m-%d %H:%M")
+        p2_b1.save()
+
+
+        p2_av1 = self.p2.documentcopy_set.filter(doc=self.av1)[0]
+        p2_av1.returning_date = (datetime.datetime.strptime("2018-02-17 00:00",
+                                                                                                 '%Y-%m-%d %H:%M') + datetime.timedelta(days=14)).strftime("%Y-%m-%d %H:%M")
+        p2_av1.date = datetime.datetime.strptime("2018-02-17 00:00",
+                                                                                       "%Y-%m-%d %H:%M").strftime("%Y-%m-%d %H:%M")
+        p2_av1.save()
+
+        now_aware = timezone.now()
+
+        p1_have_overdue_on_b2_in_3_days = (datetime.datetime.strptime("2018-03-05 00:00", "%Y-%m-%d  %H:%M") -
+                                           datetime.datetime.strptime(p1_b1.returning_date, "%Y-%m-%d  %H:%M")).days == 3
+        p2_have_overdue_on_b1_in_7_days =  (datetime.datetime.strptime("2018-03-05 00:00", "%Y-%m-%d  %H:%M") -
+                                           datetime.datetime.strptime(p2_b1.returning_date, "%Y-%m-%d  %H:%M")).days == 7
+        p2_have_overdue_on_av1_in_2_days =  (datetime.datetime.strptime("2018-03-05 00:00", "%Y-%m-%d  %H:%M") -
+                                             datetime.datetime.strptime(p2_av1.returning_date, "%Y-%m-%d  %H:%M")).days == 2
+
+        self.assertEqual(p1_have_overdue_on_b2_in_3_days, True)
+        self.assertEqual(p2_have_overdue_on_av1_in_2_days, True)
+        self.assertEqual(p2_have_overdue_on_b1_in_7_days, True)
 
 
 
