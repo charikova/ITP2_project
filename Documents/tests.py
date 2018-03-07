@@ -12,6 +12,7 @@ import subprocess
 from UserCards.views import user_card_info
 from django.utils import timezone
 
+
 class Delivery1(TestCase):
 
     def test_TC1(self):
@@ -365,8 +366,8 @@ class Delivery2(TestCase):
                                       publisher='Addison-Wesley Longman Publishing '
                                                 'Co., Inc.', is_reference=True)
 
-        self.av1 = AVFile.objects.create(title='Null References: The Billion Dollar Mistake', authors='Tony Hoare', price=0)
-        self.av2 = AVFile.objects.create(title=': Information Entropy', authors='Claude Shannon', price=0)
+        self.av1 = AVFile.objects.create(title='Null References: The Billion Dollar Mistake', authors='Tony Hoare', type="AVFile", price=0)
+        self.av2 = AVFile.objects.create(title=': Information Entropy', authors='Claude Shannon', price=0, type="AVFile")
 
         self.p1 = User.objects.create_user('patron1', 'exampl2@mail.ru', '12356qwerty', first_name='Sergey',
                                            last_name='Afonso')
@@ -498,7 +499,6 @@ class Delivery2(TestCase):
             all([word in response.content for word in
                  [b'Sergey', b'Afonso', b'Via Margutta, 3', b'30001', str(self.b1.title).encode(), str(self.b2.title).encode()]]))
 
-
         # check p3's info
         request.GET['id'] = self.p3.id
         response = user_card_info(request)
@@ -506,7 +506,6 @@ class Delivery2(TestCase):
         self.assertTrue(
             all([word in response.content for word in
                  [b'Elvira', b'Espindola', b'Via del Corso, 22', b'30003', str(self.b1.title).encode(), ]]))
-
 
     def test_TC7(self):
         self.test_TC1()
@@ -590,8 +589,6 @@ class Delivery2(TestCase):
         request.user = self.librarian
         approve_request(request)
 
-
-
         # Make request to get info about user
         request = HttpRequest()
         request.method = "GET"
@@ -607,6 +604,8 @@ class Delivery2(TestCase):
         p1_have_overdue_on_b1_in_21_days = (datetime.datetime.strptime("2018-03-05 00:00", "%Y-%m-%d  %H:%M") -
                                            datetime.datetime.strptime(temp.returning_date.strftime("%Y-%m-%d %H:%M"),
                                                                       "%Y-%m-%d  %H:%M")).days == 21
+
+        # raise Exception(p1_have_overdue_on_b1_in_21_days)
 
         temp = self.p1.documentcopy_set.filter(doc=self.b2)[0]
         p1_have_overdue_on_b2_in_21_days = (datetime.datetime.strptime("2018-03-05 00:00", "%Y-%m-%d  %H:%M") -
@@ -738,6 +737,4 @@ class Delivery2(TestCase):
         self.assertEqual(p1_have_overdue_on_b2_in_3_days, True)
         self.assertEqual(p2_have_overdue_on_av1_in_2_days, True)
         self.assertEqual(p2_have_overdue_on_b1_in_7_days, True)
-
-
 
