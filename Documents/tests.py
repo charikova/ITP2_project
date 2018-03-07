@@ -505,7 +505,7 @@ class Delivery2(TestCase):
 
         self.assertTrue(
             all([word in response.content for word in
-                 [b'Sergey', b'Afonso', b'Via Margutta, 3', b'30001', str(self.b1.title).encode(),
+                 [b'Sergey', b'Afonso', b'Via Margutta, 3', b'30001', str(self.b1.title).encode(), b'27days',
                   str(self.b2.title).encode()]]))
 
         # check p3's info
