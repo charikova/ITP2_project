@@ -341,6 +341,10 @@ class Delivery1(TestCase):
 class Delivery2(TestCase):
 
     def test_TC1(self):
+        """
+        The system does not have any doc- uments, any pa- tron.
+        The system only contains one user who is a li- brarian.
+        """
         
         self.librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qerty', first_name='F', last_name='L',
                                                   is_staff=True)
@@ -384,7 +388,14 @@ class Delivery2(TestCase):
         self.test_TC1()
         self.b1.copies -= 2
         self.b3.copies -= 1
+        self.b1.save()
+        self.b3.save()
         self.p2.delete()
+        self.assertEqual(len(User.objects.all()), 3)
+        num_of_docs = 0
+        for doc in Document.objects.all():
+            num_of_docs += doc.copies
+        self.assertEqual(num_of_docs, 5)
 
     def test_TC3(self):
         self.test_TC1()
@@ -417,7 +428,6 @@ class Delivery2(TestCase):
         self.assertTrue(
             all([word in response.content for word in [b'Elvira', b'Espindola', b'Via del Corso, 22', b'30003']]))
 
-
     def test_TC5(self):
         pass
 
@@ -428,6 +438,10 @@ class Delivery2(TestCase):
         pass
 
     def test_TC8(self):
+        """
+        p1 checked-out b1 on February 9th and b2 on February 2nd
+        p2 checked-out b1 on February 5th and av1 on February 17th
+        """
         self.test_TC1()
 
         request = HttpRequest()
@@ -460,7 +474,6 @@ class Delivery2(TestCase):
         request.user = self.p2
         make_new(request)
 
-
         request.GET['user_id'] = self.p2.id
         request.GET['req_id'] = self.p2.request_set.get(doc=self.b1).id
         request.user = self.librarian
@@ -471,7 +484,6 @@ class Delivery2(TestCase):
         request.user = self.librarian
         approve_request(request)
 
-
         p1_b1 = self.p1.documentcopy_set.filter(doc=self.b1)[0]
 
         p1_b1.returning_date = (datetime.datetime.strptime("2018-02-09 00:00",
@@ -480,7 +492,6 @@ class Delivery2(TestCase):
                                                                                                  "%Y-%m-%d %H:%M").strftime("%Y-%m-%d %H:%M")
         p1_b1.save()
 
-
         p1_b2 = self.p1.documentcopy_set.filter(doc=self.b2)[0]
         p1_b2.returning_date = (datetime.datetime.strptime("2018-02-02 00:00",
                                                                                                  '%Y-%m-%d %H:%M') + datetime.timedelta(days=21)).strftime("%Y-%m-%d %H:%M")
@@ -488,14 +499,12 @@ class Delivery2(TestCase):
                                                                                                  "%Y-%m-%d %H:%M").strftime("%Y-%m-%d %H:%M")
         p1_b2.save()
 
-
         p2_b1 = self.p2.documentcopy_set.filter(doc=self.b1)[0]
         p2_b1.returning_date = (datetime.datetime.strptime("2018-02-05 00:00",
                                                                                                  '%Y-%m-%d %H:%M') + datetime.timedelta(days=21)).strftime("%Y-%m-%d %H:%M")
         p2_b1.date = datetime.datetime.strptime("2018-02-05 00:00",
                                                                                        "%Y-%m-%d %H:%M")
         p2_b1.save()
-
 
         p2_av1 = self.p2.documentcopy_set.filter(doc=self.av1)[0]
         p2_av1.returning_date = (datetime.datetime.strptime("2018-02-17 00:00",
