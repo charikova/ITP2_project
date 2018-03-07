@@ -118,7 +118,7 @@ def renew(request):
         return redirect('/' + str(copy.doc.id))
     requests = copy.doc.request_set.all()
     if len(requests) == 0 and (datetime.datetime.now() - datetime.datetime.strptime(str(copy.returning_date),
-                                                                                    "%Y-%m-%d %H:%M")).seconds < 21600:
+                                                                                    "%Y-%m-%d")).seconds < 21600:
         copy.returning_date = datetime.datetime.today() + datetime.timedelta(days=7)
         copy.save()
     else:
