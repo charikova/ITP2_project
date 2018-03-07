@@ -351,7 +351,15 @@ class Delivery1(TestCase):
 class Delivery2(TestCase):
 
     def test_TC1(self):
+<<<<<<< HEAD
 
+=======
+        """
+        The system does not have any doc- uments, any pa- tron.
+        The system only contains one user who is a li- brarian.
+        """
+        
+>>>>>>> 1a109c846a6ef79d3e4f61fc5a5e41d9714eb307
         self.librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qerty', first_name='F', last_name='L',
                                                   is_staff=True)
         self.b1 = Book.objects.create(title='Introduction to Algorithms', price=0,
@@ -395,7 +403,14 @@ class Delivery2(TestCase):
         self.test_TC1()
         self.b1.copies -= 2
         self.b3.copies -= 1
+        self.b1.save()
+        self.b3.save()
         self.p2.delete()
+        self.assertEqual(len(User.objects.all()), 3)
+        num_of_docs = 0
+        for doc in Document.objects.all():
+            num_of_docs += doc.copies
+        self.assertEqual(num_of_docs, 5)
 
     def test_TC3(self):
         self.test_TC1()
@@ -503,7 +518,7 @@ class Delivery2(TestCase):
 
         self.assertTrue(
             all([word in response.content for word in
-                 [b'Elvira', b'Espindola', b'Via del Corso, 22', b'30003', str(self.b1.title).encode(), ]]))
+                 [b'Elvira', b'Espindola', b'Via del Corso, 22', b'30003', ]]))
 
     def test_TC7(self):
         self.test_TC1()
@@ -634,6 +649,10 @@ class Delivery2(TestCase):
             all([word in response.content for word in [b'Elvira', b'Espindola', b'Via del Corso, 22', b'30003']]))
 
     def test_TC8(self):
+        """
+        p1 checked-out b1 on February 9th and b2 on February 2nd
+        p2 checked-out b1 on February 5th and av1 on February 17th
+        """
         self.test_TC1()
 
         request = HttpRequest()
@@ -725,5 +744,10 @@ class Delivery2(TestCase):
         self.assertEqual(p2_have_overdue_on_av1_in_2_days, True)
         self.assertEqual(p2_have_overdue_on_b1_in_7_days, True)
 
+<<<<<<< HEAD
     # def test_TC9(self):
     #     subprocess.call('echo 123')
+=======
+
+
+>>>>>>> 1a109c846a6ef79d3e4f61fc5a5e41d9714eb307
