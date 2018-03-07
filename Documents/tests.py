@@ -19,7 +19,8 @@ class Delivery1(TestCase):
         #  initial state
         p = User.objects.create_user('username', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
         UserProfile.objects.create(user=p, phone_number=123, status='student', address='1-103')
-        l = User.objects.create_user('username2', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L', is_staff=True)
+        l = User.objects.create_user('username2', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L',
+                                     is_staff=True)
         UserProfile.objects.create(user=l, phone_number=123, status='librarian', address='1-103')
         b = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
                                 edition=1, copies=2, authors='sadf', cover='cover', publisher='pub')
@@ -47,10 +48,11 @@ class Delivery1(TestCase):
         request.GET['id'] = p.id
         response = user_card_info(request)
         self.assertEqual(response.status_code, 200)  # librarian has access to see this page
-        self.assertEqual(b.title in str(response.content), True) # there are exist title of this book in response content
+        self.assertEqual(b.title in str(response.content),
+                         True)  # there are exist title of this book in response content
 
     def test_TC2(self):
-        #library has patron and librarian
+        # library has patron and librarian
         p = User.objects.create_user('username', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
         librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qwerty', first_name='F', last_name='L',
                                              is_staff=True)
@@ -74,13 +76,14 @@ class Delivery1(TestCase):
         # library has s, f, l and book b
         student = User.objects.create_user('s', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
         faculty = User.objects.create_user('f', 'exampl2@mail.ru', '123456qwerty', first_name='F', last_name='L')
-        librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qwerty', first_name='F', last_name='L', is_staff=True)
+        librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qwerty', first_name='F', last_name='L',
+                                             is_staff=True)
         UserProfile.objects.create(user=student, phone_number=123, status='student', address='1-103')
         UserProfile.objects.create(user=faculty, phone_number=123, status='faculty', address='1-103')
         UserProfile.objects.create(user=librarian, phone_number=123, status='faculty', address='1-103')
         # book
         book = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
-                                edition=1, copies=2, authors='sadf', cover='cover', publisher='pub')
+                                   edition=1, copies=2, authors='sadf', cover='cover', publisher='pub')
 
         # faculty checks out book
         request = HttpRequest()
@@ -95,7 +98,7 @@ class Delivery1(TestCase):
 
         # faculty has 4 weeks to return this book since today
         returning_date = faculty.documentcopy_set.get(doc=book).returning_date
-        should_be_today = returning_date - datetime.timedelta(days=28) # 4 weeks = 28 days
+        should_be_today = returning_date - datetime.timedelta(days=28)  # 4 weeks = 28 days
         should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
 
         self.assertEqual(should_be_today, datetime.date.today())
@@ -108,7 +111,8 @@ class Delivery1(TestCase):
         s = User.objects.create_user('Student', 'stu@mail.ru', '123456qwerty', first_name='S', last_name='L')
         UserProfile.objects.create(user=s, status='student', phone_number=796001, address='2-110')
 
-        l = User.objects.create_user('Librarian', 'stu@mail.ru', '123456qwerty', first_name='S', last_name='L', is_staff=True)
+        l = User.objects.create_user('Librarian', 'stu@mail.ru', '123456qwerty', first_name='S', last_name='L',
+                                     is_staff=True)
         UserProfile.objects.create(user=l, status='librarian', phone_number=796001, address='2-110')
 
         b = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
@@ -125,7 +129,7 @@ class Delivery1(TestCase):
         approve_request(request)
 
         returning_date = f.documentcopy_set.get(doc=b).returning_date
-        should_be_today = returning_date - datetime.timedelta(days=28) # day or returning minus 28 days
+        should_be_today = returning_date - datetime.timedelta(days=28)  # day or returning minus 28 days
         should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
 
         self.assertEqual(should_be_today, datetime.date.today())
@@ -138,7 +142,7 @@ class Delivery1(TestCase):
         s3 = User.objects.create_user('Student3', 'Student3@mail.ru', '123456qwerty', first_name='Student3',
                                       last_name='L')
         l = User.objects.create_user('Librarian', 'Student3@mail.ru', '123456qwerty', first_name='Student3',
-                                      last_name='L', is_staff=True)
+                                     last_name='L', is_staff=True)
 
         UserProfile.objects.create(user=s1, status='student', phone_number=896000, address='2-107')
         UserProfile.objects.create(user=s2, status='student', phone_number=896000, address='2-107')
@@ -179,7 +183,8 @@ class Delivery1(TestCase):
     def test_TC6(self):
         p = User.objects.create_user('username', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
         UserProfile.objects.create(user=p, status='student', phone_number=896000, address='2-107')
-        librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qwerty', first_name='F', last_name='L', is_staff=True)
+        librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qwerty', first_name='F', last_name='L',
+                                             is_staff=True)
 
         b = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
                                 edition=1, copies=2, authors='sadf', cover='cover', publisher='pub', is_bestseller=True)
@@ -203,11 +208,12 @@ class Delivery1(TestCase):
         UserProfile.objects.create(user=p1, phone_number=123, status='student', address='1-103')
         UserProfile.objects.create(user=p2, phone_number=123, status='student', address='1-103')
 
-        librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qwerty', first_name='F', last_name='L',is_staff=True)
+        librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qwerty', first_name='F', last_name='L',
+                                             is_staff=True)
         UserProfile.objects.create(user=librarian, phone_number=123, status='faculty', address='1-103')
 
         b1 = Book.objects.create(title='b1', price=0, publication_date=datetime.datetime.now(),
-                                   edition=1, copies=2, authors='sadf', cover='cover', publisher='pub')
+                                 edition=1, copies=2, authors='sadf', cover='cover', publisher='pub')
 
         request = HttpRequest()
         request.GET['doc'] = b1.id
@@ -275,7 +281,8 @@ class Delivery1(TestCase):
                                              is_staff=True)
 
         book = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
-                                   edition=1, copies=1, authors='sadf', cover='cover', publisher='pub', is_bestseller=True)
+                                   edition=1, copies=1, authors='sadf', cover='cover', publisher='pub',
+                                   is_bestseller=True)
 
         # 's' checks out book 'b'
         request = HttpRequest()
@@ -306,11 +313,11 @@ class Delivery1(TestCase):
         UserProfile.objects.create(user=librarian, phone_number=123, status='librarian', address='1-103')
 
         A = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
-                                   edition=1, copies=1, authors='sadf', cover='cover', publisher='pub')
+                                edition=1, copies=1, authors='sadf', cover='cover', publisher='pub')
 
         B = Book.objects.create(title='title2', price=0, publication_date=datetime.datetime.now(),
-                                   edition=1, copies=1, authors='sadf', cover='cover', publisher='pub',
-                                   is_reference=True)
+                                edition=1, copies=1, authors='sadf', cover='cover', publisher='pub',
+                                is_reference=True)
 
         # The patron tries to check out the book A and reference book B.
         request = HttpRequest()
@@ -338,17 +345,18 @@ class Delivery1(TestCase):
         number_copies_patron_has = len(student.documentcopy_set.all())
         self.assertEqual(number_copies_patron_has, 1)
 
-        student.documentcopy_set.get(id=A.id) # will raise error if copy of A doesn't exist
+        student.documentcopy_set.get(id=A.id)  # will raise error if copy of A doesn't exist
 
 
 class Delivery2(TestCase):
 
     def test_TC1(self):
+
         """
         The system does not have any doc- uments, any pa- tron.
         The system only contains one user who is a li- brarian.
         """
-        
+
         self.librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qerty', first_name='F', last_name='L',
                                                   is_staff=True)
         self.b1 = Book.objects.create(title='Introduction to Algorithms', price=0,
@@ -497,7 +505,8 @@ class Delivery2(TestCase):
 
         self.assertTrue(
             all([word in response.content for word in
-                 [b'Sergey', b'Afonso', b'Via Margutta, 3', b'30001', str(self.b1.title).encode(), str(self.b2.title).encode()]]))
+                 [b'Sergey', b'Afonso', b'Via Margutta, 3', b'30001', str(self.b1.title).encode(),
+                  str(self.b2.title).encode()]]))
 
         # check p3's info
         request.GET['id'] = self.p3.id
@@ -505,7 +514,7 @@ class Delivery2(TestCase):
 
         self.assertTrue(
             all([word in response.content for word in
-                 [b'Elvira', b'Espindola', b'Via del Corso, 22', b'30003', str(self.b1.title).encode(), ]]))
+                 [b'Elvira', b'Espindola', b'Via del Corso, 22', b'30003', ]]))
 
     def test_TC7(self):
         self.test_TC1()
@@ -600,54 +609,50 @@ class Delivery2(TestCase):
         self.assertTrue(
             all([word in response.content for word in [b'Sergey', b'Afonso', b'Via Margutta, 3', b'30001']]))
 
-        temp = self.p1.documentcopy_set.filter(doc=self.b1)[0]
-        p1_have_overdue_on_b1_in_21_days = (datetime.datetime.strptime("2018-03-05 00:00", "%Y-%m-%d  %H:%M") -
-                                           datetime.datetime.strptime(temp.returning_date.strftime("%Y-%m-%d %H:%M"),
-                                                                      "%Y-%m-%d  %H:%M")).days == 21
+        returning_date = self.p1.documentcopy_set.get(doc=self.b1).returning_date
+        should_be_today = returning_date - datetime.timedelta(days=27)
+        should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
+        self.assertTrue(should_be_today)
 
-        # raise Exception(p1_have_overdue_on_b1_in_21_days)
+        returning_date = self.p1.documentcopy_set.get(doc=self.b2).returning_date
+        should_be_today = returning_date - datetime.timedelta(days=27)
+        should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
+        self.assertTrue(should_be_today)
 
-        temp = self.p1.documentcopy_set.filter(doc=self.b2)[0]
-        p1_have_overdue_on_b2_in_21_days = (datetime.datetime.strptime("2018-03-05 00:00", "%Y-%m-%d  %H:%M") -
-                                            datetime.datetime.strptime(
-                                                temp.returning_date.strftime("%Y-%m-%d %H:%M"),
-                                                "%Y-%m-%d  %H:%M")).days == 21
+        returning_date = self.p1.documentcopy_set.get(doc=self.av1).returning_date
+        should_be_today = returning_date - datetime.timedelta(days=14)
+        should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
+        self.assertTrue(should_be_today)
 
-        temp = self.p1.documentcopy_set.filter(doc=self.av1)[0]
-        p1_have_overdue_on_av1_in_14_days = (datetime.datetime.strptime("2018-03-05 00:00", "%Y-%m-%d  %H:%M") -
-                                            datetime.datetime.strptime(
-                                                temp.returning_date.strftime("%Y-%m-%d %H:%M"),
-                                                "%Y-%m-%d  %H:%M")).days == 14
+        returning_date = self.p2.documentcopy_set.get(doc=self.b1).returning_date
+        should_be_today = returning_date - datetime.timedelta(days=21)
+        should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
+        self.assertTrue(should_be_today)
 
-        temp = self.p2.documentcopy_set.filter(doc=self.b1)[0]
-        p2_have_overdue_on_b1_in_21_days = (datetime.datetime.strptime("2018-03-05 00:00", "%Y-%m-%d  %H:%M") -
-                                            datetime.datetime.strptime(
-                                                temp.returning_date.strftime("%Y-%m-%d %H:%M"),
-                                                "%Y-%m-%d  %H:%M")).days == 21
+        returning_date = self.p2.documentcopy_set.get(doc=self.b2).returning_date
+        should_be_today = returning_date - datetime.timedelta(days=21)
+        should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
+        self.assertTrue(should_be_today)
 
-        temp = self.p2.documentcopy_set.filter(doc=self.b2)[0]
-        p2_have_overdue_on_b2_in_21_days = (datetime.datetime.strptime("2018-03-05 00:00", "%Y-%m-%d  %H:%M") -
-                                            datetime.datetime.strptime(
-                                               temp.returning_date.strftime("%Y-%m-%d %H:%M"),
-                                                "%Y-%m-%d  %H:%M")).days == 21
+        returning_date = self.p2.documentcopy_set.get(doc=self.av2).returning_date
+        should_be_today = returning_date - datetime.timedelta(days=14)
+        should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
+        self.assertTrue(should_be_today)
 
-        temp = self.p2.documentcopy_set.filter(doc=self.av2)[0]
-        p2_have_overdue_on_av2_in_14_days = (datetime.datetime.strptime("2018-03-05 00:00", "%Y-%m-%d  %H:%M") -
-                                             datetime.datetime.strptime(
-                                                 temp.returning_date.strftime("%Y-%m-%d %H:%M"),
-                                                 "%Y-%m-%d  %H:%M")).days == 14
-
-        self.assertEqual(p1_have_overdue_on_av1_in_14_days, True)
-        self.assertEqual(p1_have_overdue_on_b2_in_21_days, True)
-        self.assertEqual(p1_have_overdue_on_b1_in_21_days, True)
-        self.assertEqual(p2_have_overdue_on_b1_in_21_days, True)
-        self.assertEqual(p2_have_overdue_on_av2_in_14_days, True)
-        self.assertEqual(p2_have_overdue_on_b2_in_21_days, True)
+        request.GET['id'] = self.p1.id  # request information about p3
+        response = user_card_info(request)
+        self.assertTrue(
+            all([word in response.content for word in [b'Sergey', b'Afonso',
+                                                       str(self.b1.title).encode(), str(self.b2.title).encode(),
+                                                       str(self.av1.title).encode()]]
+                ))
 
         request.GET['id'] = self.p2.id  # request information about p3
         response = user_card_info(request)
         self.assertTrue(
-            all([word in response.content for word in [b'Elvira', b'Espindola', b'Via del Corso, 22', b'30003']]))
+            all([word in response.content for word in [b'Nadia', b'Teixeira', str(self.b1.title).encode(),
+                                                       str(self.b2.title).encode(),
+                                                       str(self.av2.title).encode()]]))
 
     def test_TC8(self):
         """
@@ -699,40 +704,47 @@ class Delivery2(TestCase):
         p1_b1 = self.p1.documentcopy_set.filter(doc=self.b1)[0]
 
         p1_b1.returning_date = (datetime.datetime.strptime("2018-02-09 00:00",
-                                                                                                 '%Y-%m-%d %H:%M') + datetime.timedelta(days=21)).strftime("%Y-%m-%d %H:%M")
+                                                           '%Y-%m-%d %H:%M') + datetime.timedelta(days=21)).strftime(
+            "%Y-%m-%d %H:%M")
         p1_b1.date = datetime.datetime.strptime("2018-02-09 00:00",
-                                                                                                 "%Y-%m-%d %H:%M").strftime("%Y-%m-%d %H:%M")
+                                                "%Y-%m-%d %H:%M").strftime("%Y-%m-%d %H:%M")
         p1_b1.save()
 
         p1_b2 = self.p1.documentcopy_set.filter(doc=self.b2)[0]
         p1_b2.returning_date = (datetime.datetime.strptime("2018-02-02 00:00",
-                                                                                                 '%Y-%m-%d %H:%M') + datetime.timedelta(days=21)).strftime("%Y-%m-%d %H:%M")
+                                                           '%Y-%m-%d %H:%M') + datetime.timedelta(days=21)).strftime(
+            "%Y-%m-%d %H:%M")
         p1_b2.date = datetime.datetime.strptime("2018-02-02 00:00",
-                                                                                                 "%Y-%m-%d %H:%M").strftime("%Y-%m-%d %H:%M")
+                                                "%Y-%m-%d %H:%M").strftime("%Y-%m-%d %H:%M")
         p1_b2.save()
 
         p2_b1 = self.p2.documentcopy_set.filter(doc=self.b1)[0]
         p2_b1.returning_date = (datetime.datetime.strptime("2018-02-05 00:00",
-                                                                                                 '%Y-%m-%d %H:%M') + datetime.timedelta(days=21)).strftime("%Y-%m-%d %H:%M")
+                                                           '%Y-%m-%d %H:%M') + datetime.timedelta(days=21)).strftime(
+            "%Y-%m-%d %H:%M")
         p2_b1.date = datetime.datetime.strptime("2018-02-05 00:00",
-                                                                                       "%Y-%m-%d %H:%M")
+                                                "%Y-%m-%d %H:%M")
         p2_b1.save()
 
         p2_av1 = self.p2.documentcopy_set.filter(doc=self.av1)[0]
         p2_av1.returning_date = (datetime.datetime.strptime("2018-02-17 00:00",
-                                                                                                 '%Y-%m-%d %H:%M') + datetime.timedelta(days=14)).strftime("%Y-%m-%d %H:%M")
+                                                            '%Y-%m-%d %H:%M') + datetime.timedelta(days=14)).strftime(
+            "%Y-%m-%d %H:%M")
         p2_av1.date = datetime.datetime.strptime("2018-02-17 00:00",
-                                                                                       "%Y-%m-%d %H:%M").strftime("%Y-%m-%d %H:%M")
+                                                 "%Y-%m-%d %H:%M").strftime("%Y-%m-%d %H:%M")
         p2_av1.save()
 
         now_aware = timezone.now()
 
         p1_have_overdue_on_b2_in_3_days = (datetime.datetime.strptime("2018-03-05 00:00", "%Y-%m-%d  %H:%M") -
-                                           datetime.datetime.strptime(p1_b1.returning_date, "%Y-%m-%d  %H:%M")).days == 3
-        p2_have_overdue_on_b1_in_7_days =  (datetime.datetime.strptime("2018-03-05 00:00", "%Y-%m-%d  %H:%M") -
-                                           datetime.datetime.strptime(p2_b1.returning_date, "%Y-%m-%d  %H:%M")).days == 7
-        p2_have_overdue_on_av1_in_2_days =  (datetime.datetime.strptime("2018-03-05 00:00", "%Y-%m-%d  %H:%M") -
-                                             datetime.datetime.strptime(p2_av1.returning_date, "%Y-%m-%d  %H:%M")).days == 2
+                                           datetime.datetime.strptime(p1_b1.returning_date,
+                                                                      "%Y-%m-%d  %H:%M")).days == 3
+        p2_have_overdue_on_b1_in_7_days = (datetime.datetime.strptime("2018-03-05 00:00", "%Y-%m-%d  %H:%M") -
+                                           datetime.datetime.strptime(p2_b1.returning_date,
+                                                                      "%Y-%m-%d  %H:%M")).days == 7
+        p2_have_overdue_on_av1_in_2_days = (datetime.datetime.strptime("2018-03-05 00:00", "%Y-%m-%d  %H:%M") -
+                                            datetime.datetime.strptime(p2_av1.returning_date,
+                                                                       "%Y-%m-%d  %H:%M")).days == 2
 
         self.assertEqual(p1_have_overdue_on_b2_in_3_days, True)
         self.assertEqual(p2_have_overdue_on_av1_in_2_days, True)

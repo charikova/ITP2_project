@@ -70,7 +70,6 @@ def approve_request(request):
             days = 28
         elif doc.is_bestseller:
             days = 14
-        print(doc, doc.type, days)
         copy = documents_models.DocumentCopy(doc=doc,
                                              checked_up_by_whom=user, returning_date=(
                     datetime.date.today() + datetime.timedelta(days=days)).strftime("%Y-%m-%d %H:%M"))
