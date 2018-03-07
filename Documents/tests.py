@@ -505,7 +505,7 @@ class Delivery2(TestCase):
 
         self.assertTrue(
             all([word in response.content for word in
-                 [b'Elvira', b'Espindola', b'Via del Corso, 22', b'30003', str(self.b1.title).encode(), ]]))
+                 [b'Elvira', b'Espindola', b'Via del Corso, 22', b'30003', ]]))
 
 
     def test_TC7(self):
