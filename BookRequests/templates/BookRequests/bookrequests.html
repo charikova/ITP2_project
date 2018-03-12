@@ -13,101 +13,111 @@
 
     {% block body %}
 
-    <link rel="stylesheet" type="text/css" href="{% static 'Documents/style.css' %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'Documents/style.css' %}"/>
 
-    <style>
-        h1 {
-            font-size: 50px;
-        }
+        <style>
+            h1 {
+                font-size: 50px;
+            }
 
-        .cen {
-            text-align: center;
-            font-size: 20px;
-        }
+            .cen {
+                text-align: center;
+                font-size: 20px;
+            }
 
-        table {
-            border: none;
-            border-radius: 10px;
-        }
+            table {
+                border: none;
+                border-radius: 10px;
+            }
 
-        tr {
-            border: none;
-            text-align: left;
-        }
+            tr {
+                border: none;
+                text-align: left;
+            }
 
-        td {
-            border: none;
-            text-align: center;
-            border-top: 1px solid saddlebrown;
-        }
+            td {
+                border: none;
+                text-align: center;
+                border-top: 1px solid saddlebrown;
+            }
 
-        a {
-            color: black;
-        }
-
-
-    </style>
-
-    {% if user.is_staff %}
-    <h3 align="center">Document's requests for now:</h3>
-    {% elif user.is_authenticated %}
-    <h3 align="center">My requests:</h3>
-    {% endif %}
+            a {
+                color: black;
+            }
 
 
-    <form action="" method="post">
+        </style>
+
+        {% if user.is_staff %}
+            <h3 align="center">Document's requests for now:</h3>
+        {% elif user.is_authenticated %}
+            <h3 align="center">My requests:</h3>
+        {% endif %}
+
+
+        <form action="" method="post">
+            <div align="center">
+                <table>
+
+                    <tr>
+                        <th class="cen" colspan="1">Document</th>
+                        <th class="cen">Date</th>
+                        {% if user.is_staff %}
+                            <th class="cen">Users</th>
+                        {% endif %}
+                    </tr>
+
+                    <tr>
+                        {% for req in requests %}
+                            {% if user.is_staff or user in req.users.all %}
+                                <td><a href="/{{ req.doc.id }}/">{{ req.doc.title }}</a> {% if req.doc.copies == 0 %}
+                                    <font color="red">(NA)</font> {% endif %}</td>
+                            {% endif %}
+                            {% for u in req.users.all %}
+                                {% if user.is_staff or user == u %}
+
+                                    <td>{{ req.timestamp|slugify|slice:":10" }}</td>
+
+                                    {% if user.is_staff %}
+                                        <td><a href="/user/?id={{ u.id }}">{{ u.username }}</a></td>
+                                        {% if req.doc.copies != 0 %}
+                                            <td><a class="btn button"
+                                                   href="/requests/approve/?user_id={{ u.id }}&req_id={{ req.id }}">approve</a>
+                                            </td>
+                                        {% endif %}
+                                    {% endif %}
+                                    <td><a class="btn button" href="/requests/refuse/?req_id={{ req.id }}">refuse</a>
+                                    </td>
+                                {% endif %}
+
+                            {% endfor %}
+
+                            </tr>
+                        {% endfor %}
+
+                </table>
+                {% csrf_token %}
+            </div>
+        </form>
+
+
         <div align="center">
-            <table>
-
-                <tr>
-                    <th class="cen" colspan="1">Document</th>
-                    <th class="cen">Date</th>
-                    {% if user.is_staff %}
-                    <th class="cen">User</th>
-                    {% endif %}
-                </tr>
-
-                <tr>
-
-                    {% for req in requests %}
-                    {% if user.is_staff or user == req.checked_up_by_whom %}
-                    <td><a href="/{{ req.doc.id }}/">{{ req.doc.title }}</a></td>
-                    <td>{{req.timestamp}}</td>
-                    {% if user.is_staff %}
-                    <td><a href="/user/?id={{ req.checked_up_by_whom.id }}">{{req.checked_up_by_whom.username}}</a></td>
-                    <td><a class="btn button"
-                           href="/requests/approve/?user_id={{req.checked_up_by_whom.id}}&req_id={{req.id}}">approve</a>
-                    </td>
-                    {% endif %}
-                    <td><a class="btn button" href="/requests/refuse/?req_id={{req.id}}">refuse</a></td>
-                    {% endif %}
-
-                </tr>
-                {% endfor %}
-
-            </table>
-            {% csrf_token %}
-        </div>
-    </form>
-
-
-    <div align="center">
-        <div class="paginator">
+            <div class="paginator">
          <span class="step-links">
             {% if page_obj.has_previous %}
                 <a href="?page={{ page_obj.previous_page_number }}">previous</a>
             {% endif %}
 
-            <span class="current">
+             <span class="current">
                 Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
             </span>
 
-            {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}">next</a>
-            {% endif %}
+             {% if page_obj.has_next %}
+                 <a href="?page={{ page_obj.next_page_number }}">next</a>
+             {% endif %}
         </span>
+            </div>
         </div>
-    </div>
 
 
     {% endblock %}

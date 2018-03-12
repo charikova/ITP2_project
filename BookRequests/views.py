@@ -23,9 +23,6 @@ class RequestsView(ListView):
         else:
             return redirect('/')
 
-    def get_queryset(self):
-        result = super().get_queryset()
-        return result.order_by('doc__title')
 
 @need_logged_in
 def make_new(request):
@@ -45,9 +42,16 @@ def make_new(request):
     elif doc.is_reference:
         return HttpResponse('Sorry, but this document is reference')
     else:
-        doc_request = Request(doc=documents_models.Document.objects.get(id=doc_id),
-                              checked_up_by_whom=request.user, timestamp=datetime.datetime.now())
+        requested_doc = documents_models.Document.objects.get(id=doc_id)
+        for req in Request.objects.all():  # find requests with requested doc
+            if req.doc == requested_doc:  # exist request for this doc
+                req.users.add(request.user)
+                return HttpResponse('Successfully created new request')
+
+        doc_request = Request(doc=requested_doc,
+                            timestamp=datetime.datetime.now())
         doc_request.save()
+        doc_request.users.add(request.user)
         return HttpResponse('Successfully created new request')
 
 
@@ -56,6 +60,7 @@ def approve_request(request):
     """
     gives book to particular user
     """
+    user = None
     try:
         user = User.objects.get(pk=request.GET.get('user_id'))
         doc_request = Request.objects.get(pk=request.GET.get('req_id'))
@@ -69,7 +74,7 @@ def approve_request(request):
         days = 21  # for student
         if doc.type == "AVFile" or doc.type == "JournalArticle":
             days = 14
-        elif (user.userprofile.status == "instructor") or (user.userprofile.status == "TA") or (user.userprofile.status == "professor"):
+        elif user.userprofile.status in ['instructor', 'TA', 'professor']:
             days = 28
         elif doc.is_bestseller:
             days = 14
@@ -77,7 +82,9 @@ def approve_request(request):
                                              checked_up_by_whom=user, returning_date=(
                     datetime.date.today() + datetime.timedelta(days=days)).strftime("%Y-%m-%d %H:%M"))
         copy.save()
-        doc_request.delete()
+        doc_request.users.remove(user)
+        if len(doc_request.users.all()) == 0:
+            doc_request.delete()
     return redirect('/requests')
 
 
@@ -112,25 +119,13 @@ def renew(request):
     """
     updates returning date of document for one additional week
     (if days left less then 1, no outstanding requests and it was not renewed before)
-
     """
     user = request.user
     copy = None
     try:
         copy = user.documentcopy_set.get(id=request.GET.get('copy_id'))
     except:
-        return redirect('/' + str(copy.doc.id))
-    requests = copy.doc.request_set.all()
-    if len(requests) == 0 and (datetime.datetime.now() - datetime.datetime.strptime(str(copy.returning_date),
-                                                                                    "%Y-%m-%d")).seconds < 21600:
-        copy.returning_date = datetime.datetime.today() + datetime.timedelta(days=7)
-        copy.save()
-    else:
-        pass
-    return redirect('/' + str(copy.doc.id))
-    return HttpResponse('forbidden')
-
-
+        return HttpResponse('forbidden')
     returning_date = user.documentcopy_set.get(doc=copy.doc).returning_date
     returning_date = datetime.datetime(year=returning_date.year,
                                        month=returning_date.month,
