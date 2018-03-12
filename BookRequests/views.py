@@ -29,7 +29,7 @@ class RequestsView(ListView):
         qs = super().get_queryset().order_by('doc__title')
         result = list()
         for req in qs:  # sort users by status priorities and time request was made
-            req_item = {'doc': req.doc, 'timestamp': req.timestamp}
+            req_item = {'doc': req.doc, 'timestamp': req.timestamp, 'id': req.id}
             users = [(status_priorities.index(u.userprofile.status), u) for u in list(req.users.all())]
             if len(users) != 1:  # sort users according to status priorities
                 users.sort(key=lambda x: -x[0])
@@ -79,7 +79,7 @@ def approve_request(request):
         user = User.objects.get(pk=request.GET.get('user_id'))
         doc_request = Request.objects.get(pk=request.GET.get('req_id'))
     except:
-        return Http404
+        raise Http404('No such request/user')
     doc = doc_request.doc
     if not doc.is_reference and doc.copies > 0:
 
