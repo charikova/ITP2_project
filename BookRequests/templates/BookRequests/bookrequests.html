@@ -68,6 +68,7 @@
                 </tr>
 
                 <tr>
+
                     {% for req in requests %}
                     {% if user.is_staff or user == req.checked_up_by_whom %}
                     <td><a href="/{{ req.doc.id }}/">{{ req.doc.title }}</a></td>

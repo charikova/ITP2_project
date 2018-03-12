@@ -642,7 +642,7 @@ class Delivery2(TestCase):
         request.GET['id'] = self.p1.id  # request information about p3
         response = user_card_info(request)
         self.assertTrue(
-            all([word in response.content for word in [b'Sergey', b'Afonso',
+            all([word in response.content for word in [b'Sergey', b'Afonso', b'Via Margutta, 3', b'30001',
                                                        str(self.b1.title).encode(), str(self.b2.title).encode(),
                                                        str(self.av1.title).encode()]]
                 ))
@@ -650,7 +650,8 @@ class Delivery2(TestCase):
         request.GET['id'] = self.p2.id  # request information about p3
         response = user_card_info(request)
         self.assertTrue(
-            all([word in response.content for word in [b'Nadia', b'Teixeira', str(self.b1.title).encode(),
+            all([word in response.content for word in [b'Nadia', b'Teixeira', b'Via Sacra, 13', b'30002',
+                                                       str(self.b1.title).encode(),
                                                        str(self.b2.title).encode(),
                                                        str(self.av2.title).encode()]]))
 

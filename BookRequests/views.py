@@ -23,6 +23,9 @@ class RequestsView(ListView):
         else:
             return redirect('/')
 
+    def get_queryset(self):
+        result = super().get_queryset()
+        return result.order_by('doc__title')
 
 @need_logged_in
 def make_new(request):
@@ -74,7 +77,7 @@ def approve_request(request):
                                              checked_up_by_whom=user, returning_date=(
                     datetime.date.today() + datetime.timedelta(days=days)).strftime("%Y-%m-%d %H:%M"))
         copy.save()
-    doc_request.delete()
+        doc_request.delete()
     return redirect('/requests')
 
 
