@@ -65,7 +65,7 @@ def approve_request(request):
         days = 21  # for student
         if doc.type == "AVFile" or doc.type == "JournalArticle":
             days = 14
-        elif user.userprofile.status == 'faculty':
+        elif (user.userprofile.status == "instructor") or (user.userprofile.status == "TA") or (user.userprofile.status == "professor"):
             days = 28
         elif doc.is_bestseller:
             days = 14

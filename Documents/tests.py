@@ -340,7 +340,7 @@ class Delivery1(TestCase):
 class Delivery2(TestCase):
 
     def test_TC1(self):
-        
+
         self.librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qerty', first_name='F', last_name='L',
                                                   is_staff=True)
         self.b1 = Book.objects.create(title='Introduction to Algorithms', price=0,
