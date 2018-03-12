@@ -60,6 +60,7 @@ def approve_request(request):
         return Http404
     doc = doc_request.doc
     if not doc.is_reference and doc.copies > 0:
+
         doc.copies -= 1
         doc.save()
         days = 21  # for student
@@ -71,7 +72,7 @@ def approve_request(request):
             days = 14
         copy = documents_models.DocumentCopy(doc=doc,
                                              checked_up_by_whom=user, returning_date=(
-                    datetime.date.today() + datetime.timedelta(days=days)).strftime("%Y-%m-%d"))
+                    datetime.date.today() + datetime.timedelta(days=days)).strftime("%Y-%m-%d %H:%M"))
         copy.save()
     doc_request.delete()
     return redirect('/requests')
@@ -118,7 +119,7 @@ def renew(request):
         return redirect('/' + str(copy.doc.id))
     requests = copy.doc.request_set.all()
     if len(requests) == 0 and (datetime.datetime.now() - datetime.datetime.strptime(str(copy.returning_date),
-                                                                                    "%Y-%m-%d %H:%M")).seconds < 21600:
+                                                                                    "%Y-%m-%d")).seconds < 21600:
         copy.returning_date = datetime.datetime.today() + datetime.timedelta(days=7)
         copy.save()
     else:
