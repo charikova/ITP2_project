@@ -7,7 +7,9 @@ from .models import UserProfile, USER_PROFILE_DATA
 
 USER_STATUSES = [
     ["student", "student"],
-    ["faculty", "faculty"],
+    ["instructor", "instructor"],
+    ["TA", "TA"],
+    ["professor", "professor"],
     ["librarian", "librarian"],
 ]
 

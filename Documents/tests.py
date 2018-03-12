@@ -352,11 +352,14 @@ class Delivery2(TestCase):
 
     def test_TC1(self):
 
+<<<<<<< HEAD
+=======
         """
         The system does not have any doc- uments, any pa- tron.
         The system only contains one user who is a li- brarian.
         """
 
+>>>>>>> bbc112faee242075aadde9dbfeace5e02ba99837
         self.librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qerty', first_name='F', last_name='L',
                                                   is_staff=True)
         self.b1 = Book.objects.create(title='Introduction to Algorithms', price=0,
@@ -505,7 +508,7 @@ class Delivery2(TestCase):
 
         self.assertTrue(
             all([word in response.content for word in
-                 [b'Sergey', b'Afonso', b'Via Margutta, 3', b'30001', str(self.b1.title).encode(),
+                 [b'Sergey', b'Afonso', b'Via Margutta, 3', b'30001', str(self.b1.title).encode(), b'27days',
                   str(self.b2.title).encode()]]))
 
         # check p3's info
