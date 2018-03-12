@@ -69,11 +69,13 @@
 
                     <tr>
                         {% for req in requests %}
-                            {% if user.is_staff or user in req.users.all %}
-                                <td><a href="/{{ req.doc.id }}/">{{ req.doc.title }}</a> {% if req.doc.copies == 0 %}
+                            {% if user.is_staff or user in req.users %}
+                                <td><a href="/{{ req.doc.id }}/">{% if req.doc.title|length <= 30 %}
+                                    {{ req.doc.title }}{% else %}{{ req.doc.title|slice:":30"}}...{% endif %}</a>
+                                    {% if req.doc.copies == 0 %}
                                     <font color="red">(NA)</font> {% endif %}</td>
                             {% endif %}
-                            {% for u in req.users.all %}
+                            {% for u in req.users %}
                                 {% if user.is_staff or user == u %}
 
                                     <td>{{ req.timestamp|slugify|slice:":10" }}</td>

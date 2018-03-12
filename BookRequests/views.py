@@ -1,6 +1,7 @@
 from django.shortcuts import redirect
 from django.http import Http404, HttpResponse
 from Documents.librarian_view import required_staff, need_logged_in
+from UserCards.forms import USER_STATUSES
 from django.contrib.auth.models import User
 from django.views.generic import ListView
 import Documents.models as documents_models
@@ -22,6 +23,19 @@ class RequestsView(ListView):
             return super().get(request, *args, **kwargs)
         else:
             return redirect('/')
+
+    def get_queryset(self):
+        status_priorities = [status[0] for status in USER_STATUSES]
+        qs = super().get_queryset().order_by('doc__title')
+        result = list()
+        for req in qs:  # sort users by status priorities and time request was made
+            req_item = {'doc': req.doc, 'timestamp': req.timestamp}
+            users = [(status_priorities.index(u.userprofile.status), u) for u in list(req.users.all())]
+            if len(users) != 1:  # sort users according to status priorities
+                users.sort(key=lambda x: -x[0])
+            req_item['users'] = [u[1] for u in users]
+            result.append(req_item)
+        return result
 
 
 @need_logged_in
