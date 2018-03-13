@@ -103,12 +103,18 @@ def approve_request(request):
 
 
 @need_logged_in
-def refuse(request):
+def cancel_request(request):
     """
-    refuses request made by user
+    cancels request made by user
     """
-    doc_request = Request.objects.get(id=request.GET.get('req_id'))
-    doc_request.delete()
+    try:
+        user = User.objects.get(pk=request.GET.get('user_id'))
+        doc_request = Request.objects.get(pk=request.GET.get('req_id'))
+    except:
+        raise Http404('No such request/user')
+    doc_request.users.remove(user)
+    if len(doc_request.users.all()) == 0:
+        doc_request.delete()
     return redirect('/requests/')
 
 
