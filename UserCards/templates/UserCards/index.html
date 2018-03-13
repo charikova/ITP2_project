@@ -161,7 +161,7 @@
                                 return confirm('Return {{ copy.doc.title }} from {{ copy.checked_up_by_whom.username }} back?');
                                 ">Return</a></td>
                     {% else %}
-                        <td><button class="button" onclick="
+                        <td><button class="btn button" onclick="
                                     var response = httpGet('/requests/renew/?copy_id={{ copy.id }}').toString();
                                     alert(response);
                                     if (response.substr(0, 3) === 'You') // refresh to see new returning date

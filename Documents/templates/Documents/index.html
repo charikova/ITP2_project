@@ -13,7 +13,6 @@
 
     {% block body %}
 
-        <link rel="stylesheet" type="text/css" href="{% static 'Documents/style.css' %}"/>
 
         <style>
             h1 {
@@ -197,15 +196,16 @@
                         <tr>
                             <th class="cen" colspan="2">Document</th>
                             <th class="cen">Authors</th>
-                            <th class="cen">Amount</th>
                         </tr>
 
                         <tr>
                             {% for doc in documents %}
                                 <td><a href="/{{ doc.id }}/"><img src={{ doc.cover }}></a></td>
-                                <td><a href="/{{ doc.id }}/">{{ doc.title }}</a></td>
+                                <td><a href="/{{ doc.id }}/">{{ doc.title }}</a>
+                                {% if doc.copies == 0 %}
+                                    <font color="red">(NA)</font> {% endif %}
+                                </td>
                                 <td>{{ doc.authors }}</td>
-                                <td>{{ doc.copies }}</td>
                                 </tr>
                             {% endfor %}
                     </table>
