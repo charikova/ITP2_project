@@ -39,10 +39,16 @@
                 border: none;
                 text-align: center;
                 border-top: 1px solid saddlebrown;
+                vertical-align: center;
             }
 
             a {
                 color: black;
+            }
+
+            button {
+                vertical-align: center;
+                margin: 1%;
             }
 
 
@@ -66,36 +72,32 @@
                             <th class="cen">Users</th>
                         {% endif %}
                     </tr>
-
-                    <tr>
-                        {% for req in requests %}
+                    {% for req in requests %}
+                        <tr>
                             {% if user.is_staff or user in req.users %}
+                                <td><a href="/{{ req.doc.id }}/">{% if req.doc.title|length <= 30 %}
+                                    {{ req.doc.title }}{% else %}{{ req.doc.title|slice:":30" }}...{% endif %}</a>
+                                    {% if req.doc.copies == 0 %}<font color="red">(NA)</font> {% endif %}</td>
                             {% endif %}
-                            {% for u in req.users %}
-                                {% if user.is_staff or user == u %}
-                                    <tr>
-                                    <td><a href="/{{ req.doc.id }}/">{% if req.doc.title|length <= 30 %}
-                                    {{ req.doc.title }}{% else %}{{ req.doc.title|slice:":30"}}...{% endif %}</a>
-                                    {% if req.doc.copies == 0 %}
-                                    <font color="red">(NA)</font> {% endif %}</td>
-                                    <td>{{ req.timestamp|slugify|slice:":10" }}</td>
-
-                                    {% if user.is_staff %}
-                                        <td><a href="/user/?id={{ u.id }}">{{ u.username }}</a></td>
-                                        {% if req.doc.copies != 0 %}
-                                            <td><a class="btn button"
-                                                   href="/requests/approve/?user_id={{ u.id }}&req_id={{ req.id }}">approve</a></td>
-                                            {% else %}
-                                            <td></td>
-                                        {% endif %}
-                                    {% endif %}
-                                    <td><a class="btn button" href="/requests/cancel/?user_id={{ u.id }}&req_id={{ req.id }}">cancel</a></td>
+                            <td>{% for u in req.users %}{{ req.timestamp|slugify|slice:":10" }}
+                                </br>{% endfor %}</td>
+                            {% if user.is_staff %}
+                                <td>{% for u in req.users %}<a href="/user/?id={{ u.id }}">{{ u.username }}</a>
+                                    </br>{% endfor %}</td>
+                                {% if req.doc.copies != 0 %}
+                                    <td><a class="btn button"
+                                           href="/requests/approve/?user_id={{ u.id }}&req_id={{ req.id }}">approve</a>
+                                    </td>
+                                {% else %}
+                                    <td></td>
                                 {% endif %}
-                            </tr>
-                            {% endfor %}
 
-                            </tr>
-                        {% endfor %}
+                                <td>{% for u in req.users %}<a class="btn button"
+                                                               href="/requests/cancel/?user_id={{ u.id }}&req_id={{ req.id }}">cancel</a>
+                                    </br>{% endfor %}</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
 
                 </table>
                 {% csrf_token %}
