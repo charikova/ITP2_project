@@ -5,8 +5,11 @@ from UserCards.forms import USER_STATUSES
 from django.contrib.auth.models import User
 from django.views.generic import ListView
 import Documents.models as documents_models
+from innopolka import settings
 from .models import Request
 import datetime
+
+from django.core.mail import send_mail
 
 
 class RequestsView(ListView):
@@ -96,6 +99,18 @@ def approve_request(request):
                                              checked_up_by_whom=user, returning_date=(
                     datetime.date.today() + datetime.timedelta(days=days)).strftime("%Y-%m-%d %H:%M"))
         copy.save()
+
+        returning_date = (
+                datetime.date.today() + datetime.timedelta(days=days)).strftime("%Y-%m-%d %H:%M")
+
+        message = "Hello! Your request to " + str(doc.title) + " has been approved. Now you can " \
+                                                               "take your " + str(
+            doc.type) + ". Pay attention that you must return it before " + str(returning_date)
+
+        to = user.email
+
+        send_mail('Approved request', message, settings.EMAIL_HOST_USER, [to])
+
         doc_request.users.remove(user)
         if len(doc_request.users.all()) == 0:
             doc_request.delete()
@@ -113,6 +128,14 @@ def cancel_request(request):
     except:
         raise Http404('No such request/user')
     doc_request.users.remove(user)
+    doc = doc_request.doc
+
+    message = "Hello! Sorry, your request to " + str(doc.title) + " has not been approved. Answer this mail if you have questions."
+
+    to = user.email
+
+    send_mail('Canceled request', message, settings.EMAIL_HOST_USER, [to])
+
     if len(doc_request.users.all()) == 0:
         doc_request.delete()
     return redirect('/requests/')
