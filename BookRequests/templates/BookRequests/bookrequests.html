@@ -79,28 +79,30 @@
 
                                     {{ req.doc.title }}{% else %}{{ req.doc.title|slice:":30" }}...{% endif %}</a>
                                     {% if req.doc.copies == 0 %}<font color="red">(NA)</font> {% endif %}</td>
-                            {% endif %}
-                            <td>{% for u in req.users %}{{ req.timestamp|slugify|slice:":10" }}
-                                <br>{% endfor %}</td>
-                            {% if user.is_staff %}
-                                <td>{% for u in req.users %}<a href="/user/?id={{ u.id }}">{{ u.username }}</a>
-                                    <br>{% endfor %}</td>
 
-                                {% if req.doc.copies != 0 %}
-                                <td>{% for u in req.users %}<a class="btn button"
-                                           href="/requests/approve/?user_id={{ u.id }}&req_id={{ req.id }}">approve</a>
-                                    <br>{% endfor %}</td>
-                                {% else %}
-                                    <td></td>
+                                <td>{% for u in req.users %}{% if user.is_staff or user == u %}{{ req.timestamp|slugify|slice:":10" }}
+                                    <br>{% endif %}{% endfor %}</td>
+                                {% if user.is_staff %}
+
+                                    <td>{% for u in req.users %}<a href="/user/?id={{ u.id }}">{{ u.username }}</a>
+                                        <br>{% endfor %}</td>
+                                    {% if req.doc.copies != 0 %}
+                                        <td>{% for u in req.users %}<a class="btn button"
+                                                                       href="/requests/approve/?user_id={{ u.id }}&req_id={{ req.id }}">approve</a>
+                                            <br>{% endfor %}</td>
+                                    {% else %}
+                                        <td></td>
+                                    {% endif %}
+
                                 {% endif %}
-
-
-                                <td>{% for u in req.users %}<a class="btn button"
+                                <td>{% for u in req.users %}{% if user.is_staff or user == u %}<a class="btn button"
                                                                href="/requests/cancel/?user_id={{ u.id }}&req_id={{ req.id }}">cancel</a>
-                                    <br>{% endfor %}</td>
+                                    <br>{% endif %}{% endfor %}</td>
+
+                                </tr>
                             {% endif %}
-                        </tr>
                     {% endfor %}
+
 
                 </table>
                 {% csrf_token %}

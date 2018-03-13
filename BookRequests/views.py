@@ -29,7 +29,7 @@ class RequestsView(ListView):
 
     def get_queryset(self):
         status_priorities = [status[0] for status in USER_STATUSES]
-        qs = super().get_queryset().order_by('doc__title')
+        qs = super().get_queryset().order_by('-timestamp')
         result = list()
         for req in qs:  # sort users by status priorities and time request was made
             req_item = {'doc': req.doc, 'timestamp': req.timestamp, 'id': req.id}
