@@ -131,3 +131,9 @@ STATIC_URL = '/Documents/static/'
 # LOGIN_URL = "/user/login/"
 LOGIN_REDIRECT_URL = '/'
 
+# For sending emails to users
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "innopolka@gmail.com"
+EMAIL_HOST_PASSWORD = "innopolka2018"
+EMAIL_USE_TLS = True
