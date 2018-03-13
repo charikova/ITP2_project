@@ -188,3 +188,17 @@ def renew(request):
         copy.renewed = True
         copy.save()
         return HttpResponse('You successfully renewed {} for 1 (one) week'.format(copy.doc.title))
+
+
+@required_staff
+def outstanding_requests(request):
+    try:
+        id = request.GET.get('doc_id')
+        doc = documents_models.Document.objects.get(pk=id)
+    except:
+        raise Http404('This document does not exist')
+
+    for request in Request.objects.filter(doc=doc):
+        request.delete()
+
+    return redirect('/' + id)
