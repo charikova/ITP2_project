@@ -82,12 +82,10 @@
                             <td>{% for u in req.users %}{{ req.timestamp|slugify|slice:":10" }}
                                 </br>{% endfor %}</td>
                             {% if user.is_staff %}
-                                <td>{% for u in req.users %}<a href="/user/?id={{ u.id }}">{{ u.username }}</a>
-                                    </br>{% endfor %}</td>
+                                <td>{% for u in req.users %}<a href="/user/?id={{ u.id }}">{{ u.username }}</a></br>{% endfor %}</td>
                                 {% if req.doc.copies != 0 %}
-                                    <td><a class="btn button"
-                                           href="/requests/approve/?user_id={{ u.id }}&req_id={{ req.id }}">approve</a>
-                                    </td>
+                                    <td>{% for u in req.users %}<a class="btn button"
+                                           href="/requests/approve/?user_id={{ u.id }}&req_id={{ req.id }}">approve</a></br>{% endfor %}</td>
                                 {% else %}
                                     <td></td>
                                 {% endif %}
