@@ -191,7 +191,7 @@ def renew(request):
 
 
 @required_staff
-def outstanding_requests(request):
+def outstanding_request(request):
     try:
         id = request.GET.get('doc_id')
         doc = documents_models.Document.objects.get(pk=id)
@@ -201,4 +201,4 @@ def outstanding_requests(request):
     for request in Request.objects.filter(doc=doc):
         request.delete()
 
-    return redirect('/' + id)
+    return redirect('/' + str(id))

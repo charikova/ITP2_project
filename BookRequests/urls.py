@@ -9,6 +9,6 @@ urlpatterns = [
     url(r'^return/', views.return_doc, name='return_doc'),
     url(r'^cancel/', views.cancel_request, name='refuse'),
     url(r'^renew/', views.renew, name='renew'),
-    url(r'^outstanding_requests/$', views.outstanding_requests, name='outstanding_requests'),
+    url(r'^outstanding_request/$', views.outstanding_request, name='outstanding_requests'),
 ]
 
