@@ -11,6 +11,7 @@ USER_STATUSES = [
     ["TA", "TA"],
     ["professor", "professor"],
     ["librarian", "librarian"],
+    ["visiting professor", "visiting professor"]
 ]
 
 
