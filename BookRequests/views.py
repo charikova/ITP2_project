@@ -125,12 +125,13 @@ def cancel_request(request):
     try:
         user = User.objects.get(pk=request.GET.get('user_id'))
         doc_request = Request.objects.get(pk=request.GET.get('req_id'))
-    except:
+    except Exception:
         raise Http404('No such request/user')
     doc_request.users.remove(user)
     doc = doc_request.doc
 
-    message = "Hello! Sorry, your request to " + str(doc.title) + " has not been approved. Answer this mail if you have questions."
+    message = "Hello! Sorry, your request to " + str(doc.title) + \
+              " has not been approved. Answer this mail if you have questions."
 
     to = user.email
 
@@ -195,10 +196,20 @@ def outstanding_request(request):
     try:
         id = request.GET.get('doc_id')
         doc = documents_models.Document.objects.get(pk=id)
-    except:
+    except Exception:
         raise Http404('This document does not exist')
 
-    for request in Request.objects.filter(doc=doc):
-        request.delete()
+    message_for_req = "Hello! due to an outstanding request from {} (librarian) your request for {} has been canceled". \
+        format(request.user.username, doc.title)
+    for req in Request.objects.filter(doc=doc):
+        for user in req.users.all():
+            to = user.email
+            send_mail('Outstanding request', message_for_req, settings.EMAIL_HOST_USER, [to])
+        req.delete()
 
+    message_for_checked = "Hello! due to an outstanding request from {} (librarian) document {} should" \
+                          "be returned during 1 day"
+    for doc_copy in doc.documentcopy_set.all():
+        to = doc_copy.checked_up_by_whom.email
+        send_mail('Outstanding request', message_for_checked, settings.EMAIL_HOST_USER, [to])
     return redirect('/' + str(id))
