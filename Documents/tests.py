@@ -56,7 +56,7 @@ class Delivery1(TestCase):
         p = User.objects.create_user('username', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
         librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qwerty', first_name='F', last_name='L',
                                              is_staff=True)
-        UserProfile.objects.create(user=librarian, phone_number=123, status='faculty', address='1-103')
+        UserProfile.objects.create(user=librarian, phone_number=123, status='professor', address='1-103')
 
         # doesn't have any books by author A
         have_book = len(Book.objects.filter(authors='A')) > 0
@@ -75,29 +75,29 @@ class Delivery1(TestCase):
     def test_TC3(self):
         # library has s, f, l and book b
         student = User.objects.create_user('s', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
-        faculty = User.objects.create_user('f', 'exampl2@mail.ru', '123456qwerty', first_name='F', last_name='L')
+        professor = User.objects.create_user('f', 'exampl2@mail.ru', '123456qwerty', first_name='F', last_name='L')
         librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qwerty', first_name='F', last_name='L',
                                              is_staff=True)
         UserProfile.objects.create(user=student, phone_number=123, status='student', address='1-103')
-        UserProfile.objects.create(user=faculty, phone_number=123, status='faculty', address='1-103')
-        UserProfile.objects.create(user=librarian, phone_number=123, status='faculty', address='1-103')
+        UserProfile.objects.create(user=professor, phone_number=123, status='professor', address='1-103')
+        UserProfile.objects.create(user=librarian, phone_number=123, status='professor', address='1-103')
         # book
         book = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
                                    edition=1, copies=2, authors='sadf', cover='cover', publisher='pub')
 
-        # faculty checks out book
+        # professor checks out book
         request = HttpRequest()
         request.GET['doc'] = book.id
-        request.user = faculty
+        request.user = professor
         make_new(request)
 
-        request.GET['user_id'] = faculty.id
-        request.GET['req_id'] = faculty.request_set.get(doc=book).id
+        request.GET['user_id'] = professor.id
+        request.GET['req_id'] = professor.request_set.get(doc=book).id
         request.user = librarian
         approve_request(request)
 
-        # faculty has 4 weeks to return this book since today
-        returning_date = faculty.documentcopy_set.get(doc=book).returning_date
+        # professor has 4 weeks to return this book since today
+        returning_date = professor.documentcopy_set.get(doc=book).returning_date
         should_be_today = returning_date - datetime.timedelta(days=28)  # 4 weeks = 28 days
         should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
 
@@ -105,8 +105,8 @@ class Delivery1(TestCase):
 
     def test_TC4(self):
         #
-        f = User.objects.create_user('Faculty', 'fac@mail.ru', '123456qwerty', first_name='F', last_name='L')
-        UserProfile.objects.create(user=f, status='faculty', phone_number=896000, address='2-107')
+        f = User.objects.create_user('professor', 'fac@mail.ru', '123456qwerty', first_name='F', last_name='L')
+        UserProfile.objects.create(user=f, status='professor', phone_number=896000, address='2-107')
 
         s = User.objects.create_user('Student', 'stu@mail.ru', '123456qwerty', first_name='S', last_name='L')
         UserProfile.objects.create(user=s, status='student', phone_number=796001, address='2-110')
@@ -210,7 +210,7 @@ class Delivery1(TestCase):
 
         librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qwerty', first_name='F', last_name='L',
                                              is_staff=True)
-        UserProfile.objects.create(user=librarian, phone_number=123, status='faculty', address='1-103')
+        UserProfile.objects.create(user=librarian, phone_number=123, status='professor', address='1-103')
 
         b1 = Book.objects.create(title='b1', price=0, publication_date=datetime.datetime.now(),
                                  edition=1, copies=2, authors='sadf', cover='cover', publisher='pub')
@@ -244,13 +244,13 @@ class Delivery1(TestCase):
 
     def test_TC8(self):
         student = User.objects.create_user('s', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
-        faculty = User.objects.create_user('f', 'exampl2@mail.ru', '123456qwerty', first_name='F', last_name='L')
+        professor = User.objects.create_user('f', 'exampl2@mail.ru', '123456qwerty', first_name='F', last_name='L')
         librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qwerty', first_name='F', last_name='L',
                                              is_staff=True)
 
         UserProfile.objects.create(user=student, phone_number=123, status='student', address='1-103')
-        UserProfile.objects.create(user=faculty, phone_number=123, status='faculty', address='1-103')
-        UserProfile.objects.create(user=librarian, phone_number=123, status='faculty', address='1-103')
+        UserProfile.objects.create(user=professor, phone_number=123, status='professor', address='1-103')
+        UserProfile.objects.create(user=librarian, phone_number=123, status='professor', address='1-103')
 
         book = Book.objects.create(title='title', price=0, publication_date=datetime.datetime.now(),
                                    edition=1, copies=2, authors='sadf', cover='cover', publisher='pub')
@@ -272,11 +272,11 @@ class Delivery1(TestCase):
 
     def test_TC9(self):
 
-        # The library has at least one patron (Faculty) 'f' and one patron (Student) 's', and a librarian. It also has book 'b'
+        # The library has at least one patron (professor) 'f' and one patron (Student) 's', and a librarian. It also has book 'b'
         # that is best seller
         student = User.objects.create_user('s', 'exampl@mail.ru', '123456qwerty', first_name='F', last_name='L')
         UserProfile.objects.create(user=student, phone_number=123, status='student', address='1-103')
-        faculty = User.objects.create_user('f', 'exampl2@mail.ru', '123456qwerty', first_name='F', last_name='L')
+        professor = User.objects.create_user('f', 'exampl2@mail.ru', '123456qwerty', first_name='F', last_name='L')
         librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qwerty', first_name='F', last_name='L',
                                              is_staff=True)
 
@@ -352,14 +352,6 @@ class Delivery2(TestCase):
 
     def test_TC1(self):
 
-<<<<<<< HEAD
-=======
-        """
-        The system does not have any doc- uments, any pa- tron.
-        The system only contains one user who is a li- brarian.
-        """
-
->>>>>>> bbc112faee242075aadde9dbfeace5e02ba99837
         self.librarian = User.objects.create_user('l', 'exampl23@mail.ru', '123456qerty', first_name='F', last_name='L',
                                                   is_staff=True)
         self.b1 = Book.objects.create(title='Introduction to Algorithms', price=0,
@@ -382,7 +374,7 @@ class Delivery2(TestCase):
 
         self.p1 = User.objects.create_user('patron1', 'exampl2@mail.ru', '12356qwerty', first_name='Sergey',
                                            last_name='Afonso')
-        UserProfile.objects.create(user=self.p1, phone_number=30001, status='faculty', address='Via Margutta, 3')
+        UserProfile.objects.create(user=self.p1, phone_number=30001, status='professor', address='Via Margutta, 3')
 
         self.p2 = User.objects.create_user('patron2', 'exampl2@mail.ru', '12456qwerty', first_name='Nadia',
                                            last_name='Teixeira')
@@ -465,19 +457,19 @@ class Delivery2(TestCase):
     def test_TC6(self):
         self.test_TC2()
 
-        # p1 leave a request for a book b1
+        # p1 leaves a request for a book b1
         request = HttpRequest()
         request.method = "GET"
         request.user = self.p1
         request.GET['doc'] = self.b1.id
         make_new(request)
 
-        # p3 leave a request for a book b1
+        # p3 leaves a request for a book b1
         request.user = self.p3
         request.GET['doc'] = self.b1.id
         make_new(request)
 
-        # p1 leave a request for a book b1
+        # p1 leaves a request for a book b2
         request.user = self.p1
         request.GET['doc'] = self.b2.id
         make_new(request)
@@ -488,17 +480,17 @@ class Delivery2(TestCase):
         request.user = self.librarian
 
         # approve 1st
-        request.GET['req_id'] = 1
+        request.GET['req_id'] = self.p1.request_set.get(doc=self.b1).id
         request.GET['user_id'] = self.p1.id
         approve_request(request)
 
         # approve 2nd
-        request.GET['req_id'] = 2
+        request.GET['req_id'] = self.p3.request_set.get(doc=self.b1).id
         request.GET['user_id'] = self.p3.id
         approve_request(request)
 
         # approve 3rd
-        request.GET['req_id'] = 3
+        request.GET['req_id'] = self.p1.request_set.get(doc=self.b2).id
         request.GET['user_id'] = self.p1.id
         approve_request(request)
 
@@ -508,8 +500,7 @@ class Delivery2(TestCase):
 
         self.assertTrue(
             all([word in response.content for word in
-                 [b'Sergey', b'Afonso', b'Via Margutta, 3', b'30001', str(self.b1.title).encode(), b'27days',
-                  str(self.b2.title).encode()]]))
+                 [b'Sergey', b'Afonso', b'Via Margutta, 3', b'30001', str(self.b1.title).encode(), b'27days']]))
 
         # check p3's info
         request.GET['id'] = self.p3.id
