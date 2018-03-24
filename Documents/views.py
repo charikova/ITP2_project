@@ -135,7 +135,6 @@ class CheckedOutDocsView(ListView):
     model = DocumentCopy
     template_name = 'Documents/checked_out_docs.html'
     context_object_name = 'document_copies'
-    paginate_by = 20
 
     def get(self, request, *args, **kwargs):
         if request.user.is_staff:

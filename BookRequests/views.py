@@ -89,8 +89,11 @@ def approve_request(request):
         doc.copies -= 1
         doc.save()
         days = 21  # for student
-        if doc.type == "AVFile" or doc.type == "JournalArticle":
+        if user.userprofile.status == 'visiting professor':
+            days = 7
+        elif doc.type == "AVFile" or doc.type == "JournalArticle":
             days = 14
+
         elif user.userprofile.status in ['instructor', 'TA', 'professor']:
             days = 28
         elif doc.is_bestseller:
@@ -176,7 +179,7 @@ def renew(request):
                                        day=returning_date.day,
                                        hour=returning_date.hour)
     time_left = returning_date - datetime.datetime.today()
-    if copy.renewed:
+    if copy.renewed and not user.userprofile.status == 'visiting professor':
         return HttpResponse('Sorry, but you already have renewed this document')
     elif copy.doc.copies == 0 and len(copy.doc.request_set.all()):
         return HttpResponse('Sorry, but this document has outstanding requests')
@@ -185,7 +188,7 @@ def renew(request):
             time_left.days - 1
         ))
     else:
-        copy.returning_date = datetime.datetime.today() + datetime.timedelta(days=8)
+        copy.returning_date = datetime.datetime.today() + datetime.timedelta(days=7)
         copy.renewed = True
         copy.save()
         return HttpResponse('You successfully renewed {} for 1 (one) week'.format(copy.doc.title))
@@ -211,5 +214,7 @@ def outstanding_request(request):
                           "be returned during 1 day"
     for doc_copy in doc.documentcopy_set.all():
         to = doc_copy.checked_up_by_whom.email
+        doc_copy.returning_date = (
+                datetime.date.today() + datetime.timedelta(days=1)).strftime("%Y-%m-%d %H:%M")
         send_mail('Outstanding request', message_for_checked, settings.EMAIL_HOST_USER, [to])
     return redirect('/' + str(id))

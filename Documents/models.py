@@ -57,7 +57,6 @@ class DocumentCopy(models.Model):
     class Meta:
         verbose_name_plural = 'Document copies'
 
-
     def __str__(self):
         return self.doc.title
 
