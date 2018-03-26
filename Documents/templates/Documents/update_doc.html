@@ -3,6 +3,7 @@
 {% load staticfiles %}
 {% block body %}
 
+
     <style>
         .container {
             background-color: rgba(214, 184, 150, 0.8);
@@ -74,7 +75,7 @@
     <div class="container">
     <h2>Update Document</h2>
     <table class="edit">
-        <form action="" method="post">
+        <form id="form" action="" method="post">
 
             {% for key, value in fields %}
                 <tr>
@@ -88,11 +89,11 @@
                             <td class="right">{{ key }}:</td>
                             <td><input class="wide" type="text" name="{{ key }}" value="{{ value }}"></td>
                         </tr>
-
                     {% endif %}
             {% endfor %}
             <tr>
-                <td colspan="2"><center><input class="button" type="submit" name="submit" value="Submit"></center></td>
+                <td><input id="submit" class="button" type="submit" name="submit" value="Submit" onclick="myFunction()"></td>
+                <td><input type="checkbox" name="need_to_notify" value="">Notify users about new copies in library</td>
             </tr>
 
             {% csrf_token %}

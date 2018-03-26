@@ -1,6 +1,11 @@
 from django.shortcuts import redirect, render
 from Documents.models import *
-
+from BookRequests.models import Request
+from django.views.generic import ListView
+from UserCards.forms import USER_STATUSES
+from django.core.mail import send_mail
+import Documents.models as documents_models
+from innopolka import settings
 
 def required_staff(func):
     """
@@ -109,12 +114,67 @@ def update_doc(request, pk):
     """
     doc = get_doc(request, pk)
     fields = get_fields_of(doc)
+
     if request.method == "GET":
         return render(request, 'Documents/update_doc.html',
                       {'doc': doc, 'cover': doc.__dict__['cover'], 'fields': fields})
     elif request.method == "POST":
+
+        n_of_copies = 0
+        if int(request.POST['copies']) > doc.copies:
+            n_of_copies = int(request.POST['copies']) - doc.copies
+
         for field in fields:
             exec('doc.{0} = request.POST["{0}"]'.format(field[0]))
         doc.save()
+
+        if 'need_to_notify' in request.POST:
+
+            queue = RequestsView().get_queryset()
+
+            for query in queue:
+                if str(query['doc']).split(';')[0] == str(request.POST['title'].split(';')[0]):
+                    message = "Hello! Now " + str(doc.title) + " available. You can " \
+                                                               "take your " + str(doc.type) + "."
+
+                    if n_of_copies >= len(query['users']):
+                        for user in query['users']:
+                            to = user.email
+                            send_mail('Document available', message, settings.EMAIL_HOST_USER, [to])
+                    else:
+                        for i in range(0, n_of_copies):
+                            to = query['users'][i].email
+                            send_mail('Document available', message, settings.EMAIL_HOST_USER, [to])
+                    break
+
         return redirect('../')
+
+
+class RequestsView(ListView):
+    """
+    view of all requests made by users
+    """
+    template_name = 'BookRequests/bookrequests.html'
+    model = Request
+    context_object_name = 'requests'
+    paginate_by = 10
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return super().get(request, *args, **kwargs)
+        else:
+            return redirect('/')
+
+    def get_queryset(self):
+        status_priorities = [status[0] for status in USER_STATUSES]
+        qs = super().get_queryset().order_by('-timestamp')
+        result = list()
+        for req in qs:  # sort users by status priorities and time request was made
+            req_item = {'doc': req.doc, 'timestamp': req.timestamp, 'id': req.id}
+            users = [(status_priorities.index(u.userprofile.status), u) for u in list(req.users.all())]
+            if len(users) != 1:  # sort users according to status priorities
+                users.sort(key=lambda x: -x[0])
+            req_item['users'] = [u[1] for u in users]
+            result.append(req_item)
+        return result
 

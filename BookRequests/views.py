@@ -38,6 +38,7 @@ class RequestsView(ListView):
                 users.sort(key=lambda x: -x[0])
             req_item['users'] = [u[1] for u in users]
             result.append(req_item)
+        print(result)
         return result
 
 
