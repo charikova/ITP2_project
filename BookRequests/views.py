@@ -29,13 +29,13 @@ class RequestsView(ListView):
 
     def get_queryset(self):
         status_priorities = [status[0] for status in USER_STATUSES]
-        qs = super().get_queryset().order_by('-timestamp')
+        qs = super().get_queryset()
         result = list()
         for req in qs:  # sort users by status priorities and time request was made
-            req_item = {'doc': req.doc, 'timestamp': req.timestamp, 'id': req.id}
+            req_item = {'doc': req.doc, 'id': req.id}
             users = [(status_priorities.index(u.userprofile.status), u) for u in list(req.users.all())]
             if len(users) != 1:  # sort users according to status priorities
-                users.sort(key=lambda x: -x[0])
+                users.sort(key=lambda x: x[0])
             req_item['users'] = [u[1] for u in users]
             result.append(req_item)
         return result
@@ -179,19 +179,29 @@ def renew(request):
                                        day=returning_date.day,
                                        hour=returning_date.hour)
     time_left = returning_date - datetime.datetime.today()
-    if copy.renewed and not user.userprofile.status == 'visiting professor':
+    days_for_checking_out = 21  # for student
+    if user.userprofile.status == 'visiting professor':
+        days_for_checking_out = 7
+    elif copy.doc.type == "AVFile" or copy.doc.type == "JournalArticle":
+        days_for_checking_out = 14
+    elif user.userprofile.status in ['instructor', 'TA', 'professor']:
+        days_for_checking_out = 28
+    elif copy.doc.is_bestseller:
+        days_for_checking_out = 14
+
+    vp = user.userprofile.status == 'visiting professor'  # vp can renew as many times as they want
+    if copy.renewed and not vp:
         return HttpResponse('Sorry, but you already have renewed this document')
-    elif copy.doc.copies == 0 and len(copy.doc.request_set.all()):
-        return HttpResponse('Sorry, but this document has outstanding requests')
-    elif time_left.days > 1:
-        return HttpResponse('Sorry, but You will have access to renew this document only in {} days'.format(
-            time_left.days - 1
+    elif time_left.days + 1 >= days_for_checking_out:  # if time left less then 2 days since checking out doc
+        #  then patrons can't renew
+        return HttpResponse('Sorry, but You will have access to renew this document only in {} day(s)'.format(
+            time_left.days - days_for_checking_out + 2
         ))
     else:
-        copy.returning_date = datetime.datetime.today() + datetime.timedelta(days=7)
+        copy.returning_date += datetime.timedelta(days=days_for_checking_out)
         copy.renewed = True
         copy.save()
-        return HttpResponse('You successfully renewed {} for 1 (one) week'.format(copy.doc.title))
+        return HttpResponse('You successfully renewed {} for {} day(s)'.format(copy.doc.title, str(days_for_checking_out)))
 
 
 @required_staff

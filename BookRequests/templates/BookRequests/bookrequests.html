@@ -67,7 +67,6 @@
 
                     <tr>
                         <th class="cen" colspan="1">Document</th>
-                        <th class="cen">Date</th>
                         {% if user.is_staff %}
                             <th class="cen">Users</th>
                         {% endif %}
@@ -79,9 +78,6 @@
 
                                     {{ req.doc.title }}{% else %}{{ req.doc.title|slice:":30" }}...{% endif %}</a>
                                     {% if req.doc.copies == 0 %}<font color="red">(NA)</font> {% endif %}</td>
-
-                                <td>{% for u in req.users %}{% if user.is_staff or user == u %}{{ req.timestamp|slugify|slice:":10" }}
-                                    <br>{% endif %}{% endfor %}</td>
                                 {% if user.is_staff %}
 
                                     <td>{% for u in req.users %}<a href="/user/?id={{ u.id }}">{{ u.username }}</a>
