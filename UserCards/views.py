@@ -118,7 +118,7 @@ def user_card_info(request):
         elif 60 > temp > 0:
             document_copy.time_left = "Time to return: " + str(int(temp)) + "s"
         else:
-            day = (datetime.datetime.now(UTC())-document_copy.returning_date).days
+            day = (datetime.datetime.now()-document_copy.returning_date).days
 
             if 100*int(day) <= document_copy.doc.price:
                 document_copy.fine_price = 100*int(day)
