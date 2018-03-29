@@ -71,7 +71,7 @@ def make_new(request):
         doc_request.save()
         doc_request.users.add(request.user)
 
-        if doc.copies > 0:
+        if doc.copies >= requested_doc.request_set.count():
             message = "Hello! You've made request for " + str(doc.title) + " . You can " \
                                                                            "come to library and take your " + str(
                 doc.type) + "."
@@ -173,7 +173,6 @@ def return_doc(request):
 
         for query in doc.request_set.get_queryset():
             to = UserCards.models.User.objects.get(username=str(query).split(': ')[1]).email
-            print(to)
 
             message = "Hello! You've made request for " + str(doc.title) + " . You can " \
                                                                            "come to library and take your " + str(
