@@ -60,17 +60,15 @@ def make_new(request):
     elif doc.is_reference:
         return HttpResponse('Sorry, but this document is reference')
     else:
-        requested_doc = documents_models.Document.objects.get(id=doc_id)
         for req in Request.objects.all():  # find requests with requested doc
-            if req.doc == requested_doc:  # exist request for this doc
+            if req.doc == doc:  # exist request for this doc
                 req.users.add(request.user)
                 return HttpResponse('Successfully created new request')
 
-        doc_request = Request(doc=requested_doc,
+        doc_request = Request(doc=doc,
                             timestamp=datetime.datetime.now())
         doc_request.save()
         doc_request.users.add(request.user)
-
         if doc.copies > 0:
             message = "Hello! You've made request for " + str(doc.title) + " . You can " \
                                                                            "come to library and take your " + str(
