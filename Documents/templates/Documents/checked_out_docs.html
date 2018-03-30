@@ -1,10 +1,12 @@
-{% extends 'Documents/base.html'  %}
+{% extends 'Documents/base.html' %}
+
+import datetime
 
 {% load staticfiles %}
 <title>Checked out documents</title>
-{% block body  %}
+{% block body %}
 
-<style>
+    <style>
         h1 {
             font-size: 50px;
             text-align: center;
@@ -43,25 +45,27 @@
         }
 
     </style>
-<h1> Checked Out Documents</h1>
-<table>
-    <tr>
-        <th class="cen">Document</th>
-        <th class="cen">Author</th>
-        <th class="cen">User</th>
-        <th class="cen">Returning date</th>
-    </tr>
-    <tr>
-        {% for copy in document_copies %}
-        <td><a href="/{{ copy.doc.id }}/">{{ copy.doc.title }}</a></td>
-        <td>{{ copy.doc.authors }}</td>
-        <td><a href="/user/?id={{ copy.checked_up_by_whom.id }}">{{ copy.checked_up_by_whom }}</a></td>
-        <td>{{ copy.returning_date}}</td>
-        <td><a class="button" href="/requests/return/?copy_id={{ copy.id }}" onclick="
-        return confirm('Return {{copy.doc.title}} from {{copy.checked_up_by_whom.username}} back?');
-">Return</a></td>
-    </tr>
-    {% endfor %}
-</table>
+    <h1> Checked Out Documents</h1>
+    <table>
+        <tr>
+            <th class="cen">Document</th>
+            <th class="cen">Author</th>
+            <th class="cen">User</th>
+            <th class="cen">Returning date</th>
+            <th class="cen">Fee</th>
+        </tr>
+        <tr>
+            {% for copy in document_copies %}
+                <td><a href="/{{ copy.doc.id }}/">{{ copy.doc.title }}</a></td>
+                <td>{{ copy.doc.authors }}</td>
+                <td><a href="/user/?id={{ copy.checked_up_by_whom.id }}">{{ copy.checked_up_by_whom }}</a></td>
+                <td>{{ copy.returning_date }}</td>
+                <td>{{ copy.fine }}</td>
+                <td><a class="button" href="/requests/return/?copy_id={{ copy.id }}" onclick="
+                        return confirm('Return {{ copy.doc.title }} from {{ copy.checked_up_by_whom.username }} back?');
+                        ">Return</a></td>
+                </tr>
+            {% endfor %}
+    </table>
 
 {% endblock %}

@@ -60,6 +60,16 @@ class DocumentCopy(models.Model):
     def __str__(self):
         return self.doc.title
 
+    def fine(self):
+        if datetime.datetime.today() > self.returning_date:
+            fine = int((datetime.datetime.today() - self.returning_date).days) * 100
+            if fine > self.fine_price:
+                return self.fine_price
+            else:
+                return fine
+        else:
+            return 0
+
 
 
 

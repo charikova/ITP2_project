@@ -124,7 +124,7 @@
             }
 
             .t5 {
-                width: %;
+                width:%;
             }
 
             .input {
@@ -132,13 +132,11 @@
             }
 
 
-
-
         </style>
 
         <h1 align="center">Welcome to Innopolka!</h1><br>
 
-        <h3 align="center">Documents available: </h3>
+        <h3 align="center">Documents available:</h3>
         <form action="/" method="GET">
             <table class="search">
                 <th colspan="9"><strong>
@@ -181,7 +179,8 @@
                     {% endif %}
 
                     <td class="t2"><input type="reset" class="button" value="Reset"></td>
--                    <td class="t2"><input type="submit" class="button" value="Search"></td>
+                    -
+                    <td class="t2"><input type="submit" class="button" value="Search"></td>
 
                 </tr>
             </table>
@@ -202,8 +201,8 @@
                             {% for doc in documents %}
                                 <td><a href="/{{ doc.id }}/"><img src={{ doc.cover }}></a></td>
                                 <td><a href="/{{ doc.id }}/">{{ doc.title }}</a>
-                                {% if doc.copies == 0 %}
-                                    <font color="red">(NA)</font> {% endif %}
+                                    {% if doc.copies == 0 %}
+                                        <font color="red">(NA)</font> {% endif %}
                                 </td>
                                 <td>{{ doc.authors }}</td>
                                 </tr>
@@ -213,6 +212,7 @@
                 {% csrf_token %}
             </div>
         </form>
+
         <table class="paginator">
             <tr>
                 {% if page_obj.has_previous %}
