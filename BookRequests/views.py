@@ -216,7 +216,7 @@ def renew(request):
     vp = user.userprofile.status == 'visiting professor'  # vp can renew as many times as they want
 
     outreq_isvalid = OutStandingRequest.objects.get(doc=copy.doc).timestamp + datetime.timedelta(days=7) \
-                     <= datetime.datetime.now()
+                     > datetime.datetime.now()
     if outreq_isvalid:
         return HttpResponse('sorry, but looks like there is an outstanding request for this document, please return it'
                             ' asap')
