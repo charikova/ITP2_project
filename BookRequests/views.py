@@ -7,6 +7,7 @@ from django.views.generic import ListView
 import Documents.models as documents_models
 from innopolka import settings
 from .models import Request
+from .models import OutStandingRequest
 import datetime
 import UserCards.models
 
@@ -60,16 +61,18 @@ def make_new(request):
     elif doc.is_reference:
         return HttpResponse('Sorry, but this document is reference')
     else:
+        requested_doc = documents_models.Document.objects.get(id=doc_id)
         for req in Request.objects.all():  # find requests with requested doc
-            if req.doc == doc:  # exist request for this doc
+            if req.doc == requested_doc:  # exist request for this doc
                 req.users.add(request.user)
                 return HttpResponse('Successfully created new request')
 
-        doc_request = Request(doc=doc,
-                            timestamp=datetime.datetime.now())
+        doc_request = Request(doc=requested_doc,
+                              timestamp=datetime.datetime.now())
         doc_request.save()
         doc_request.users.add(request.user)
-        if doc.copies >= doc.request_set.count():
+
+        if doc.copies >= requested_doc.request_set.count():
             message = "Hello! You've made request for " + str(doc.title) + " . You can " \
                                                                            "come to library and take your " + str(
                 doc.type) + "."
@@ -211,18 +214,30 @@ def renew(request):
         days_for_checking_out = 14
 
     vp = user.userprofile.status == 'visiting professor'  # vp can renew as many times as they want
-    if copy.renewed and not vp:
-        return HttpResponse('Sorry, but you already have renewed this document')
-    elif time_left.days + 1 >= days_for_checking_out:  # if time left less then 2 days since checking out doc
-        #  then patrons can't renew
-        return HttpResponse('Sorry, but You will have access to renew this document only in {} day(s)'.format(
-            time_left.days - days_for_checking_out + 2
-        ))
+
+    outreq_isvalid = False
+    try:
+        outreq_isvalid = OutStandingRequest.objects.get(doc=copy.doc).timestamp + datetime.timedelta(days=7) \
+                         > datetime.datetime.now()
+    except:
+        pass
+    if outreq_isvalid:
+        return HttpResponse('sorry, but looks like there is an outstanding request for this document, please return it'
+                            ' asap')
     else:
-        copy.returning_date += datetime.timedelta(days=days_for_checking_out)
-        copy.renewed = True
-        copy.save()
-        return HttpResponse('You successfully renewed {} for {} day(s)'.format(copy.doc.title, str(days_for_checking_out)))
+        if copy.renewed and not vp:
+            return HttpResponse('Sorry, but you already have renewed this document')
+        elif time_left.days + 1 >= days_for_checking_out:  # if time left less then 2 days since checking out doc
+            #  then patrons can't renew
+            return HttpResponse('Sorry, but You will have access to renew this document only in {} day(s)'.format(
+                time_left.days - days_for_checking_out + 2
+            ))
+        else:
+            copy.returning_date += datetime.timedelta(days=days_for_checking_out)
+            copy.renewed = True
+            copy.save()
+            return HttpResponse('You successfully renewed {} for {} day(s)'.format(copy.doc.title,
+                                                                                   str(days_for_checking_out)))
 
 
 @required_staff
@@ -235,6 +250,13 @@ def outstanding_request(request):
 
     message_for_req = "Hello! due to an outstanding request from {} (librarian) your request for {} has been canceled". \
         format(request.user.username, doc.title)
+
+    if OutStandingRequest.objects.filter(doc=doc).count() > 0:
+        OutStandingRequest.objects.get(doc=doc).delete()
+
+    out_request = OutStandingRequest(doc=doc, timestamp=datetime.datetime.now())
+    out_request.save()
+
     for req in Request.objects.filter(doc=doc):
         for user in req.users.all():
             to = user.email
@@ -242,10 +264,11 @@ def outstanding_request(request):
         req.delete()
 
     message_for_checked = "Hello! due to an outstanding request from {} (librarian) document {} should" \
-                          "be returned during 1 day"
+                          "be returned during 1 day".format(request.user.username, doc.title)
     for doc_copy in doc.documentcopy_set.all():
         to = doc_copy.checked_up_by_whom.email
         doc_copy.returning_date = (
                 datetime.date.today() + datetime.timedelta(days=1)).strftime("%Y-%m-%d %H:%M")
         send_mail('Outstanding request', message_for_checked, settings.EMAIL_HOST_USER, [to])
+
     return redirect('/' + str(id))

@@ -125,7 +125,7 @@ def user_card_info(request):
             else:
                 document_copy.fine_price = document_copy.doc.price
 
-            document_copy.time_left = 'You need to pay: ' + str(document_copy.fine_price)
+            document_copy.time_left = 'Fine: ' + str(document_copy.fine_price)
 
         document_copy.save()
 
