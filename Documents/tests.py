@@ -8,7 +8,6 @@ from BookRequests.views import make_new, approve_request
 import BookRequests
 from Documents import librarian_view
 import datetime
-import subprocess
 from UserCards.views import user_card_info
 from django.utils import timezone
 
@@ -745,3 +744,24 @@ class Delivery2(TestCase):
         self.assertEqual(p2_have_overdue_on_av1_in_2_days, True)
         self.assertEqual(p2_have_overdue_on_b1_in_7_days, True)
 
+
+class Delivery3(TestCase):
+
+    d1 = Book.objects.create(title='Introduction to Algorithms', price=5000,
+                                      publication_date=datetime.date(year=2009, month=1, day=1),
+                                      edition=3, copies=3,
+                                      authors='Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and '
+                                              'Clifford Stein', cover='cover', publisher='MIT Press')
+    d2 = Book.objects.create(title='Design Patterns: Elements of Reusable Object-Oriented Software', price=5000,
+                             publication_date=datetime.date(year=2003, month=1, day=1),
+                             edition=1, copies=3, is_bestseller=True,
+                             authors='Erich Gamma, Ralph Johnson, John Vlissides, Richard Helm',
+                             cover='cover', publisher='Addison-Wesley Professional')
+    d3 = Book.objects.create(title='Null References: The Billion Dollar Mistake', price=700,
+                             publication_date=datetime.date(year=2003, month=1, day=1),
+                             edition=1, copies=2,
+                             authors='Tony Hoare',
+                             cover='cover', publisher='lalalend')
+
+    def test_TC1(self):
+        pass
