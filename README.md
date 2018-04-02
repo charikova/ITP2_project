@@ -162,5 +162,9 @@ keeps other data like level, room, time it was checked out, etc.
 Only librarian can approve that a book has been returned, thus only librarian can see "return book" button. Every time this button
 is pressed the document copy object is deleted and the number of available copies of the document is increased by 1. 
 
+##Outstanding request 
 
-
+Librarian can place an outstanding request for a particular document. It cancels all users' requests for this document, deletes priority
+queue if there is any, users who requested this document get notification that this doc is not available due to the outstanding
+request, users who already have this document get a notification that they need to return book in 1 day.
+ 
