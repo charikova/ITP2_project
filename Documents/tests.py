@@ -745,3 +745,25 @@ class Delivery2(TestCase):
         self.assertEqual(p2_have_overdue_on_av1_in_2_days, True)
         self.assertEqual(p2_have_overdue_on_b1_in_7_days, True)
 
+class Delivery3(TestCase):
+
+    self.p1 = User.objects.create_user('patron1', 'exampl2@mail.ru', '12356qwerty', first_name='Sergey',
+                                       last_name='Afonso')
+    UserProfile.objects.create(user=self.p1, phone_number=30001, status='professor', address='Via Margutta, 3')
+
+    self.p2 = User.objects.create_user('patron2', 'exampl2@mail.ru', '12456qwerty', first_name='Nadia',
+                                       last_name='Teixeira')
+    UserProfile.objects.create(user=self.p2, phone_number=30002, status='professor', address='Via Sacra, 13')
+
+    self.p3 = User.objects.create_user('patron3', 'exampl2@mail.ru', '23456qwerty', first_name='Elvira',
+                                       last_name='Espindola')
+    UserProfile.objects.create(user=self.p3, phone_number=30003, status='professor', address='Via del Corso, 22')
+
+    self.s = User.objects.create_user('patron3', 'exampl2@mail.ru', '23456qwerty', first_name='Andrey',
+                                       last_name='Velo')
+    UserProfile.objects.create(user=self.p3, phone_number=30004, status='student', address='Avenida Mazatlan 250')
+
+    self.v = User.objects.create_user('patron3', 'exampl2@mail.ru', '23456qwerty', first_name='Veronika',
+                                      last_name='Rama')
+    UserProfile.objects.create(user=self.p3, phone_number=30005, status='visiting professor', address='Stret Atocha, 27')
+
