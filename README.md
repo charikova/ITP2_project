@@ -163,8 +163,19 @@ Only librarian can approve that a book has been returned, thus only librarian ca
 is pressed the document copy object is deleted and the number of available copies of the document is increased by 1. 
 
 ## Outstanding request 
+    message_for_req = "Hello! due to an outstanding request from {} (librarian) your request for {} has been canceled". \
+        format(request.user.username, doc.title)
+        
+    for req in Request.objects.filter(doc=doc):
+        for user in req.users.all():
+            to = user.email
+            send_mail('Outstanding request', message_for_req, settings.EMAIL_HOST_USER, [to])
+        req.delete()
+
 
 Librarian can place an outstanding request for a particular document. It cancels all users' requests for this document, deletes priority
 queue if there is any, users who requested this document get notification that this doc is not available due to the outstanding
 request, users who already have this document get a notification that they need to return book in 1 day.
+
+
  
