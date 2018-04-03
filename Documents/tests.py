@@ -932,8 +932,8 @@ class Delivery3(TestCase):
         response = user_card_info(request)
         f1 = self.s.documentcopy_set.get(id=self.d1.id).fine()  # fine of d1
         f2 = self.s.documentcopy_set.get(id=self.d2.id).fine()  # fine of d2
-        self.assertEqual(f1, 0)
-        self.assertEqual(f2, 0)
+        self.assertEqual(f1, 700)
+        self.assertEqual(f2, 1400)
         self.assertTrue(str(f1).encode() in response.content)
         self.assertTrue(str(f2).encode() in response.content)
 
@@ -942,8 +942,8 @@ class Delivery3(TestCase):
         response = user_card_info(request)
         f1 = self.v.documentcopy_set.get(id=self.d1.id).fine()  # fine of d1
         f2 = self.v.documentcopy_set.get(id=self.d2.id).fine()  # fine of d2
-        self.assertEqual(f1, 0)
-        self.assertEqual(f2, 0)
+        self.assertEqual(f1, 2100)
+        self.assertEqual(f2, 1700)
         self.assertTrue(str(f1).encode() in response.content)
         self.assertTrue(str(f2).encode() in response.content)
 
@@ -1004,12 +1004,12 @@ class Delivery3(TestCase):
         self.assertEqual(should_be_today, datetime.date.today())
 
         # librarian checks the information of s
-        should_be_today = self.s.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=1)
+        should_be_today = self.s.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=14)
         should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
         self.assertEqual(should_be_today, datetime.date.today())
 
         # librarian checks the information of v
-        should_be_today = self.v.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=1)
+        should_be_today = self.v.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=7)
         should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
         self.assertEqual(should_be_today, datetime.date.today())
 
