@@ -4,7 +4,7 @@ from BookRequests.models import Request
 from UserCards.models import UserProfile
 from django.http import HttpRequest, Http404, QueryDict
 from .models import *
-from BookRequests.views import make_new, approve_request
+from BookRequests.views import *
 import BookRequests
 from Documents import librarian_view
 import datetime
@@ -747,21 +747,144 @@ class Delivery2(TestCase):
 
 class Delivery3(TestCase):
 
-    d1 = Book.objects.create(title='Introduction to Algorithms', price=5000,
-                                      publication_date=datetime.date(year=2009, month=1, day=1),
-                                      edition=3, copies=3,
-                                      authors='Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and '
-                                              'Clifford Stein', cover='cover', publisher='MIT Press')
-    d2 = Book.objects.create(title='Design Patterns: Elements of Reusable Object-Oriented Software', price=5000,
-                             publication_date=datetime.date(year=2003, month=1, day=1),
-                             edition=1, copies=3, is_bestseller=True,
-                             authors='Erich Gamma, Ralph Johnson, John Vlissides, Richard Helm',
-                             cover='cover', publisher='Addison-Wesley Professional')
-    d3 = Book.objects.create(title='Null References: The Billion Dollar Mistake', price=700,
-                             publication_date=datetime.date(year=2003, month=1, day=1),
-                             edition=1, copies=2,
-                             authors='Tony Hoare',
-                             cover='cover', publisher='lalalend')
+    def init_db(self):
+
+        self.d1 = Book.objects.create(title='Introduction to Algorithms', price=5000,
+                                          publication_date=datetime.date(year=2009, month=1, day=1),
+                                          edition=3, copies=3,
+                                          authors='Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and '
+                                                  'Clifford Stein', cover='cover', publisher='MIT Press')
+        self.d2 = Book.objects.create(title='Design Patterns: Elements of Reusable Object-Oriented Software', price=5000,
+                                 publication_date=datetime.date(year=2003, month=1, day=1),
+                                 edition=1, copies=3, is_bestseller=True,
+                                 authors='Erich Gamma, Ralph Johnson, John Vlissides, Richard Helm',
+                                 cover='cover', publisher='Addison-Wesley Professional')
+        self.d3 = Book.objects.create(title='Null References: The Billion Dollar Mistake', price=700,
+                                 publication_date=datetime.date(year=2003, month=1, day=1),
+                                 edition=1, copies=2,
+                                 authors='Tony Hoare',
+                                 cover='cover', publisher='lalalend')
+
+        self.librarian = User.objects.create_user('librarian2', 'exampl23@mail.ru', '123456qerty', first_name='F', last_name='L',
+                                             is_staff=True)
+
+        self.p1 = User.objects.create_user('patron1', 'exampl2@mail.ru', '12356qwerty', first_name='Sergey',
+                                           last_name='Afonso')
+        UserProfile.objects.create(user=self.p1, phone_number=30001, status='professor', address='Via Margutta, 3')
+
+        self.p2 = User.objects.create_user('patron2', 'exampl2@mail.ru', '12456qwerty', first_name='Nadia',
+                                           last_name='Teixeira')
+        UserProfile.objects.create(user=self.p2, phone_number=30002, status='professor', address='Via Sacra, 13')
+
+        self.p3 = User.objects.create_user('patron3', 'exampl2@mail.ru', '23456qwerty', first_name='Elvira',
+                                           last_name='Espindola')
+        UserProfile.objects.create(user=self.p3, phone_number=30003, status='professor', address='Via del Corso, 22')
+
+        self.s = User.objects.create_user('patron4', 'exampl2@mail.ru', '23456qwerty', first_name='Andrey',
+                                           last_name='Velo')
+        UserProfile.objects.create(user=self.s, phone_number=30004, status='student', address='Avenida Mazatlan 250')
+
+        self.v = User.objects.create_user('patron5', 'exampl2@mail.ru', '23456qwerty', first_name='Veronika',
+                                          last_name='Rama')
+        UserProfile.objects.create(user=self.v, phone_number=30005, status='visiting professor', address='Stret Atocha, 27')
 
     def test_TC1(self):
-        pass
+        self.init_db()
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.p1
+        # p1 leaves a request for a book d1
+        request.GET['doc'] = self.d1.id
+        make_new(request)
+        # p1 leaves a request for a book d2
+        request.GET['doc'] = self.d2.id
+        make_new(request)
+
+        # now librarian should approve requests
+        request = HttpRequest()
+        request.user = self.librarian
+
+        # approve 1st
+        request.GET['req_id'] = self.p1.request_set.get(doc=self.d1).id
+        request.GET['user_id'] = self.p1.id
+        approve_request(request)
+
+        # approve 2st
+        request.GET['req_id'] = self.p1.request_set.get(doc=self.d2).id
+        request.GET['user_id'] = self.p1.id
+        approve_request(request)
+
+        # requests made in march 5th and action happens in 2nd april (i.e. today is returning day)
+        self.p1.documentcopy_set.get(id=self.d1.id).returning_date = datetime.datetime.now()
+        self.p1.documentcopy_set.get(id=self.d2.id).returning_date = datetime.datetime.now()
+        # p1 returns d2
+        request.GET['copy_id'] = self.p1.documentcopy_set.get(id=self.d2.id).id
+        return_doc(request)
+        # librarian checks dues and fines of p1
+        request.GET['id'] = self.p1.id
+        response = user_card_info(request)
+        f = self.p1.documentcopy_set.get(id=self.d1.id).fine()  # fine of d1
+        self.assertEqual(f, 0)
+        self.assertTrue(str(f).encode() in response.content)
+
+    def test_TC4(self):
+        self.init_db()
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.p1
+        # p1 leaves a request for a book d1
+        request.GET['doc'] = self.d1.id
+        make_new(request)
+        # s leaves a request for a book d2
+        request.user = self.s
+        request.GET['doc'] = self.d2.id
+        make_new(request)
+        # v leaves a request for a book d2
+        request.user = self.v
+        request.GET['doc'] = self.d2.id
+        make_new(request)
+
+        request.user = self.librarian
+        # approve 1st
+        request.GET['req_id'] = self.p1.request_set.get(doc=self.d1).id
+        request.GET['user_id'] = self.p1.id
+        approve_request(request)
+
+        # approve 2nd
+        request.GET['req_id'] = self.s.request_set.get(doc=self.d2).id
+        request.GET['user_id'] = self.s.id
+        approve_request(request)
+
+        # approve 3rd
+        request.GET['req_id'] = self.v.request_set.get(doc=self.d2).id
+        request.GET['user_id'] = self.v.id
+        approve_request(request)
+
+        # outstanding request for d2
+        request.GET['doc_id'] = self.d2.id
+        outstanding_request(request)
+
+        # p1 renews d1
+        request.user = self.p1
+        request.GET['copy_id'] = self.p1.documentcopy_set.get(doc=self.d1).id
+        renew(request)
+        # s renews d2
+        request.user = self.s
+        request.GET['copy_id'] = self.s.documentcopy_set.get(doc=self.d2).id
+        renew(request)
+        # v renews d2
+        request.user = self.v
+        request.GET['copy_id'] = self.v.documentcopy_set.get(doc=self.d2).id
+        renew(request)
+
+        # librarian checks the information of patrons p1, s, v
+        should_be_today = self.p1.documentcopy_set.get(doc=self.d1).returning_date - datetime.timedelta(days=28)
+        should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
+        self.assertEqual(should_be_today, datetime.date.today())
+        should_be_today = self.s.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=1)
+        should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
+        self.assertEqual(should_be_today, datetime.date.today())
+        should_be_today = self.v.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=1)
+        should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
+        self.assertEqual(should_be_today, datetime.date.today())
+

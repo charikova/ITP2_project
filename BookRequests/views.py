@@ -233,7 +233,7 @@ def renew(request):
                 time_left.days - days_for_checking_out + 2
             ))
         else:
-            copy.returning_date += datetime.timedelta(days=days_for_checking_out)
+            copy.returning_date = datetime.datetime.now() + datetime.timedelta(days=days_for_checking_out)
             copy.renewed = True
             copy.save()
             return HttpResponse('You successfully renewed {} for {} day(s)'.format(copy.doc.title,
@@ -269,6 +269,7 @@ def outstanding_request(request):
         to = doc_copy.checked_up_by_whom.email
         doc_copy.returning_date = (
                 datetime.date.today() + datetime.timedelta(days=1)).strftime("%Y-%m-%d %H:%M")
+        doc_copy.save()
         send_mail('Outstanding request', message_for_checked, settings.EMAIL_HOST_USER, [to])
 
     return redirect('/' + str(id))
