@@ -1075,63 +1075,6 @@ class Delivery3(TestCase):
         should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
         self.assertEqual(should_be_today, datetime.date.today())
 
-<<<<<<< HEAD
-    def test_TC10(self):
-        self.init_db()
-
-        request = HttpRequest()
-        request.method = "GET"
-        request.user = self.p1
-
-        # p1 leaves a request for a book d1
-        request.GET['doc'] = self.d1.id
-        make_new(request)
-
-        # v leaves a request for a book d1
-        request.user = self.v
-        request.GET['doc'] = self.d1.id
-        make_new(request)
-
-        request.user = self.librarian
-        # approve 1st
-        request.GET['req_id'] = self.p1.request_set.get(doc=self.d1).id
-        request.GET['user_id'] = self.p1.id
-        approve_request(request)
-
-        # approve 2nd
-        request.GET['req_id'] = self.v.request_set.get(doc=self.d1).id
-        request.GET['user_id'] = self.v.id
-        approve_request(request)
-
-        # change date on book copies
-        delta = abs((self.p1.documentcopy_set.get(doc=self.d1).date -
-                    datetime.datetime.strptime('2018-03-26 00:00', '%Y-%m-%d %H:%M')).days)
-
-        doc = self.p1.documentcopy_set.get(doc=self.d1)
-        doc.returning_date = (doc.returning_date - datetime.timedelta(days=delta)).strftime('%Y-%m-%d %H:%M')
-        doc.date = "2018-03-26"
-        doc.save()
-
-        doc = self.v.documentcopy_set.get(doc=self.d1)
-        doc.returning_date = (doc.returning_date -
-                              datetime.timedelta(days=delta)).strftime('%Y-%m-%d %H:%M')
-        doc.date = "2018-03-26"
-        doc.save()
-
-        # p1 renews d1
-        request.user = self.p1
-        request.GET['copy_id'] = self.p1.documentcopy_set.get(doc=self.d1).id
-        renew(request)
-
-        # v renews d1
-        request.user = self.v
-        request.GET['copy_id'] = self.v.documentcopy_set.get(doc=self.d1).id
-        renew(request)
-
-        should_be_today_p1 = self.p1.documentcopy_set.get(doc=self.d1).returning_date == '2018-04-26 00:00'
-        should_be_today_v = self.v.documentcopy_set.get(doc=self.d1).returning_date == '2018-04-05 00:00'
-        self.assertEqual(should_be_today_p1, should_be_today_v)
-=======
     def test_TC5(self):
         self.init_db()
         # p1 leaves a request for a book d3
@@ -1244,4 +1187,59 @@ class Delivery3(TestCase):
 
         def test_TC7(self):
             self.test_TC6()
->>>>>>> faf7e104fcf02921d0f85c94ceac7c063f7c811a
+
+    def test_TC10(self):
+        self.init_db()
+
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.p1
+
+        # p1 leaves a request for a book d1
+        request.GET['doc'] = self.d1.id
+        make_new(request)
+
+        # v leaves a request for a book d1
+        request.user = self.v
+        request.GET['doc'] = self.d1.id
+        make_new(request)
+
+        request.user = self.librarian
+        # approve 1st
+        request.GET['req_id'] = self.p1.request_set.get(doc=self.d1).id
+        request.GET['user_id'] = self.p1.id
+        approve_request(request)
+
+        # approve 2nd
+        request.GET['req_id'] = self.v.request_set.get(doc=self.d1).id
+        request.GET['user_id'] = self.v.id
+        approve_request(request)
+
+        # change date on book copies
+        delta = abs((self.p1.documentcopy_set.get(doc=self.d1).date -
+                     datetime.datetime.strptime('2018-03-26 00:00', '%Y-%m-%d %H:%M')).days)
+
+        doc = self.p1.documentcopy_set.get(doc=self.d1)
+        doc.returning_date = (doc.returning_date - datetime.timedelta(days=delta)).strftime('%Y-%m-%d %H:%M')
+        doc.date = "2018-03-26"
+        doc.save()
+
+        doc = self.v.documentcopy_set.get(doc=self.d1)
+        doc.returning_date = (doc.returning_date -
+                              datetime.timedelta(days=delta)).strftime('%Y-%m-%d %H:%M')
+        doc.date = "2018-03-26"
+        doc.save()
+
+        # p1 renews d1
+        request.user = self.p1
+        request.GET['copy_id'] = self.p1.documentcopy_set.get(doc=self.d1).id
+        renew(request)
+
+        # v renews d1
+        request.user = self.v
+        request.GET['copy_id'] = self.v.documentcopy_set.get(doc=self.d1).id
+        renew(request)
+
+        should_be_today_p1 = self.p1.documentcopy_set.get(doc=self.d1).returning_date == '2018-04-26 00:00'
+        should_be_today_v = self.v.documentcopy_set.get(doc=self.d1).returning_date == '2018-04-05 00:00'
+        self.assertEqual(should_be_today_p1, should_be_today_v)
