@@ -170,7 +170,14 @@ def return_doc(request):
     doc = copy_instance.doc
     copy_instance.delete()
 
-    if doc.request_set.get_queryset():
+    debug_mode = False
+
+    try:
+        debug_mode = request.GET['debug']
+    except:
+        pass
+
+    if doc.request_set.get_queryset() and not debug_mode:
 
         for query in doc.request_set.get_queryset():
             to = UserCards.models.User.objects.get(username=str(query).split(': ')[1]).email
@@ -178,7 +185,8 @@ def return_doc(request):
             message = "Hello! You've made request for " + str(doc.title) + " . You can " \
                                                                            "come to library and take your " + str(
                 doc.type) + "."
-            send_mail('Come to library for document approving', message, settings.EMAIL_HOST_USER, [to])
+            send_mail('Come to library for document approving', message, settings.EMAIL_HOST_USER, [to],
+                      fail_silently=False)
 
             break
 

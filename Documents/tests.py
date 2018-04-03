@@ -1183,6 +1183,56 @@ class Delivery3(TestCase):
         def test_TC7(self):
             self.test_TC6()
 
+    def test_TC8(self):
+        self.test_TC6()
+        request = HttpRequest()
+        request.method = 'GET'
+        request.user = self.librarian
+        request.GET['copy_id'] = self.p2.documentcopy_set.get(doc=self.d3).id
+        request.GET['debug'] = True
+
+        self.s.email = 'name_that_hopely_no_one_in_the_world_will_choose@email.ru'
+        self.s.save()
+
+        return_doc(request)
+
+        # check that mail had sent
+        # on each email sending django.core.mail check that it was successfully sent to the user
+        # if flag 'fail_silently' equal to False.
+
+        # check that p2 have no any document
+        self.assertEqual(len(self.p2.documentcopy_set.all()), 0)
+
+        # librarian checks the waiting list for the document d3
+        request.GET['id'] = self.d3.id
+        response = RequestsView.as_view()(request)
+        response = response.render()
+
+        self.assertTrue(
+            all([word in response.content for word in
+                 [b'patron5', b'patron4', b'patron3']]))
+
+    def test_TC9(self):
+        self.test_TC6()
+        request = HttpRequest()
+        request.user = self.p1
+        request.method = 'GET'
+        request.GET['copy_id'] = self.p1.documentcopy_set.get(doc=self.d3).id
+        renew(request)
+
+        copy = self.p1.documentcopy_set.get(doc=self.d3)
+        self.assertEqual((copy.returning_date - copy.date).days, 27)
+
+        # librarian checks the waiting list for the document d3
+        request.user = self.librarian
+        request.GET['id'] = self.d3.id
+        response = RequestsView.as_view()(request)
+        response = response.render()
+
+        self.assertTrue(
+            all([word in response.content for word in
+                 [b'patron5', b'patron4', b'patron3']]))
+
     def test_TC10(self):
         self.init_db()
 
@@ -1238,3 +1288,4 @@ class Delivery3(TestCase):
         should_be_today_p1 = self.p1.documentcopy_set.get(doc=self.d1).returning_date == '2018-04-26 00:00'
         should_be_today_v = self.v.documentcopy_set.get(doc=self.d1).returning_date == '2018-04-05 00:00'
         self.assertEqual(should_be_today_p1, should_be_today_v)
+
