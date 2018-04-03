@@ -21,7 +21,6 @@ class RequestsView(ListView):
     template_name = 'BookRequests/bookrequests.html'
     model = Request
     context_object_name = 'requests'
-    paginate_by = 10
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -53,7 +52,6 @@ def make_new(request):
         doc = documents_models.Document.objects.get(id=doc_id)
     except:
         raise Http404('You cannot request this document')
-
     if len(request.user.request_set.filter(doc=doc)):
         return HttpResponse('Sorry, but You already have request for this document')
     elif len(request.user.documentcopy_set.filter(doc=doc)):
@@ -61,23 +59,25 @@ def make_new(request):
     elif doc.is_reference:
         return HttpResponse('Sorry, but this document is reference')
     else:
-        requested_doc = documents_models.Document.objects.get(id=doc_id)
         for req in Request.objects.all():  # find requests with requested doc
-            if req.doc == requested_doc:  # exist request for this doc
+            if req.doc == doc:  # exist request for this doc
                 req.users.add(request.user)
+                if doc.copies >= doc.request_set.count():
+                    message = "Hello! You've made request for " + str(doc.title) + " . You can " \
+                                                                                   "come to library and take your " + str(
+                        doc.type) + "."
+                    send_mail('Come to library for document approving', message, settings.EMAIL_HOST_USER,
+                              [request.user.email])
                 return HttpResponse('Successfully created new request')
-
-        doc_request = Request(doc=requested_doc,
+        doc_request = Request(doc=doc,
                               timestamp=datetime.datetime.now())
         doc_request.save()
         doc_request.users.add(request.user)
-
-        if doc.copies >= requested_doc.request_set.count():
+        if doc.copies >= doc.request_set.count():
             message = "Hello! You've made request for " + str(doc.title) + " . You can " \
                                                                            "come to library and take your " + str(
                 doc.type) + "."
-            send_mail('Come to library for document approving', message, settings.EMAIL_HOST_USER, [request.user])
-
+            send_mail('Come to library for document approving', message, settings.EMAIL_HOST_USER, [request.user.email])
         return HttpResponse('Successfully created new request')
 
 

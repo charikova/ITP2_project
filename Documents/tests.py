@@ -860,6 +860,7 @@ class Delivery3(TestCase):
         self.p1.documentcopy_set.get(id=self.d1.id).returning_date = datetime.datetime.now()
         self.p1.documentcopy_set.get(id=self.d2.id).returning_date = datetime.datetime.now()
 
+        request.user = self.s
         # s leaves a request for a book d1
         request.GET['doc'] = self.d1.id
         make_new(request)
