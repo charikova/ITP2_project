@@ -827,6 +827,75 @@ class Delivery3(TestCase):
         self.assertEqual(f, 0)
         self.assertTrue(str(f).encode() in response.content)
 
+    def test_TC3(self):
+        self.init_db()
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.p1
+
+        # p1 leaves a request for a book d1
+        request.GET['doc'] = self.d1.id
+        make_new(request)
+
+        # s leaves a request for a book d2
+        request.user = self.s
+        request.GET['doc'] = self.d2.id
+        make_new(request)
+
+        # v leaves a request for a book d2
+        request.user = self.v
+        request.GET['doc'] = self.d2.id
+        make_new(request)
+
+        request.user = self.librarian
+        # approve 1st
+        request.GET['req_id'] = self.p1.request_set.get(doc=self.d1).id
+        request.GET['user_id'] = self.p1.id
+        approve_request(request)
+
+        # approve 2nd
+        request.GET['req_id'] = self.s.request_set.get(doc=self.d2).id
+        request.GET['user_id'] = self.s.id
+        approve_request(request)
+
+        # approve 3rd
+        request.GET['req_id'] = self.v.request_set.get(doc=self.d2).id
+        request.GET['user_id'] = self.v.id
+        approve_request(request)
+
+        # p1 renews d1
+        request.user = self.p1
+        request.GET['copy_id'] = self.p1.documentcopy_set.get(doc=self.d1).id
+        renew(request)
+
+        # s renews d2
+        request.user = self.s
+        request.GET['copy_id'] = self.s.documentcopy_set.get(doc=self.d2).id
+        renew(request)
+
+        # v renews d2
+        request.user = self.v
+        request.GET['copy_id'] = self.v.documentcopy_set.get(doc=self.d2).id
+        renew(request)
+
+        # librarian checks the information of p1
+        should_be_today = self.p1.documentcopy_set.get(doc=self.d1).returning_date - datetime.timedelta(days=28)
+        should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
+        self.assertEqual(should_be_today, datetime.date.today())
+
+        # librarian checks the information of s
+        should_be_today = self.s.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=1)
+        should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
+        self.assertEqual(should_be_today, datetime.date.today())
+
+        # librarian checks the information of v
+        should_be_today = self.v.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=1)
+        should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
+        self.assertEqual(should_be_today, datetime.date.today())
+
+
+
+
     def test_TC4(self):
         self.init_db()
         request = HttpRequest()
