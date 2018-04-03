@@ -749,14 +749,14 @@ class Delivery2(TestCase):
 
 class Delivery3(TestCase):
 
-    def init_db(self):
+    def test_init_db(self):
         self.d1 = Book.objects.create(title='Introduction to Algorithms', price=5000,
                                       publication_date=datetime.date(year=2009, month=1, day=1),
                                       edition=3, copies=3,
                                       authors='Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and '
                                               'Clifford Stein', cover='cover', publisher='MIT Press')
         self.d2 = Book.objects.create(title='Design Patterns: Elements of Reusable Object-Oriented Software',
-                                      price=5000,
+                                      price=1700,
                                       publication_date=datetime.date(year=2003, month=1, day=1),
                                       edition=1, copies=3, is_bestseller=True,
                                       authors='Erich Gamma, Ralph Johnson, John Vlissides, Richard Helm',
@@ -793,7 +793,7 @@ class Delivery3(TestCase):
                                    address='Stret Atocha, 27')
 
     def test_TC1(self):
-        self.init_db()
+        self.test_init_db()
         request = HttpRequest()
         request.method = "GET"
         request.user = self.p1
@@ -819,8 +819,10 @@ class Delivery3(TestCase):
         approve_request(request)
 
         # requests made in march 5th and action happens in 2nd april (i.e. today is returning day)
-        self.p1.documentcopy_set.get(id=self.d1.id).returning_date = datetime.datetime.now()
-        self.p1.documentcopy_set.get(id=self.d2.id).returning_date = datetime.datetime.now()
+        p1_d1_copy = self.p1.documentcopy_set.get(id=self.d1.id)
+        p1_d1_copy.returning_date = datetime.datetime.now()
+        p1_d2_copy = self.p1.documentcopy_set.get(id=self.d2.id)
+        p1_d2_copy.returning_date = datetime.datetime.now()
 
         # p1 returns d2
         request.GET['copy_id'] = self.p1.documentcopy_set.get(id=self.d2.id).id
@@ -829,12 +831,12 @@ class Delivery3(TestCase):
         # librarian checks dues and fines of p1
         request.GET['id'] = self.p1.id
         response = user_card_info(request)
-        f = self.p1.documentcopy_set.get(id=self.d1.id).fine()  # fine of d1
+        f = p1_d1_copy.fine()  # fine of d1
         self.assertEqual(f, 0)
         self.assertTrue(str(f).encode() in response.content)
 
     def test_TC2(self):
-        self.init_db()
+        self.test_init_db()
         request = HttpRequest()
         request.method = "GET"
         request.user = self.p1
@@ -847,7 +849,6 @@ class Delivery3(TestCase):
         make_new(request)
 
         # now librarian should approve requests
-        request = HttpRequest()
         request.user = self.librarian
 
         # approve 1st
@@ -861,8 +862,10 @@ class Delivery3(TestCase):
         approve_request(request)
 
         # requests made in march 5th and action happens in 2nd april (i.e. today is returning day)
-        self.p1.documentcopy_set.get(id=self.d1.id).returning_date = datetime.datetime.now()
-        self.p1.documentcopy_set.get(id=self.d2.id).returning_date = datetime.datetime.now()
+        p1_d1_copy = self.p1.documentcopy_set.get(id=self.d1.id)
+        p1_d1_copy.returning_date = datetime.datetime.now()
+        p1_d2_copy = self.p1.documentcopy_set.get(id=self.d2.id)
+        p1_d2_copy.returning_date = datetime.datetime.now()
 
         request.user = self.s
         # s leaves a request for a book d1
@@ -874,7 +877,6 @@ class Delivery3(TestCase):
         make_new(request)
 
         # now librarian should approve requests
-        request = HttpRequest()
         request.user = self.librarian
 
         # approve 1st
@@ -888,9 +890,12 @@ class Delivery3(TestCase):
         approve_request(request)
 
         # requests made in march 5th and action happens in 2nd april (i.e. today is returning day)
-        self.s.documentcopy_set.get(id=self.d1.id).returning_date = datetime.datetime.now()
-        self.s.documentcopy_set.get(id=self.d2.id).returning_date = datetime.datetime.now()
+        s_d1_copy = self.s.documentcopy_set.get(doc=self.d1)
+        s_d1_copy.returning_date = datetime.datetime.now() - datetime.timedelta(days=7)
+        s_d2_copy = self.s.documentcopy_set.get(doc=self.d2)
+        s_d2_copy.returning_date = datetime.datetime.now() - datetime.timedelta(days=14)
 
+        request.user = self.v
         # v leaves a request for a book d1
         request.GET['doc'] = self.d1.id
         make_new(request)
@@ -900,7 +905,6 @@ class Delivery3(TestCase):
         make_new(request)
 
         # now librarian should approve requests
-        request = HttpRequest()
         request.user = self.librarian
 
         # approve 1st
@@ -914,41 +918,37 @@ class Delivery3(TestCase):
         approve_request(request)
 
         # requests made in march 5th and action happens in 2nd april (i.e. today is returning day)
-        self.v.documentcopy_set.get(id=self.d1.id).returning_date = datetime.datetime.now()
-        self.v.documentcopy_set.get(id=self.d2.id).returning_date = datetime.datetime.now()
+        v_d1_copy = self.s.documentcopy_set.get(doc=self.d1)
+        v_d1_copy.returning_date = datetime.datetime.now() - datetime.timedelta(days=21)
+        v_d2_copy = self.s.documentcopy_set.get(doc=self.d2)
+        v_d2_copy.returning_date = datetime.datetime.now() - datetime.timedelta(days=21)
 
         # librarian checks dues and fines of p1
         request.GET['id'] = self.p1.id
         response = user_card_info(request)
-        f1 = self.p1.documentcopy_set.get(id=self.d1.id).fine()  # fine of d1
-        f2 = self.p1.documentcopy_set.get(id=self.d2.id).fine()  # fine of d2
+        f1 = p1_d1_copy.fine()  # fine of d1
+        f2 = p1_d2_copy.fine()  # fine of d2
         self.assertEqual(f1, 0)
         self.assertEqual(f2, 0)
-        self.assertTrue(str(f1).encode() in response.content)
-        self.assertTrue(str(f2).encode() in response.content)
 
         # librarian checks dues and fines of s
         request.GET['id'] = self.s.id
         response = user_card_info(request)
-        f1 = self.s.documentcopy_set.get(id=self.d1.id).fine()  # fine of d1
-        f2 = self.s.documentcopy_set.get(id=self.d2.id).fine()  # fine of d2
-        self.assertEqual(f1, 0)
-        self.assertEqual(f2, 0)
-        self.assertTrue(str(f1).encode() in response.content)
-        self.assertTrue(str(f2).encode() in response.content)
+        f1 = s_d1_copy.fine()  # fine of d1
+        f2 = s_d2_copy.fine()  # fine of d2
+        self.assertEqual(f1, 700)
+        self.assertEqual(f2, 1400)
 
         # librarian checks dues and fines of v
         request.GET['id'] = self.v.id
         response = user_card_info(request)
-        f1 = self.v.documentcopy_set.get(id=self.d1.id).fine()  # fine of d1
-        f2 = self.v.documentcopy_set.get(id=self.d2.id).fine()  # fine of d2
-        self.assertEqual(f1, 0)
-        self.assertEqual(f2, 0)
-        self.assertTrue(str(f1).encode() in response.content)
-        self.assertTrue(str(f2).encode() in response.content)
+        f1 = v_d1_copy.fine()  # fine of d1
+        f2 = v_d2_copy.fine()  # fine of d2
+        self.assertEqual(f1, 2100)
+        self.assertEqual(f2, 1700)
 
     def test_TC3(self):
-        self.init_db()
+        self.test_init_db()
         request = HttpRequest()
         request.method = "GET"
         request.user = self.p1
@@ -1014,7 +1014,7 @@ class Delivery3(TestCase):
         self.assertEqual(should_be_today, datetime.date.today())
 
     def test_TC4(self):
-        self.init_db()
+        self.test_init_db()
         request = HttpRequest()
         request.method = "GET"
         request.user = self.p1
@@ -1077,7 +1077,7 @@ class Delivery3(TestCase):
         self.assertEqual(should_be_today, datetime.date.today())
 
     def test_TC5(self):
-        self.init_db()
+        self.test_init_db()
         # p1 leaves a request for a book d3
         request = HttpRequest()
         request.method = "GET"
@@ -1125,7 +1125,7 @@ class Delivery3(TestCase):
                  [b'patron5']]))
 
     def test_TC6(self):
-        self.init_db()
+        self.test_init_db()
         # p1 leaves a request for a book d3
         request = HttpRequest()
         request.method = "GET"
@@ -1184,7 +1184,7 @@ class Delivery3(TestCase):
             self.test_TC6()
 
     def test_TC10(self):
-        self.init_db()
+        self.test_init_db()
 
         request = HttpRequest()
         request.method = "GET"
