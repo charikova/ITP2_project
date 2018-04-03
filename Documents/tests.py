@@ -1200,30 +1200,32 @@ class Delivery3(TestCase):
         self.assertTrue(not all([word in response.content for word in
                                  [b'patron5', b'patron4', b'patron3']]))
 
-        for i in mail.outbox:
-            print(i.subject + ' ' + str(i.to))
 
-        # 8 because:
-        # 1 about request to p1
+
+        # 12 because:
+        # 5 for coming to library for doc approving to p1, p2, p3, s, v
         # 2 to p1 and p2 about approved request,
         # 3 to s, v, p3 for d3 not longer available
         # 2 to p1 and p2 to return books,
 
-        self.assertEqual(len(mail.outbox), 8)
+        self.assertEqual(len(mail.outbox), 12)
 
-        self.assertEqual(mail.outbox[1].to, ['p1@mail.ru'])
-        self.assertEqual(mail.outbox[2].to, ['p2@mail.ru'])
-        self.assertEqual(mail.outbox[1].subject, 'Approved request')
-        self.assertEqual(mail.outbox[2].subject, 'Approved request')
+        for i in range(0, 4):
+            self.assertEqual(mail.outbox[i].subject, 'Come to library for document approving')
 
-        self.assertEqual(mail.outbox[3].to, ['p3@mail.ru'])
-        self.assertEqual(mail.outbox[4].to, ['s@mail.ru'])
-        self.assertEqual(mail.outbox[5].to, ['v@mail.ru'])
+        self.assertEqual(mail.outbox[5].to, ['p1@mail.ru'])
+        self.assertEqual(mail.outbox[6].to, ['p2@mail.ru'])
+        self.assertEqual(mail.outbox[5].subject, 'Approved request')
+        self.assertEqual(mail.outbox[6].subject, 'Approved request')
 
-        self.assertEqual(mail.outbox[6].to, ['p1@mail.ru'])
-        self.assertEqual(mail.outbox[7].to, ['p2@mail.ru'])
+        self.assertEqual(mail.outbox[7].to, ['p3@mail.ru'])
+        self.assertEqual(mail.outbox[8].to, ['s@mail.ru'])
+        self.assertEqual(mail.outbox[9].to, ['v@mail.ru'])
 
-        for i in range(3, 7):
+        self.assertEqual(mail.outbox[10].to, ['p1@mail.ru'])
+        self.assertEqual(mail.outbox[11].to, ['p2@mail.ru'])
+
+        for i in range(7, 11):
             self.assertEqual(mail.outbox[i].subject, 'Outstanding request')
 
     def test_TC8(self):
