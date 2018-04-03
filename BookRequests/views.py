@@ -182,6 +182,12 @@ def return_doc(request):
 
             break
 
+    # delete outreq instance if there is any
+    outreq_is_active = OutStandingRequest.objects.filter(doc=doc).count() > 0
+    if outreq_is_active:
+        oreq = OutStandingRequest.objects.get(doc=doc)
+        oreq.delete()
+
     return redirect('/user?id=' + str(user_id))
 
 
@@ -215,15 +221,11 @@ def renew(request):
 
     vp = user.userprofile.status == 'visiting professor'  # vp can renew as many times as they want
 
-    outreq_isvalid = False
-    try:
-        outreq_isvalid = OutStandingRequest.objects.get(doc=copy.doc).timestamp + datetime.timedelta(days=7) \
-                         > datetime.datetime.now()
-    except:
-        pass
-    if outreq_isvalid:
+    outreq_isactive = OutStandingRequest.objects.filter(doc=copy.doc).count() > 0
+    if outreq_isactive:
         return HttpResponse('sorry, but looks like there is an outstanding request for this document, please return it'
                             ' asap')
+
     else:
         if copy.renewed and not vp:
             return HttpResponse('Sorry, but you already have renewed this document')
@@ -251,10 +253,10 @@ def outstanding_request(request):
     message_for_req = "Hello! due to an outstanding request from {} (librarian) your request for {} has been canceled". \
         format(request.user.username, doc.title)
 
+    # create outreq instance
     if OutStandingRequest.objects.filter(doc=doc).count() > 0:
         OutStandingRequest.objects.get(doc=doc).delete()
-
-    out_request = OutStandingRequest(doc=doc, timestamp=datetime.datetime.now())
+    out_request = OutStandingRequest(doc=doc)
     out_request.save()
 
     for req in Request.objects.filter(doc=doc):

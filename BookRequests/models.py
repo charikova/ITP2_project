@@ -14,4 +14,3 @@ class Request(models.Model):
 
 class OutStandingRequest(models.Model):
     doc = models.ForeignKey(Document, null=True, default=None, on_delete=models.CASCADE)
-    timestamp = models.DateTimeField(auto_now_add=False, default=None)
