@@ -175,7 +175,10 @@ is pressed the document copy object is deleted and the number of available copie
 
 Librarian can place an outstanding request for a particular document. It cancels all users' requests for this document, deletes priority
 queue if there is any, users who requested this document get notification that this doc is not available due to the outstanding
-request, users who already have this document get a notification that they need to return book in 1 day.
+request, users who already have this document get a notification that they need to return book in 1 day. At the moment librarian pushes
+"outstanding request" button, new outstanding request record is created. It has only 1 ref to document and used for obtaining current
+state of outstanding request. If there is such a record, it means that no one has returned a copy of that document. When someone returns
+copy of document, record is deleted.
 
 
  
