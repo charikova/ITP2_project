@@ -1123,7 +1123,6 @@ class Delivery3(TestCase):
             all([word in response.content for word in
                  [b'patron5']]))
 
-
     def test_TC6(self):
         self.init_db()
         # p1 leaves a request for a book d3
@@ -1176,14 +1175,9 @@ class Delivery3(TestCase):
         response = RequestsView.as_view()(request)
         response = response.render()
 
-        # check if librarian will see the name of user v (patron5) in waiting list
         self.assertTrue(
             all([word in response.content for word in
-                 [b'patron5']]))
-        
-        print(response.content.decode())
-
-        # tut kak by negotovo (konec bloka negotovo)
+                 [b'patron5', b'patron4', b'patron3']]))
 
         def test_TC7(self):
             self.test_TC6()
