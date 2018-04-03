@@ -267,9 +267,9 @@ def outstanding_request(request):
                           "be returned during 1 day".format(request.user.username, doc.title)
     for doc_copy in doc.documentcopy_set.all():
         to = doc_copy.checked_up_by_whom.email
-        doc_copy.returning_date = (
-                datetime.date.today() + datetime.timedelta(days=1)).strftime("%Y-%m-%d %H:%M")
-        doc_copy.save()
+        # doc_copy.returning_date = (
+        #         datetime.date.today() + datetime.timedelta(days=1)).strftime("%Y-%m-%d %H:%M")
+        # doc_copy.save()
         send_mail('Outstanding request', message_for_checked, settings.EMAIL_HOST_USER, [to])
 
     return redirect('/' + str(id))

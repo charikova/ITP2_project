@@ -821,15 +821,196 @@ class Delivery3(TestCase):
         # requests made in march 5th and action happens in 2nd april (i.e. today is returning day)
         self.p1.documentcopy_set.get(id=self.d1.id).returning_date = datetime.datetime.now()
         self.p1.documentcopy_set.get(id=self.d2.id).returning_date = datetime.datetime.now()
+
         # p1 returns d2
         request.GET['copy_id'] = self.p1.documentcopy_set.get(id=self.d2.id).id
         return_doc(request)
+
         # librarian checks dues and fines of p1
         request.GET['id'] = self.p1.id
         response = user_card_info(request)
         f = self.p1.documentcopy_set.get(id=self.d1.id).fine()  # fine of d1
         self.assertEqual(f, 0)
         self.assertTrue(str(f).encode() in response.content)
+
+    def test_TC2(self):
+        self.init_db()
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.p1
+
+        # p1 leaves a request for a book d1
+        request.GET['doc'] = self.d1.id
+        make_new(request)
+        # p1 leaves a request for a book d2
+        request.GET['doc'] = self.d2.id
+        make_new(request)
+
+        # now librarian should approve requests
+        request = HttpRequest()
+        request.user = self.librarian
+
+        # approve 1st
+        request.GET['req_id'] = self.p1.request_set.get(doc=self.d1).id
+        request.GET['user_id'] = self.p1.id
+        approve_request(request)
+
+        # approve 2st
+        request.GET['req_id'] = self.p1.request_set.get(doc=self.d2).id
+        request.GET['user_id'] = self.p1.id
+        approve_request(request)
+
+        # requests made in march 5th and action happens in 2nd april (i.e. today is returning day)
+        self.p1.documentcopy_set.get(id=self.d1.id).returning_date = datetime.datetime.now()
+        self.p1.documentcopy_set.get(id=self.d2.id).returning_date = datetime.datetime.now()
+
+        # s leaves a request for a book d1
+        request.GET['doc'] = self.d1.id
+        make_new(request)
+
+        # s leaves a request for a book d2
+        request.GET['doc'] = self.d2.id
+        make_new(request)
+
+        # now librarian should approve requests
+        request = HttpRequest()
+        request.user = self.librarian
+
+        # approve 1st
+        request.GET['req_id'] = self.s.request_set.get(doc=self.d1).id
+        request.GET['user_id'] = self.s.id
+        approve_request(request)
+
+        # approve 2st
+        request.GET['req_id'] = self.s.request_set.get(doc=self.d2).id
+        request.GET['user_id'] = self.s.id
+        approve_request(request)
+
+        # requests made in march 5th and action happens in 2nd april (i.e. today is returning day)
+        self.s.documentcopy_set.get(id=self.d1.id).returning_date = datetime.datetime.now()
+        self.s.documentcopy_set.get(id=self.d2.id).returning_date = datetime.datetime.now()
+
+        # v leaves a request for a book d1
+        request.GET['doc'] = self.d1.id
+        make_new(request)
+
+        # v leaves a request for a book d2
+        request.GET['doc'] = self.d2.id
+        make_new(request)
+
+        # now librarian should approve requests
+        request = HttpRequest()
+        request.user = self.librarian
+
+        # approve 1st
+        request.GET['req_id'] = self.v.request_set.get(doc=self.d1).id
+        request.GET['user_id'] = self.v.id
+        approve_request(request)
+
+        # approve 2st
+        request.GET['req_id'] = self.v.request_set.get(doc=self.d2).id
+        request.GET['user_id'] = self.v.id
+        approve_request(request)
+
+        # requests made in march 5th and action happens in 2nd april (i.e. today is returning day)
+        self.v.documentcopy_set.get(id=self.d1.id).returning_date = datetime.datetime.now()
+        self.v.documentcopy_set.get(id=self.d2.id).returning_date = datetime.datetime.now()
+
+        # librarian checks dues and fines of p1
+        request.GET['id'] = self.p1.id
+        response = user_card_info(request)
+        f1 = self.p1.documentcopy_set.get(id=self.d1.id).fine()  # fine of d1
+        f2 = self.p1.documentcopy_set.get(id=self.d2.id).fine()  # fine of d2
+        self.assertEqual(f1, 0)
+        self.assertEqual(f2, 0)
+        self.assertTrue(str(f1).encode() in response.content)
+        self.assertTrue(str(f2).encode() in response.content)
+
+        # librarian checks dues and fines of s
+        request.GET['id'] = self.s.id
+        response = user_card_info(request)
+        f1 = self.s.documentcopy_set.get(id=self.d1.id).fine()  # fine of d1
+        f2 = self.s.documentcopy_set.get(id=self.d2.id).fine()  # fine of d2
+        self.assertEqual(f1, 0)
+        self.assertEqual(f2, 0)
+        self.assertTrue(str(f1).encode() in response.content)
+        self.assertTrue(str(f2).encode() in response.content)
+
+        # librarian checks dues and fines of v
+        request.GET['id'] = self.v.id
+        response = user_card_info(request)
+        f1 = self.v.documentcopy_set.get(id=self.d1.id).fine()  # fine of d1
+        f2 = self.v.documentcopy_set.get(id=self.d2.id).fine()  # fine of d2
+        self.assertEqual(f1, 0)
+        self.assertEqual(f2, 0)
+        self.assertTrue(str(f1).encode() in response.content)
+        self.assertTrue(str(f2).encode() in response.content)
+
+    def test_TC3(self):
+        self.init_db()
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.p1
+
+        # p1 leaves a request for a book d1
+        request.GET['doc'] = self.d1.id
+        make_new(request)
+
+        # s leaves a request for a book d2
+        request.user = self.s
+        request.GET['doc'] = self.d2.id
+        make_new(request)
+
+        # v leaves a request for a book d2
+        request.user = self.v
+        request.GET['doc'] = self.d2.id
+        make_new(request)
+
+        request.user = self.librarian
+        # approve 1st
+        request.GET['req_id'] = self.p1.request_set.get(doc=self.d1).id
+        request.GET['user_id'] = self.p1.id
+        approve_request(request)
+
+        # approve 2nd
+        request.GET['req_id'] = self.s.request_set.get(doc=self.d2).id
+        request.GET['user_id'] = self.s.id
+        approve_request(request)
+
+        # approve 3rd
+        request.GET['req_id'] = self.v.request_set.get(doc=self.d2).id
+        request.GET['user_id'] = self.v.id
+        approve_request(request)
+
+        # p1 renews d1
+        request.user = self.p1
+        request.GET['copy_id'] = self.p1.documentcopy_set.get(doc=self.d1).id
+        renew(request)
+
+        # s renews d2
+        request.user = self.s
+        request.GET['copy_id'] = self.s.documentcopy_set.get(doc=self.d2).id
+        renew(request)
+
+        # v renews d2
+        request.user = self.v
+        request.GET['copy_id'] = self.v.documentcopy_set.get(doc=self.d2).id
+        renew(request)
+
+        # librarian checks the information of p1
+        should_be_today = self.p1.documentcopy_set.get(doc=self.d1).returning_date - datetime.timedelta(days=28)
+        should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
+        self.assertEqual(should_be_today, datetime.date.today())
+
+        # librarian checks the information of s
+        should_be_today = self.s.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=1)
+        should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
+        self.assertEqual(should_be_today, datetime.date.today())
+
+        # librarian checks the information of v
+        should_be_today = self.v.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=1)
+        should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
+        self.assertEqual(should_be_today, datetime.date.today())
 
     def test_TC4(self):
         self.init_db()
@@ -881,17 +1062,20 @@ class Delivery3(TestCase):
         request.GET['copy_id'] = self.v.documentcopy_set.get(doc=self.d2).id
         renew(request)
 
-        # librarian checks the information of patrons p1, s, v
+        # returning date of d1 for p1 is (date_when_was_made_checkout - 28_days)
         should_be_today = self.p1.documentcopy_set.get(doc=self.d1).returning_date - datetime.timedelta(days=28)
         should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
         self.assertEqual(should_be_today, datetime.date.today())
-        should_be_today = self.s.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=1)
+        #
+        should_be_today = self.s.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=14)
         should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
         self.assertEqual(should_be_today, datetime.date.today())
-        should_be_today = self.v.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=1)
+        #
+        should_be_today = self.v.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=7)
         should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
         self.assertEqual(should_be_today, datetime.date.today())
 
+<<<<<<< HEAD
     def test_TC10(self):
         self.init_db()
 
@@ -947,3 +1131,117 @@ class Delivery3(TestCase):
         should_be_today_p1 = self.p1.documentcopy_set.get(doc=self.d1).returning_date == '2018-04-26 00:00'
         should_be_today_v = self.v.documentcopy_set.get(doc=self.d1).returning_date == '2018-04-05 00:00'
         self.assertEqual(should_be_today_p1, should_be_today_v)
+=======
+    def test_TC5(self):
+        self.init_db()
+        # p1 leaves a request for a book d3
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.p1
+        request.GET['doc'] = self.d3.id
+        make_new(request)
+
+        # s leaves a request for a book d3
+        request.user = self.s
+        request.GET['doc'] = self.d3.id
+        make_new(request)
+
+        # v leaves a request for a book d3
+        request.user = self.v
+        request.GET['doc'] = self.d3.id
+        make_new(request)
+
+        # now librarian should approve requests
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.librarian
+
+        # approve 1st (p1 d3)
+        request.GET['req_id'] = self.p1.request_set.get(doc=self.d3).id
+        request.GET['user_id'] = self.p1.id
+        approve_request(request)
+
+        # approve 2nd (s d3)
+        request.GET['req_id'] = self.s.request_set.get(doc=self.d3).id
+        request.GET['user_id'] = self.s.id
+        approve_request(request)
+
+        # librarian cannot approve third request because there is no button
+        # "approve" for him (since there is no copy available)
+
+        # librarian checks the waiting list for the document d3
+        request.GET['id'] = self.d3.id
+        # get response and render response
+        response = RequestsView.as_view()(request)
+        response = response.render()
+
+        # check if librarian will see the name of user v (patron5) in waiting list
+        self.assertTrue(
+            all([word in response.content for word in
+                 [b'patron5']]))
+
+
+    def test_TC6(self):
+        self.init_db()
+        # p1 leaves a request for a book d3
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.p1
+        request.GET['doc'] = self.d3.id
+        make_new(request)
+
+        # p2 leaves a request for a book d3
+        request.user = self.p2
+        request.GET['doc'] = self.d3.id
+        make_new(request)
+
+        # s leaves a request for a book d3
+        request.user = self.s
+        request.GET['doc'] = self.d3.id
+        make_new(request)
+
+        # v leaves a request for a book d3
+        request.user = self.v
+        request.GET['doc'] = self.d3.id
+        make_new(request)
+
+        # p3 leaves a request for a book d3
+        request.user = self.p3
+        request.GET['doc'] = self.d3.id
+        make_new(request)
+
+        # now librarian should approve requests
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.librarian
+
+        # approve 1st (p1 d3)
+        request.GET['req_id'] = self.p1.request_set.get(doc=self.d3).id
+        request.GET['user_id'] = self.p1.id
+        approve_request(request)
+
+        # approve 2nd (p2 d3)
+        request.GET['req_id'] = self.p2.request_set.get(doc=self.d3).id
+        request.GET['user_id'] = self.p2.id
+        approve_request(request)
+
+        # librarian cannot approve three last requests because there is no button
+        # "approve" for him (since there are no copies available)
+
+        # librarian checks the waiting list for the document d3
+        request.GET['id'] = self.d3.id
+        response = RequestsView.as_view()(request)
+        response = response.render()
+
+        # check if librarian will see the name of user v (patron5) in waiting list
+        self.assertTrue(
+            all([word in response.content for word in
+                 [b'patron5']]))
+        
+        print(response.content.decode())
+
+        # tut kak by negotovo (konec bloka negotovo)
+
+        def test_TC7(self):
+            self.test_TC6()
+>>>>>>> faf7e104fcf02921d0f85c94ceac7c063f7c811a
