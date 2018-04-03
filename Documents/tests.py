@@ -1,3 +1,4 @@
+from django.core import mail
 from django.test import TestCase, Client
 
 from BookRequests.models import Request
@@ -771,23 +772,23 @@ class Delivery3(TestCase):
                                                   last_name='L',
                                                   is_staff=True)
 
-        self.p1 = User.objects.create_user('patron1', 'exampl2@mail.ru', '12356qwerty', first_name='Sergey',
+        self.p1 = User.objects.create_user('patron1', 'p1@mail.ru', '12356qwerty', first_name='Sergey',
                                            last_name='Afonso')
         UserProfile.objects.create(user=self.p1, phone_number=30001, status='professor', address='Via Margutta, 3')
 
-        self.p2 = User.objects.create_user('patron2', 'exampl2@mail.ru', '12456qwerty', first_name='Nadia',
+        self.p2 = User.objects.create_user('patron2', 'p2@mail.ru', '12456qwerty', first_name='Nadia',
                                            last_name='Teixeira')
         UserProfile.objects.create(user=self.p2, phone_number=30002, status='professor', address='Via Sacra, 13')
 
-        self.p3 = User.objects.create_user('patron3', 'exampl2@mail.ru', '23456qwerty', first_name='Elvira',
+        self.p3 = User.objects.create_user('patron3', 'p3@mail.ru', '23456qwerty', first_name='Elvira',
                                            last_name='Espindola')
         UserProfile.objects.create(user=self.p3, phone_number=30003, status='professor', address='Via del Corso, 22')
 
-        self.s = User.objects.create_user('patron4', 'exampl2@mail.ru', '23456qwerty', first_name='Andrey',
+        self.s = User.objects.create_user('patron4', 's@mail.ru', '23456qwerty', first_name='Andrey',
                                           last_name='Velo')
         UserProfile.objects.create(user=self.s, phone_number=30004, status='student', address='Avenida Mazatlan 250')
 
-        self.v = User.objects.create_user('patron5', 'exampl2@mail.ru', '23456qwerty', first_name='Veronika',
+        self.v = User.objects.create_user('patron5', 'v@mail.ru', '23456qwerty', first_name='Veronika',
                                           last_name='Rama')
         UserProfile.objects.create(user=self.v, phone_number=30005, status='visiting professor',
                                    address='Stret Atocha, 27')
@@ -1184,6 +1185,50 @@ class Delivery3(TestCase):
         def test_TC7(self):
             self.test_TC6()
 
+    def test_TC7(self):
+        self.test_TC6()
+
+        # librarian place an outstanding request on document d3
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.librarian
+        request.GET['doc_id'] = self.d3.id
+        outstanding_request(request)
+
+        response = RequestsView.as_view()(request)
+        response = response.render()
+
+        self.assertTrue(not all([word in response.content for word in
+                                 [b'patron5', b'patron4', b'patron3']]))
+
+
+
+        # 12 because:
+        # 5 for coming to library for doc approving to p1, p2, p3, s, v
+        # 2 to p1 and p2 about approved request,
+        # 3 to s, v, p3 for d3 not longer available
+        # 2 to p1 and p2 to return books,
+
+        self.assertEqual(len(mail.outbox), 12)
+
+        for i in range(0, 4):
+            self.assertEqual(mail.outbox[i].subject, 'Come to library for document approving')
+
+        self.assertEqual(mail.outbox[5].to, ['p1@mail.ru'])
+        self.assertEqual(mail.outbox[6].to, ['p2@mail.ru'])
+        self.assertEqual(mail.outbox[5].subject, 'Approved request')
+        self.assertEqual(mail.outbox[6].subject, 'Approved request')
+
+        self.assertEqual(mail.outbox[7].to, ['p3@mail.ru'])
+        self.assertEqual(mail.outbox[8].to, ['s@mail.ru'])
+        self.assertEqual(mail.outbox[9].to, ['v@mail.ru'])
+
+        self.assertEqual(mail.outbox[10].to, ['p1@mail.ru'])
+        self.assertEqual(mail.outbox[11].to, ['p2@mail.ru'])
+
+        for i in range(7, 11):
+            self.assertEqual(mail.outbox[i].subject, 'Outstanding request')
+
     def test_TC8(self):
         self.test_TC6()
         request = HttpRequest()
@@ -1289,4 +1334,3 @@ class Delivery3(TestCase):
         should_be_today_p1 = self.p1.documentcopy_set.get(doc=self.d1).returning_date == '2018-04-26 00:00'
         should_be_today_v = self.v.documentcopy_set.get(doc=self.d1).returning_date == '2018-04-05 00:00'
         self.assertEqual(should_be_today_p1, should_be_today_v)
-
