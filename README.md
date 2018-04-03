@@ -180,5 +180,11 @@ request, users who already have this document get a notification that they need 
 state of outstanding request. If there is such a record, it means that no one has returned a copy of that document. When someone returns
 copy of document, record is deleted.
 
+## Contribution for delivery3 
+    
+     Bogachev Roman: Outstanding Requests
+     Charikova Mariia: Fines, Front-end
+     Ginzburg Danil: Renew, Priority Queue
+     Nigmatullin Nikita: Notifications
 
  
