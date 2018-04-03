@@ -162,6 +162,22 @@ keeps other data like level, room, time it was checked out, etc.
 Only librarian can approve that a book has been returned, thus only librarian can see "return book" button. Every time this button
 is pressed the document copy object is deleted and the number of available copies of the document is increased by 1. 
 
+## Renew
+
+## Fines
+        def fine(self):
+          if datetime.datetime.today() > self.returning_date:
+            fine = int((datetime.datetime.today() - self.returning_date).days) * 100
+            if fine > self.fine_price:
+                return self.fine_price
+            else:
+                return fine
+          else:
+            return 0
+            
+            
+Function "Fine" calculates amount of money user must pay if he or she return a document after the due day. After the deadline fine increases by 100 rubles per day, until it reaches the cost of the book. If the amount of the fine is more than the cost of the book, then the user must pay the full cost of the book.
+
 ## Outstanding request 
     message_for_req = "Hello! due to an outstanding request from {} (librarian) your request for {} has been canceled". \
         format(request.user.username, doc.title)
