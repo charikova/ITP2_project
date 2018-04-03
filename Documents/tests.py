@@ -877,14 +877,16 @@ class Delivery3(TestCase):
         request.GET['copy_id'] = self.v.documentcopy_set.get(doc=self.d2).id
         renew(request)
 
-        # librarian checks the information of patrons p1, s, v
+        # returning date of d1 for p1 is (date_when_was_made_checkout - 28_days)
         should_be_today = self.p1.documentcopy_set.get(doc=self.d1).returning_date - datetime.timedelta(days=28)
         should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
         self.assertEqual(should_be_today, datetime.date.today())
-        should_be_today = self.s.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=1)
+        #
+        should_be_today = self.s.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=14)
         should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
         self.assertEqual(should_be_today, datetime.date.today())
-        should_be_today = self.v.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=1)
+        #
+        should_be_today = self.v.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=7)
         should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
         self.assertEqual(should_be_today, datetime.date.today())
 

@@ -70,6 +70,3 @@ class DocumentCopy(models.Model):
         else:
             return 0
 
-
-
-
