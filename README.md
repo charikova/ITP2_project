@@ -163,7 +163,36 @@ Only librarian can approve that a book has been returned, thus only librarian ca
 is pressed the document copy object is deleted and the number of available copies of the document is increased by 1. 
 
 ## Renew
-
+     @need_logged_in
+     def renew(request):
+         """
+         updates returning date of document for one additional week
+         (if days left less then 1, no outstanding requests and it was not renewed before)
+         """
+         user = request.user
+         copy = None
+         try:
+             copy = user.documentcopy_set.get(id=request.GET.get('copy_id'))
+         except:
+             return HttpResponse('forbidden')
+         returning_date = user.documentcopy_set.get(doc=copy.doc).returning_date
+         returning_date = datetime.datetime(year=returning_date.year,
+                                            month=returning_date.month,
+                                            day=returning_date.day,
+                                            hour=returning_date.hour)
+         time_left = returning_date - datetime.datetime.today()
+         days_for_checking_out = 21  # for student
+         if user.userprofile.status == 'visiting professor':
+             days_for_checking_out = 7
+         elif copy.doc.type == "AVFile" or copy.doc.type == "JournalArticle":
+             days_for_checking_out = 14
+         elif user.userprofile.status in ['instructor', 'TA', 'professor']:
+             days_for_checking_out = 28
+         elif copy.doc.is_bestseller:
+             days_for_checking_out = 14
+             
+Funtion renew get request from user who have book and want to increase the time until he need to return it back. Each type of users have its own time in which he can renew the book. Also user can only once make renew if and only if this type of document isn't outstanding request.              
+             
 ## Fines
         def fine(self):
           if datetime.datetime.today() > self.returning_date:
