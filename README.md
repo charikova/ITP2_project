@@ -191,7 +191,7 @@ is pressed the document copy object is deleted and the number of available copie
          elif copy.doc.is_bestseller:
              days_for_checking_out = 14
              
-Funtion renew get request from user who have book and want to increase the time until he need to return it back. Each type of users have its own time in which he can renew the book. Also user can only once make renew if and only if this type of document isn't outstanding request.              
+Function renew gets request from user who have document and want to increase the time until he need to return it back. Each type of users have its own time in which he can renew the document. Also user can only once make renew except when document is outstanding request and no one user can renew it.
              
 ## Fines
         def fine(self):
