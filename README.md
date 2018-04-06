@@ -196,6 +196,10 @@ request, users who already have this document get a notification that they need 
 state of outstanding request. If there is such a record, it means that no one has returned a copy of that document. When someone returns
 copy of document, record is deleted.
 
+## Priority Queue
+Whoever makes new request for document (s)he appears in a request-queue for this document. The priority of such queue only dependes on status of user and time request was made. Priority is following: student, TA, instructor, professor, visiting professor.
+Every librarian is able to approve any request (whatever it position in a queue), but he will always approve those who are in the first position
+
 ## Contribution for delivery3 
     
      Bogachev Roman: Outstanding Requests
