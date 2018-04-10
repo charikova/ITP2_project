@@ -173,9 +173,15 @@
                     <a class="nav-link dropdown-toggle" href="/user/" id="dropdown01" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false">Librarian</a>
                     <div class="dropdown-menu" aria-labelledby="dropdown01">
-                        <a class="dropdown-item" href="/add_doc/">Add document</a> <br>
-                        <a class="dropdown-item" href="/admin">Admin site</a> <br>
-                        <a class="dropdown-item" href="/user/create_user/">Create new user</a> <br>
+                        {% if user.userprofile.privileges == 'admin' %}
+                            <a class="dropdown-item" href="/admin">Admin site</a> <br>
+                        {% endif %}
+                        {% if user.userprofile.privileges == 'admin' or user.userprofile.privileges == 'priv2' or user.userprofile.privileges == 'priv3' %}
+                            <a class="dropdown-item" href="/add_doc/">Add document</a> <br>
+                        {% endif %}
+                        {% if user.userprofile.privileges == 'admin' or user.userprofile.privileges == 'priv2' or user.userprofile.privileges == 'priv3' %}
+                            <a class="dropdown-item" href="/user/create_user/">Create new user</a> <br>
+                        {% endif %}
                         <a class="dropdown-item" href="/requests/">Requests</a> <br>
                         <a class="dropdown-item" href="/user/all/?l=on&p=on">All users</a> <br>
                         <a class="dropdown-item" href="/checked_out_docs/">Checked out documents</a>

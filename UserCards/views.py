@@ -47,10 +47,6 @@ class EditCardView(View):
                 user.is_staff = False
             user.userprofile.save()
             user.save()
-            if user.userprofile.status == "librarian":
-                lib_group = Group.objects.get(name='Librarian')
-                lib_group.user_set.add(user)
-                lib_group.save()
             return redirect('/user/?id='+str(id))
 
     def get(self, request, id):

@@ -5,6 +5,7 @@ USER_PROFILE_DATA = [
     'phone_number',
     'address',
     'status',
+    'privileges',
 ]
 
 class UserProfile(models.Model):
