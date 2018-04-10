@@ -14,12 +14,23 @@ USER_STATUSES = [
     ["visiting professor", "visiting professor"]
 ]
 
+LIBRARIAN_PRIVILEGES = [
+    ["no privileges", "no privileges"],
+    ["admin", "admin"],
+    ["priv1", "priv1"],
+    ["priv2", "priv2"],
+    ["priv3", "priv3"]
+]
+
 
 class CreateUserForm(UserCreationForm):
     email = forms.EmailField(required=False)
     address = forms.CharField(required=False)
     phone_number = forms.IntegerField(required=True)
     status = forms.ChoiceField(choices=USER_STATUSES, required=True)
+    privileges = forms.ChoiceField(choices=LIBRARIAN_PRIVILEGES, required=True)
+
+
 
     class Meta:
         fields = [
