@@ -113,14 +113,16 @@
     {% if user.is_staff %}
         <table class="upd_del">
         <tr>
-            <td><a class="button" href="update/">Update</a></td>
+            {% if user.userprofile.privileges == 'admin' or user.userprofile.privileges == 'priv3' %}
             <td><a class="button button_del" href="delete/" onclick="return confirm('Delete {{doc.title}}?')">Delete</a></td>
+                {% endif %}
+            <td><a class="button" href="update/">Update</a></td>
         </tr>
         </table>
-
-        <br/>
-        <a class="button" href="/requests/outstanding_request/?doc_id={{doc.id}}">Outstanding request</a>
-
+        </br>
+{% if user.userprofile.privileges == 'priv2' or user.userprofile.privileges == 'priv3' or user.userprofile.privileges == 'admin' %}
+            <a class="button" href="/requests/outstanding_request/?doc_id={{doc.id}}">Outstanding request</a>
+                {% endif %}
     {% elif user.is_authenticated and not doc.is_reference %}
     <button class="button" onclick="
         var response = httpGet('/requests/make_new/?doc={{doc.id}}');
