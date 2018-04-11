@@ -7,10 +7,12 @@ from django.core.mail import send_mail
 import Documents.models as documents_models
 from innopolka import settings
 
+
 def required_staff(func):
     """
     limitation for non-staff users
     """
+
     def inner(request, *args, **kwargs):
         if request.user.is_staff:
             return func(request, *args, **kwargs)
@@ -19,18 +21,43 @@ def required_staff(func):
     return inner
 
 
+def required_priv(priv='priv1'):
+    priv = int(priv[-1])
+
+    def inner1(func):
+        '''
+        limitation for priv1 users
+        '''
+
+        def inner2(request, *args, **kwargs):
+            user_priv = None
+            try:
+                user_priv = int(request.user.userprofile.privileges[-1])
+            except:
+                return redirect('/')
+            if user_priv != 0 and (user_priv <= priv or request.user.is_superuser):
+                return func(request, *args, **kwargs)
+            return redirect('/')
+
+        return inner2
+
+    return inner1
+
+
 def need_logged_in(func):
     """
     limitation for anonymous users
     """
+
     def inner(request, *args, **kwargs):
         if request.user.is_authenticated:
             return func(request, *args, **kwargs)
         return redirect('/')
 
     return inner
-    
 
+
+@required_priv('priv3')
 @required_staff
 def del_doc(request, pk):
     """
@@ -70,6 +97,7 @@ def get_doc(request, pk):
     return doc
 
 
+@required_priv('priv2')
 @required_staff
 def create_doc(request):
     """
@@ -97,6 +125,7 @@ def create_doc(request):
         return redirect('/{}/'.format(new_doc.id))
 
 
+@required_priv('priv2')
 @required_staff
 def add_doc(request):
     """
@@ -106,6 +135,7 @@ def add_doc(request):
                   {'clss': list(map(lambda x: x.type, Document.__subclasses__()))})
 
 
+@required_priv('priv1')
 @required_staff
 def update_doc(request, pk):
     """
@@ -177,4 +207,3 @@ class RequestsView(ListView):
             req_item['users'] = [u[1] for u in users]
             result.append(req_item)
         return result
-
