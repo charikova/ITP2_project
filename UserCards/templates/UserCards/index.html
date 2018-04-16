@@ -180,8 +180,10 @@
             <table class="edit_del">
                 <tr>
                     <td><a class="button" href="/user/edit/{{ current_user.id }}">Edit</a></td>
-                    <td><a class="button" href="/user/delete/{{ current_user.id }}"
+                    {% if user.is_superuser or user.userprofile.privileges == 'priv3' %}
+                        <td><a class="button" href="/user/delete/{{ current_user.id }}"
                            onclick="return confirm('Delete {{ current_user.username }}?')">Delete</a></td>
+                        {% endif %}
                 </tr>
             </table>
 

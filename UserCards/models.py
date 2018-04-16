@@ -5,6 +5,7 @@ USER_PROFILE_DATA = [
     'phone_number',
     'address',
     'status',
+    'privileges',
 ]
 
 class UserProfile(models.Model):
@@ -16,6 +17,7 @@ class UserProfile(models.Model):
     phone_number = models.CharField(max_length=15, null=True, blank=True)
     address = models.CharField(max_length=250, null=True, blank=True)
     status = models.CharField(max_length=250, default='student')
+    privileges = models.CharField(max_length=250, default='no privileges')
 
     def __str__(self):
         return self.user.username

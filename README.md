@@ -162,6 +162,51 @@ keeps other data like level, room, time it was checked out, etc.
 Only librarian can approve that a book has been returned, thus only librarian can see "return book" button. Every time this button
 is pressed the document copy object is deleted and the number of available copies of the document is increased by 1. 
 
+## Renew
+     @need_logged_in
+     def renew(request):
+         """
+         updates returning date of document for one additional week
+         (if days left less then 1, no outstanding requests and it was not renewed before)
+         """
+         user = request.user
+         copy = None
+         try:
+             copy = user.documentcopy_set.get(id=request.GET.get('copy_id'))
+         except:
+             return HttpResponse('forbidden')
+         returning_date = user.documentcopy_set.get(doc=copy.doc).returning_date
+         returning_date = datetime.datetime(year=returning_date.year,
+                                            month=returning_date.month,
+                                            day=returning_date.day,
+                                            hour=returning_date.hour)
+         time_left = returning_date - datetime.datetime.today()
+         days_for_checking_out = 21  # for student
+         if user.userprofile.status == 'visiting professor':
+             days_for_checking_out = 7
+         elif copy.doc.type == "AVFile" or copy.doc.type == "JournalArticle":
+             days_for_checking_out = 14
+         elif user.userprofile.status in ['instructor', 'TA', 'professor']:
+             days_for_checking_out = 28
+         elif copy.doc.is_bestseller:
+             days_for_checking_out = 14
+             
+Function renew gets request from user who have document and want to increase the time until he need to return it back. Each type of users have its own time in which he can renew the document. Also user can only once make renew except when document is outstanding request and no one user can renew it.
+             
+## Fines
+        def fine(self):
+          if datetime.datetime.today() > self.returning_date:
+            fine = int((datetime.datetime.today() - self.returning_date).days) * 100
+            if fine > self.fine_price:
+                return self.fine_price
+            else:
+                return fine
+          else:
+            return 0
+            
+            
+Function "Fine" calculates amount of money user must pay if he or she return a document after the due day. After the deadline fine increases by 100 rubles per day, until it reaches the cost of the book. If the amount of the fine is more than the cost of the book, then the user must pay the full cost of the book.
+
 ## Outstanding request 
     message_for_req = "Hello! due to an outstanding request from {} (librarian) your request for {} has been canceled". \
         format(request.user.username, doc.title)
@@ -175,7 +220,20 @@ is pressed the document copy object is deleted and the number of available copie
 
 Librarian can place an outstanding request for a particular document. It cancels all users' requests for this document, deletes priority
 queue if there is any, users who requested this document get notification that this doc is not available due to the outstanding
-request, users who already have this document get a notification that they need to return book in 1 day.
+request, users who already have this document get a notification that they need to return book in 1 day. At the moment librarian pushes
+"outstanding request" button, new outstanding request record is created. It has only 1 ref to document and used for obtaining current
+state of outstanding request. If there is such a record, it means that no one has returned a copy of that document. When someone returns
+copy of document, record is deleted.
 
+## Priority Queue
+Whoever makes new request for document (s)he appears in a request-queue for this document. The priority of such queue only dependes on status of user and time request was made. Priority is following: student, TA, instructor, professor, visiting professor.
+Every librarian is able to approve any request (whatever it position in a queue), but he will always approve those who are in the first position
+
+## Contribution for delivery3 
+    
+     Bogachev Roman: Outstanding Requests
+     Charikova Mariia: Fines, Front-end
+     Ginzburg Danil: Renew, Priority Queue
+     Nigmatullin Nikita: Notifications
 
  
