@@ -12,4 +12,5 @@ class AdminProfile(admin.ModelAdmin):
 
 # admin.site.unregister(Group)
 
+
 admin.site.register(UserProfile, AdminProfile)
