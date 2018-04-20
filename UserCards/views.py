@@ -21,15 +21,19 @@ class CreateUserView(View):
 
     def post(self, request):
         if request.user.is_staff:
-            form = CreateUserForm(request.POST)
-            if form.is_valid():
-                form.save()
-                username = form.cleaned_data['username']
-                password = form.cleaned_data['password1']
-                user = authenticate(username=username, password=password)
-                user.save()
-                return redirect("/user/all/?p=on&l=on")
-            return redirect('/user/create_user/')
+            if request.user.privileges == 'admin' or (request.POST['status'] != 'librarian' and request.POST['privileges'] != 'priv1' and request.POST['privileges'] != 'priv2' \
+                                                          and request.POST['privileges'] != 'priv3' and request.POST['privileges'] != 'admin'):
+                form = CreateUserForm(request.POST)
+                if form.is_valid():
+                    form.save()
+                    username = form.cleaned_data['username']
+                    password = form.cleaned_data['password1']
+                    user = authenticate(username=username, password=password)
+                    user.save()
+                    return redirect("/user/all/?p=on&l=on")
+                return redirect('/user/create_user/')
+            else:
+                return redirect('/user/create_user/')
 
 
 class EditCardView(View):
@@ -37,17 +41,22 @@ class EditCardView(View):
     def post(self, request, id):
         user = User.objects.get(id=id)
         form = EditPatronForm(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
-            for field in USER_PROFILE_DATA:
-                exec('user.userprofile.{0} = form.cleaned_data["{0}"]'.format(field))
-            if user.userprofile.status == 'librarian':
-                user.is_staff = True
-            else:
-                user.is_staff = False
-            user.userprofile.save()
-            user.save()
-            return redirect('/user/?id='+str(id))
+
+        if request.user.privileges == 'admin' or (request.POST['status'] != 'librarian' and request.POST['privileges']
+                                                  != 'priv1' and request.POST['privileges'] != 'priv2'
+                                                  and request.POST['privileges'] != 'priv3'
+                                                  and request.POST['privileges'] != 'admin'):
+            if form.is_valid():
+                form.save()
+                for field in USER_PROFILE_DATA:
+                    exec('user.userprofile.{0} = form.cleaned_data["{0}"]'.format(field))
+                if user.userprofile.status == 'librarian':
+                    user.is_staff = True
+                else:
+                    user.is_staff = False
+                user.userprofile.save()
+                user.save()
+                return redirect('/user/?id=' + str(id))
 
     def get(self, request, id):
         init_fields = {'address': User.objects.get(id=id).userprofile.address,
@@ -82,11 +91,11 @@ def user_card_info(request):
     else:
         return redirect('/')
 
-    for profile_field in USER_PROFILE_DATA: # take all data from user's profile and put into user object
+    for profile_field in USER_PROFILE_DATA:  # take all data from user's profile and put into user object
         exec('user.{0} = user.userprofile.{0}'.format(profile_field))
 
     fields = list()
-    for field in CreateUserForm.Meta.fields: # take all fields from "user creation form" which should be displayed
+    for field in CreateUserForm.Meta.fields:  # take all fields from "user creation form" which should be displayed
         fields.append((field.replace('_', ' ').capitalize(), eval('user.{}'.format(field))))
 
     documents_copy = user.documentcopy_set.all()
@@ -104,20 +113,21 @@ def user_card_info(request):
             return ZERO
 
     for document_copy in documents_copy:
-        temp = (document_copy.returning_date - datetime.datetime.now()).days*24*3600 + \
+        temp = (document_copy.returning_date - datetime.datetime.now()).days * 24 * 3600 + \
                (document_copy.returning_date - datetime.datetime.now()).seconds
 
         if temp >= 3600:
-            document_copy.time_left = "Time to return: " + str(int(temp / (3600*24))) + "days " + str(int(temp % (3600*24) / 3600)) + "h:" + str(int(temp % 3600 / 60))+"m"
+            document_copy.time_left = "Time to return: " + str(int(temp / (3600 * 24))) + "days " + str(
+                int(temp % (3600 * 24) / 3600)) + "h:" + str(int(temp % 3600 / 60)) + "m"
         elif 3600 > temp >= 60:
             document_copy.time_left = "Time to return: " + str(int(temp / 60)) + "m"
         elif 60 > temp > 0:
             document_copy.time_left = "Time to return: " + str(int(temp)) + "s"
         else:
-            day = (datetime.datetime.now()-document_copy.returning_date).days
+            day = (datetime.datetime.now() - document_copy.returning_date).days
 
-            if 100*int(day) <= document_copy.doc.price:
-                document_copy.fine_price = 100*int(day)
+            if 100 * int(day) <= document_copy.doc.price:
+                document_copy.fine_price = 100 * int(day)
             else:
                 document_copy.fine_price = document_copy.doc.price
 
@@ -152,8 +162,8 @@ class AllUsersView(ListView):
             db_query |= Q(is_staff=True)
         if query:
             db_query &= (Q(username__icontains=query) |
-                                       Q(first_name__icontains=query) |
-                                       Q(last_name__icontains=query))
+                         Q(first_name__icontains=query) |
+                         Q(last_name__icontains=query))
         return User.objects.filter(db_query).order_by('username')
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -162,4 +172,3 @@ class AllUsersView(ListView):
         context['p'] = self.request.GET.get('p')
         context['l'] = self.request.GET.get('l')
         return context
-

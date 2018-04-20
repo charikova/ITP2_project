@@ -16,7 +16,6 @@ USER_STATUSES = [
 
 LIBRARIAN_PRIVILEGES = [
     ["no privileges", "no privileges"],
-    ["admin", "admin"],
     ["priv1", "priv1"],
     ["priv2", "priv2"],
     ["priv3", "priv3"]
