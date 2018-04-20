@@ -18,14 +18,15 @@ class CreateUserView(View):
 
     def get(self, request):
         if request.user.is_staff:
-            form = CreateUserForm()
+            form = AdminCreateUserForm() if \
+                    request.user.is_superuser else CreateUserForm()
             return render(request, self.template_name, {'form': form})
 
     def post(self, request):
-        if request.user.is_staff:
-            if request.user.privileges == 'admin' or (request.POST['status'] != 'librarian' and request.POST['privileges'] != 'priv1' and request.POST['privileges'] != 'priv2' \
-                                                          and request.POST['privileges'] != 'priv3' and request.POST['privileges'] != 'admin'):
-                form = CreateUserForm(request.POST)
+            if request.user.is_superuser or (not request.POST['privileges'].startswith('priv') and
+                                                                                            request.user.is_staff):
+                form = AdminCreateUserForm(request.POST) if \
+                    request.user.is_superuser else CreateUserForm(request.POST)
                 if form.is_valid():
                     form.save()
                     username = form.cleaned_data['username']
@@ -45,12 +46,11 @@ class EditCardView(View):
 
     def post(self, request, id):
         user = User.objects.get(id=id)
-        form = EditPatronForm(request.POST, instance=user)
+        form = AdminEditPatronForm(request.POST, instance=user) if \
+            request.user.is_superuser else EditPatronForm(request.POST, instance=user)
 
-        if request.user.privileges == 'admin' or (request.POST['status'] != 'librarian' and request.POST['privileges']
-                                                  != 'priv1' and request.POST['privileges'] != 'priv2'
-                                                  and request.POST['privileges'] != 'priv3'
-                                                  and request.POST['privileges'] != 'admin'):
+        if request.user.is_superuser or (not request.POST['privileges'].startswith('priv') and
+                                         request.user.is_staff):
             if form.is_valid():
                 form.save()
                 for field in USER_PROFILE_DATA:
@@ -65,15 +65,19 @@ class EditCardView(View):
                                                                       request.user.username,
                                                                       request.user.userprofile.status))
                 return redirect('/user/?id=' + str(id))
+        else:
+            return redirect('/user/?id=' + str(id))
 
     def get(self, request, id):
-        init_fields = {'address': User.objects.get(id=id).userprofile.address,
-                       'status': User.objects.get(id=id).userprofile.status,
-                       'phone_number': User.objects.get(id=id).userprofile.phone_number,
-                       'password': User.objects.get(id=id).password
-                       }
-        form = EditPatronForm(instance=User.objects.get(id=id), initial=init_fields)
-        return render(request, 'UserCards/edit.html', {'form': form})
+        if request.user.is_staff:
+            init_fields = {'address': User.objects.get(id=id).userprofile.address,
+                           'status': User.objects.get(id=id).userprofile.status,
+                           'phone_number': User.objects.get(id=id).userprofile.phone_number,
+                           'password': User.objects.get(id=id).password
+                           }
+            form = AdminEditPatronForm(instance=User.objects.get(id=id), initial=init_fields) if \
+                request.user.is_superuser else EditPatronForm(instance=User.objects.get(id=id), initial=init_fields)
+            return render(request, 'UserCards/edit.html', {'form': form})
 
 
 @required_staff

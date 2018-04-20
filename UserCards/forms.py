@@ -10,8 +10,15 @@ USER_STATUSES = [
     ["instructor", "instructor"],
     ["TA", "TA"],
     ["professor", "professor"],
-    ["librarian", "librarian"],
     ["visiting professor", "visiting professor"]
+]
+
+ALL_USER_STATUSES = USER_STATUSES[:]
+ALL_USER_STATUSES.append(["librarian", "librarian"])
+
+
+PRIVILEGES = [
+    ["no privileges", "no privileges"],
 ]
 
 LIBRARIAN_PRIVILEGES = [
@@ -27,7 +34,7 @@ class CreateUserForm(UserCreationForm):
     address = forms.CharField(required=False)
     phone_number = forms.IntegerField(required=True)
     status = forms.ChoiceField(choices=USER_STATUSES, required=True)
-    privileges = forms.ChoiceField(choices=LIBRARIAN_PRIVILEGES, required=True)
+    privileges = forms.ChoiceField(choices=PRIVILEGES, required=True)
 
     class Meta:
         fields = [
@@ -54,14 +61,24 @@ class CreateUserForm(UserCreationForm):
                 lib_group.save()
 
 
+class AdminCreateUserForm(CreateUserForm):
+    privileges = forms.ChoiceField(choices=LIBRARIAN_PRIVILEGES, required=True)
+    status = forms.ChoiceField(choices=ALL_USER_STATUSES, required=True)
+
+
 class EditPatronForm(UserChangeForm):
     address = forms.CharField(required=False)
     phone_number = forms.IntegerField(required=False)
     status = forms.ChoiceField(choices=USER_STATUSES, required=True)
-    privileges = forms.ChoiceField(choices=LIBRARIAN_PRIVILEGES, required=True)
+    privileges = forms.ChoiceField(choices=PRIVILEGES, required=True)
 
     class Meta(CreateUserForm.Meta):
         fields = [
             'username', 'first_name', 'last_name', 'email', 'password', * USER_PROFILE_DATA
         ]
+
+
+class AdminEditPatronForm(EditPatronForm):
+    status = forms.ChoiceField(choices=ALL_USER_STATUSES, required=True)
+    privileges = forms.ChoiceField(choices=LIBRARIAN_PRIVILEGES, required=True)
 

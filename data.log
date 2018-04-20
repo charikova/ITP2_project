@@ -1,3 +1,2 @@
-INFO:root:deleted user kotik(student) by: danilgin(librarian);
 WARNING:django.request:Not Found: /cover
-WARNING:django.request:Not Found: /cover
+INFO:root:updated user TA_user(TA) by: danilgin(librarian);
