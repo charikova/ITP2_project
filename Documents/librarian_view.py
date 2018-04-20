@@ -6,6 +6,8 @@ from UserCards.forms import USER_STATUSES
 from django.core.mail import send_mail
 import Documents.models as documents_models
 from innopolka import settings
+import logging
+logging.basicConfig(filename='data.log', level=logging.DEBUG)
 
 
 def required_staff(func):
@@ -62,6 +64,8 @@ def del_doc(request, pk):
     :param pk: id of document to delete
     """
     doc = Document.objects.get(pk=pk)
+    logging.info('deleted doc {} by: {}({});'.format(doc.title, request.user.username,
+                                                      request.user.userprofile.status))
     doc.delete()
     return redirect('/')
 
@@ -118,6 +122,8 @@ def create_doc(request):
             if type(value) == str:  # hack protection
                 value = value.replace('#', '').replace('(', '').replace(')', '').replace(';', '')
             exec('new_doc.{0} = "{1}"'.format(field, value))
+        logging.info('created doc {} by: {}({});'.format(new_doc.title, request.user.username,
+                                                          request.user.userprofile.status))
         new_doc.save()
         return redirect('/{}/'.format(new_doc.id))
 
@@ -173,6 +179,8 @@ def update_doc(request, pk):
                             to = query['users'][i].email
                             send_mail('Document available', message, settings.EMAIL_HOST_USER, [to])
                     break
+        logging.info('updated doc {} by: {}({});'.format(doc.title, request.user.username,
+                                                          request.user.userprofile.status))
 
         return redirect('../')
 

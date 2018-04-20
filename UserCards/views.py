@@ -6,6 +6,8 @@ from django.views.generic import View, ListView
 from Documents.librarian_view import need_logged_in, required_staff
 from .forms import *
 import datetime
+import logging
+logging.basicConfig(filename='data.log', level=logging.DEBUG)
 
 
 class CreateUserView(View):
@@ -28,6 +30,9 @@ class CreateUserView(View):
                 password = form.cleaned_data['password1']
                 user = authenticate(username=username, password=password)
                 user.save()
+                logging.info('created user {}({}) by: {}({});'.format(user.username, user.userprofile.status,
+                                                                      request.user.username,
+                                                                      request.user.userprofile.status))
                 return redirect("/user/all/?p=on&l=on")
             return redirect('/user/create_user/')
 
@@ -47,6 +52,9 @@ class EditCardView(View):
                 user.is_staff = False
             user.userprofile.save()
             user.save()
+            logging.info('updated user {}({}) by: {}({});'.format(user.username, user.userprofile.status,
+                                                                  request.user.username,
+                                                                  request.user.userprofile.status))
             return redirect('/user/?id='+str(id))
 
     def get(self, request, id):
@@ -61,7 +69,10 @@ class EditCardView(View):
 
 @required_staff
 def delete_user(request, id):
-    User.objects.get(id=id).delete()
+    user = User.objects.get(id=id)
+    logging.info('deleted user {}({}) by: {}({});'.format(user.username, user.userprofile.status,
+                        request.user.username, request.user.userprofile.status))
+    user.delete()
     return redirect('/user/all/?p=on&l=on')
 
 
@@ -136,7 +147,6 @@ class AllUsersView(ListView):
     context_object_name = 'users'
 
     def get(self, request, *args, **kwargs):
-        print(dir(request.user))
         if request.user.is_staff:
             return super().get(self, request, *args, **kwargs)
         else:

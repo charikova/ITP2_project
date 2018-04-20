@@ -9,9 +9,11 @@ from innopolka import settings
 from .models import Request
 from .models import OutStandingRequest
 import datetime
+import logging
 import UserCards.models
 
 from django.core.mail import send_mail
+logging.basicConfig(filename='data.log', level=logging.DEBUG)
 
 
 class RequestsView(ListView):
@@ -59,6 +61,8 @@ def make_new(request):
     elif doc.is_reference:
         return HttpResponse('Sorry, but this document is reference')
     else:
+        logging.info('new request: <a href="{0}"> {1} </a>; <a href="{2}"> {3} </a>'.format(
+            request.user.id, request.user.username, doc.id, doc.title))
         for req in Request.objects.all():  # find requests with requested doc
             if req.doc == doc:  # exist request for this doc
                 req.users.add(request.user)
@@ -148,7 +152,8 @@ def cancel_request(request):
     to = user.email
 
     send_mail('Canceled request', message, settings.EMAIL_HOST_USER, [to])
-
+    logging.info('canceled request by: {}; User: {}'
+                 'Doc:{}'.format(request.user.username, user.username, doc.title))
     if len(doc_request.users.all()) == 0:
         doc_request.delete()
     return redirect('/requests/')
@@ -163,12 +168,15 @@ def return_doc(request):
         copy_instance = documents_models.DocumentCopy.objects.get(pk=request.GET.get('copy_id'))
     except:
         return redirect('/')
+
     user_id = copy_instance.checked_up_by_whom.id
     copy_instance.doc.copies += 1
     copy_instance.doc.save()
 
     doc = copy_instance.doc
     copy_instance.delete()
+    logging.info('returned doc by: {}; User: {}'
+                 'Doc:{}'.format(request.user.username, copy_instance.checked_up_by_whom.username, doc.title))
 
     debug_mode = request.GET.get('debug', False)
 
@@ -239,6 +247,8 @@ def renew(request):
                 time_left.days - days_for_checking_out + 2
             ))
         else:
+            logging.info('renewed doc by: {}'
+                         'Doc:{}'.format(request.user.username, copy.doc.title))
             copy.returning_date = datetime.datetime.now() + datetime.timedelta(days=days_for_checking_out)
             copy.renewed = True
             copy.save()
@@ -268,6 +278,9 @@ def outstanding_request(request):
             to = user.email
             send_mail('Outstanding request', message_for_req, settings.EMAIL_HOST_USER, [to])
         req.delete()
+
+    logging.info('outstanding request by: {};'
+                 'Doc:{}'.format(request.user.username, doc.title))
 
     message_for_checked = "Hello! due to an outstanding request from {} (librarian) document {} should" \
                           "be returned during 1 day".format(request.user.username, doc.title)

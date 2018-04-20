@@ -176,6 +176,9 @@
                         {% if user.is_staff %}
                             <a class="dropdown-item" href="/admin">Admin site</a> <br>
                         {% endif %}
+                        {% if user.is_superuser %}
+                            <a class="dropdown-item" href="/logging">Logging</a> <br>
+                        {% endif %}
                         {% if user.is_superuser or user.userprofile.privileges == 'priv2' or user.userprofile.privileges == 'priv3' %}
                             <a class="dropdown-item" href="/add_doc/">Add document</a> <br>
                         {% endif %}

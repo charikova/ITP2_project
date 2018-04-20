@@ -1,0 +1,10 @@
+{% extends 'Documents/base.html' %}
+
+{% load staticfiles %}
+{% block body %}
+
+    {% for line in data %}
+        {{ line }} <br>
+    {% endfor %}
+
+{% endblock %}
