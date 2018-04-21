@@ -1,2 +1,3 @@
 WARNING:django.request:Not Found: /cover
 INFO:root:updated user TA_user(TA) by: danilgin(librarian);
+INFO:root:updated user masha_admin(librarian) by: masha_admin(librarian);
