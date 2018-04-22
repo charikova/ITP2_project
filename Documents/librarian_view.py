@@ -23,18 +23,33 @@ def required_staff(func):
     return inner
 
 
+def required_admin(func):
+    """
+    limitation for non-staff users
+    """
+
+    def inner(request, *args, **kwargs):
+        if request.user.is_superuser:
+            return func(request, *args, **kwargs)
+        return redirect('/')
+
+    return inner
+
+
 def required_priv(priv='priv1'):
     priv = int(priv[-1])
 
     def inner1(func):
 
         def inner2(request, *args, **kwargs):
+            if request.user.is_superuser:
+                return func(request, *args, **kwargs)
             user_priv = None
             try:
                 user_priv = int(request.user.userprofile.privileges[-1])
             except ValueError:
                 return redirect('/')
-            if user_priv >= priv or request.user.is_superuser:
+            if request.user.is_staff and user_priv >= priv:
                 return func(request, *args, **kwargs)
             return redirect('/')
 
@@ -57,7 +72,6 @@ def need_logged_in(func):
 
 
 @required_priv('priv3')
-@required_staff
 def del_doc(request, pk):
     """
     delete document
@@ -99,7 +113,6 @@ def get_doc(request, pk):
 
 
 @required_priv('priv2')
-@required_staff
 def create_doc(request):
     """
     creating document object (in real subclass of Document object) and saving in db
@@ -129,7 +142,6 @@ def create_doc(request):
 
 
 @required_priv('priv2')
-@required_staff
 def add_doc(request):
     """
     :return: html page with the list of all subclasses of Document model
@@ -139,7 +151,6 @@ def add_doc(request):
 
 
 @required_priv('priv1')
-@required_staff
 def update_doc(request, pk):
     """
     update some fields of document

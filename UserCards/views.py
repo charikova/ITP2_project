@@ -46,8 +46,12 @@ class EditCardView(View):
 
     def post(self, request, id):
         user = User.objects.get(id=id)
-        form = AdminEditPatronForm(request.POST, instance=user) if \
-            request.user.is_superuser else EditPatronForm(request.POST, instance=user)
+        if request.user.is_superuser:  # admin form
+            form = AdminEditUserForm(request.POST, instance=user)
+        elif user == request.user:  # librarian who changes himself form
+            form = LibSelfEditForm(request.POST, instance=user)
+        else:  # librarian who changes other users
+            form = EditUserForm(request.POST, instance=user)
 
         if request.user.is_superuser or (not request.POST['privileges'].startswith('priv') and
                                          request.user.is_staff):
@@ -70,23 +74,33 @@ class EditCardView(View):
 
     def get(self, request, id):
         if request.user.is_staff:
-            init_fields = {'address': User.objects.get(id=id).userprofile.address,
-                           'status': User.objects.get(id=id).userprofile.status,
-                           'phone_number': User.objects.get(id=id).userprofile.phone_number,
-                           'password': User.objects.get(id=id).password
+            user = User.objects.get(id=id)
+            init_fields = {'address': user.userprofile.address,
+                           'status': user.userprofile.status,
+                           'phone_number': user.userprofile.phone_number,
+                           'password': user.password,
+                           'privileges': user.userprofile.privileges,
                            }
-            form = AdminEditPatronForm(instance=User.objects.get(id=id), initial=init_fields) if \
-                request.user.is_superuser else EditPatronForm(instance=User.objects.get(id=id), initial=init_fields)
+            if request.user.is_superuser:  # admin form
+                form = AdminEditUserForm(instance=user, initial=init_fields)
+            elif user == request.user:  # librarian who changes himself form
+                form = LibSelfEditForm(instance=user, initial=init_fields)
+            elif user.userprofile.status in ['librarian', 'admin']:
+                return redirect('/' + str(id))
+            else:  # librarian who changes other users
+                form = EditUserForm(instance=user, initial=init_fields)
             return render(request, 'UserCards/edit.html', {'form': form})
 
 
 @required_staff
 def delete_user(request, id):
     user = User.objects.get(id=id)
-    logging.info('deleted user {}({}) by: {}({});'.format(user.username, user.userprofile.status,
-                        request.user.username, request.user.userprofile.status))
-    user.delete()
-    return redirect('/user/all/?p=on&l=on')
+    if request.user.is_superuser or user == request.user or not user.is_staff:
+        logging.info('deleted user {}({}) by: {}({});'.format(user.username, user.userprofile.status,
+                            request.user.username, request.user.userprofile.status))
+        user.delete()
+        return redirect('/user/all/?p=on&l=on')
+    return redirect('/user?id=' + str(id))
 
 
 @need_logged_in

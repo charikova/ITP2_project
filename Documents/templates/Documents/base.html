@@ -173,7 +173,7 @@
                     <a class="nav-link dropdown-toggle" href="/user/" id="dropdown01" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false">{% if user.is_superuser %}Admin{% else %}Librarian{% endif %}</a>
                     <div class="dropdown-menu" aria-labelledby="dropdown01">
-                        {% if user.is_staff %}
+                        {% if user.is_superuser %}
                             <a class="dropdown-item" href="/admin">Admin site</a> <br>
                         {% endif %}
                         {% if user.is_superuser %}

@@ -1,4 +1,3 @@
-from django.http import HttpResponse
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from Documents.librarian_view import *
@@ -106,11 +105,16 @@ def document_detail(request, pk):
     return render(request, 'Documents/doc_inf.html', context)
 
 
+@required_admin
 def get_logging(request):
-    if request.user.is_superuser:
-        return render(request, 'Documents/logging.html', {'data': open('data.log', 'r').readlines()})
-    else:
-        return redirect('/')
+    return render(request, 'Documents/logging.html', {'data': open('data.log', 'r').readlines()})
+
+
+@required_admin
+def clear_logging(request):
+    with open('data.log', 'w') as data:
+        data.write('')
+    return redirect('/logging')
 
 
 def determine_model(type):

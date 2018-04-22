@@ -13,7 +13,16 @@ urlpatterns = [
     url(r'^(?P<pk>\d+)/delete/$', views.del_doc, name='del_doc'),
     url(r'^create/$', views.create_doc, name='create_doc'),
     url(r'^add_doc/$', views.add_doc, name='add_doc'),
+
+
+
+
     url(r'^checked_out_docs/$', views.CheckedOutDocsView.as_view(), name='checked_out_docs'),
     url(r'^logging/$', views.get_logging, name='get_logging'),
+    url(r'^logging/clear$', views.clear_logging, name='clear_logging'),
 
 ]
+
+
+
+

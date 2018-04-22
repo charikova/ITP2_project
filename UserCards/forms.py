@@ -66,7 +66,7 @@ class AdminCreateUserForm(CreateUserForm):
     status = forms.ChoiceField(choices=ALL_USER_STATUSES, required=True)
 
 
-class EditPatronForm(UserChangeForm):
+class EditUserForm(UserChangeForm):
     address = forms.CharField(required=False)
     phone_number = forms.IntegerField(required=False)
     status = forms.ChoiceField(choices=USER_STATUSES, required=True)
@@ -78,7 +78,11 @@ class EditPatronForm(UserChangeForm):
         ]
 
 
-class AdminEditPatronForm(EditPatronForm):
+class AdminEditUserForm(EditUserForm):
     status = forms.ChoiceField(choices=ALL_USER_STATUSES, required=True)
     privileges = forms.ChoiceField(choices=LIBRARIAN_PRIVILEGES, required=True)
+    
+    
+class LibSelfEditForm(EditUserForm):
+    status = forms.ChoiceField(choices=ALL_USER_STATUSES, required=True)
 

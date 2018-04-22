@@ -161,13 +161,15 @@
                                 return confirm('Return {{ copy.doc.title }} from {{ copy.checked_up_by_whom.username }} back?');
                                 ">Return</a></td>
                     {% else %}
-                        <td><button class="btn button" onclick="
+                        <td>
+                            <button class="btn button" onclick="
                                     var response = httpGet('/requests/renew/?copy_id={{ copy.id }}').toString();
                                     alert(response);
                                     if (response.substr(0, 3) === 'You') // refresh to see new returning date
                                     window.location.reload(false);
                                     ">Renew
-                            </button></td>
+                            </button>
+                        </td>
                         <br>
                     {% endif %}
                 </tr>
@@ -177,15 +179,17 @@
         {% csrf_token %}
 
         {% if user.is_staff %}
-            <table class="edit_del">
+            {% if user.is_superuser or user == current_user or not current_user.is_staff %}
+                <table class="edit_del">
                 <tr>
-                    <td><a class="button" href="/user/edit/{{ current_user.id }}">Edit</a></td>
-                    {% if user.is_superuser or user.userprofile.privileges == 'priv3' %}
-                        <td><a class="button" href="/user/delete/{{ current_user.id }}"
+                <td><a class="button" href="/user/edit/{{ current_user.id }}">Edit</a></td>
+                {% if user.is_superuser or user.userprofile.privileges == 'priv3' %}
+                    <td><a class="button" href="/user/delete/{{ current_user.id }}"
                            onclick="return confirm('Delete {{ current_user.username }}?')">Delete</a></td>
-                        {% endif %}
-                </tr>
-            </table>
+                {% endif %}
+            {% endif %}
+        </tr>
+        </table>
 
 
         {% endif %}
