@@ -1,0 +1,61 @@
+{% extends 'Documents/base.html' %}
+{% load staticfiles %}
+{% block body %}
+<style>
+
+    p {
+        color: black;
+        margin: 15px;
+        font-size: 20px;
+    }
+
+    h2 {
+        color: black;
+        font-size: 40px;
+        text-align: center;
+        }
+
+    table {
+        border: none;
+        border-radius: 10px;
+        width: 60%;
+        background-color: rgba(214, 184, 150, 0.8);
+        margin-left: 20%;
+        table-layout: auto;
+    }
+
+    th {
+        border-top: none;
+    }
+
+    tr {
+        border: none;
+        text-align: left;
+        border-bottom: 1px solid saddlebrown;
+    }
+
+    td {
+        border: none;
+        text-align: left;
+        padding: 3%;
+    }
+
+    .button {
+        margin-left: 43%;
+    }
+</style>
+
+<body>
+    <a class="button" href="/logging/clear">Clear all</a>
+<table>
+    <th><h2>Logging</h2></th>
+        {% for line in data %}
+            {% if line.0 == 'I' %}
+            <tr>
+                <td>{{ line }}</td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+    {% endblock %}
+</table>
+</body>

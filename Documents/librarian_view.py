@@ -6,6 +6,8 @@ from UserCards.forms import USER_STATUSES
 from django.core.mail import send_mail
 import Documents.models as documents_models
 from innopolka import settings
+import logging
+logging.basicConfig(filename='data.log', level=logging.DEBUG)
 
 
 def required_staff(func):
@@ -21,21 +23,33 @@ def required_staff(func):
     return inner
 
 
+def required_admin(func):
+    """
+    limitation for non-staff users
+    """
+
+    def inner(request, *args, **kwargs):
+        if request.user.is_superuser:
+            return func(request, *args, **kwargs)
+        return redirect('/')
+
+    return inner
+
+
 def required_priv(priv='priv1'):
     priv = int(priv[-1])
 
     def inner1(func):
-        '''
-        limitation for priv1 users
-        '''
 
         def inner2(request, *args, **kwargs):
+            if request.user.is_superuser:
+                return func(request, *args, **kwargs)
             user_priv = None
             try:
                 user_priv = int(request.user.userprofile.privileges[-1])
-            except:
+            except ValueError:
                 return redirect('/')
-            if user_priv != 0 and (user_priv <= priv or request.user.is_superuser):
+            if request.user.is_staff and user_priv >= priv:
                 return func(request, *args, **kwargs)
             return redirect('/')
 
@@ -58,13 +72,14 @@ def need_logged_in(func):
 
 
 @required_priv('priv3')
-@required_staff
 def del_doc(request, pk):
     """
     delete document
     :param pk: id of document to delete
     """
     doc = Document.objects.get(pk=pk)
+    logging.info('deleted doc {} by: {}({});'.format(doc.title, request.user.username,
+                                                      request.user.userprofile.status))
     doc.delete()
     return redirect('/')
 
@@ -98,7 +113,6 @@ def get_doc(request, pk):
 
 
 @required_priv('priv2')
-@required_staff
 def create_doc(request):
     """
     creating document object (in real subclass of Document object) and saving in db
@@ -121,12 +135,13 @@ def create_doc(request):
             if type(value) == str:  # hack protection
                 value = value.replace('#', '').replace('(', '').replace(')', '').replace(';', '')
             exec('new_doc.{0} = "{1}"'.format(field, value))
+        logging.info('created doc {} by: {}({});'.format(new_doc.title, request.user.username,
+                                                          request.user.userprofile.status))
         new_doc.save()
         return redirect('/{}/'.format(new_doc.id))
 
 
 @required_priv('priv2')
-@required_staff
 def add_doc(request):
     """
     :return: html page with the list of all subclasses of Document model
@@ -136,7 +151,6 @@ def add_doc(request):
 
 
 @required_priv('priv1')
-@required_staff
 def update_doc(request, pk):
     """
     update some fields of document
@@ -176,6 +190,8 @@ def update_doc(request, pk):
                             to = query['users'][i].email
                             send_mail('Document available', message, settings.EMAIL_HOST_USER, [to])
                     break
+        logging.info('updated doc {} by: {}({});'.format(doc.title, request.user.username,
+                                                          request.user.userprofile.status))
 
         return redirect('../')
 

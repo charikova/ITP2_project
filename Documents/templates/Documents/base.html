@@ -171,15 +171,18 @@
                 {% if user.is_staff %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="/user/" id="dropdown01" data-toggle="dropdown"
-                       aria-haspopup="true" aria-expanded="false">Librarian</a>
+                       aria-haspopup="true" aria-expanded="false">{% if user.is_superuser %}Admin{% else %}Librarian{% endif %}</a>
                     <div class="dropdown-menu" aria-labelledby="dropdown01">
-                        {% if user.userprofile.privileges == 'admin' %}
+                        {% if user.is_superuser %}
                             <a class="dropdown-item" href="/admin">Admin site</a> <br>
                         {% endif %}
-                        {% if user.userprofile.privileges == 'admin' or user.userprofile.privileges == 'priv2' or user.userprofile.privileges == 'priv3' %}
+                        {% if user.is_superuser %}
+                            <a class="dropdown-item" href="/logging">Logging</a> <br>
+                        {% endif %}
+                        {% if user.is_superuser or user.userprofile.privileges == 'priv2' or user.userprofile.privileges == 'priv3' %}
                             <a class="dropdown-item" href="/add_doc/">Add document</a> <br>
                         {% endif %}
-                        {% if user.userprofile.privileges == 'admin' or user.userprofile.privileges == 'priv2' or user.userprofile.privileges == 'priv3' %}
+                        {% if user.is_superuser or user.userprofile.privileges == 'priv2' or user.userprofile.privileges == 'priv3' %}
                             <a class="dropdown-item" href="/user/create_user/">Create new user</a> <br>
                         {% endif %}
                         <a class="dropdown-item" href="/requests/">Requests</a> <br>

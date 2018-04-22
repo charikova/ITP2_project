@@ -984,6 +984,7 @@ class Delivery3(TestCase):
         request.GET['user_id'] = self.v.id
         approve_request(request)
 
+
         # p1 renews d1
         request.user = self.p1
         request.GET['copy_id'] = self.p1.documentcopy_set.get(doc=self.d1).id
@@ -1000,17 +1001,17 @@ class Delivery3(TestCase):
         renew(request)
 
         # librarian checks the information of p1
-        should_be_today = self.p1.documentcopy_set.get(doc=self.d1).returning_date - datetime.timedelta(days=28)
+        should_be_today = self.p1.documentcopy_set.get(doc=self.d1).returning_date - datetime.timedelta(days=28)  # he renewed d1, so 28 days left
         should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
         self.assertEqual(should_be_today, datetime.date.today())
 
         # librarian checks the information of s
-        should_be_today = self.s.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=14)
+        should_be_today = self.s.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=14)  # he renewed d1, so 14 days left
         should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
         self.assertEqual(should_be_today, datetime.date.today())
 
         # librarian checks the information of v
-        should_be_today = self.v.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=7)
+        should_be_today = self.v.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=7)  # he renewed d1, so 7 days left
         should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
         self.assertEqual(should_be_today, datetime.date.today())
 

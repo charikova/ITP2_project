@@ -35,6 +35,7 @@ ALLOWED_HOSTS = []
 
 STATIC_ROOT = '/Documents/static/'
 
+
 # Application definition
 
 INSTALLED_APPS = [

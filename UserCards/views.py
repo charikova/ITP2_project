@@ -6,6 +6,8 @@ from django.views.generic import View, ListView
 from Documents.librarian_view import need_logged_in, required_staff
 from .forms import *
 import datetime
+import logging
+logging.basicConfig(filename='data.log', level=logging.DEBUG)
 
 
 class CreateUserView(View):
@@ -16,20 +18,24 @@ class CreateUserView(View):
 
     def get(self, request):
         if request.user.is_staff:
-            form = CreateUserForm()
+            form = AdminCreateUserForm() if \
+                    request.user.is_superuser else CreateUserForm()
             return render(request, self.template_name, {'form': form})
 
     def post(self, request):
-        if request.user.is_staff:
-            if request.user.privileges == 'admin' or (request.POST['status'] != 'librarian' and request.POST['privileges'] != 'priv1' and request.POST['privileges'] != 'priv2' \
-                                                          and request.POST['privileges'] != 'priv3' and request.POST['privileges'] != 'admin'):
-                form = CreateUserForm(request.POST)
+            if request.user.is_superuser or (not request.POST['privileges'].startswith('priv') and
+                                                                                            request.user.is_staff):
+                form = AdminCreateUserForm(request.POST) if \
+                    request.user.is_superuser else CreateUserForm(request.POST)
                 if form.is_valid():
                     form.save()
                     username = form.cleaned_data['username']
                     password = form.cleaned_data['password1']
                     user = authenticate(username=username, password=password)
                     user.save()
+                    logging.info('created user {}({}) by: {}({});'.format(user.username, user.userprofile.status,
+                                                                          request.user.username,
+                                                                          request.user.userprofile.status))
                     return redirect("/user/all/?p=on&l=on")
                 return redirect('/user/create_user/')
             else:
@@ -40,12 +46,15 @@ class EditCardView(View):
 
     def post(self, request, id):
         user = User.objects.get(id=id)
-        form = EditPatronForm(request.POST, instance=user)
+        if request.user.is_superuser:  # admin form
+            form = AdminEditUserForm(request.POST, instance=user)
+        elif user == request.user:  # librarian who changes himself form
+            form = LibSelfEditForm(request.POST, instance=user)
+        else:  # librarian who changes other users
+            form = EditUserForm(request.POST, instance=user)
 
-        if request.user.privileges == 'admin' or (request.POST['status'] != 'librarian' and request.POST['privileges']
-                                                  != 'priv1' and request.POST['privileges'] != 'priv2'
-                                                  and request.POST['privileges'] != 'priv3'
-                                                  and request.POST['privileges'] != 'admin'):
+        if request.user.is_superuser or (not request.POST['privileges'].startswith('priv') and
+                                         request.user.is_staff):
             if form.is_valid():
                 form.save()
                 for field in USER_PROFILE_DATA:
@@ -56,22 +65,42 @@ class EditCardView(View):
                     user.is_staff = False
                 user.userprofile.save()
                 user.save()
+                logging.info('updated user {}({}) by: {}({});'.format(user.username, user.userprofile.status,
+                                                                      request.user.username,
+                                                                      request.user.userprofile.status))
                 return redirect('/user/?id=' + str(id))
+        else:
+            return redirect('/user/?id=' + str(id))
 
     def get(self, request, id):
-        init_fields = {'address': User.objects.get(id=id).userprofile.address,
-                       'status': User.objects.get(id=id).userprofile.status,
-                       'phone_number': User.objects.get(id=id).userprofile.phone_number,
-                       'password': User.objects.get(id=id).password
-                       }
-        form = EditPatronForm(instance=User.objects.get(id=id), initial=init_fields)
-        return render(request, 'UserCards/edit.html', {'form': form})
+        if request.user.is_staff:
+            user = User.objects.get(id=id)
+            init_fields = {'address': user.userprofile.address,
+                           'status': user.userprofile.status,
+                           'phone_number': user.userprofile.phone_number,
+                           'password': user.password,
+                           'privileges': user.userprofile.privileges,
+                           }
+            if request.user.is_superuser:  # admin form
+                form = AdminEditUserForm(instance=user, initial=init_fields)
+            elif user == request.user:  # librarian who changes himself form
+                form = LibSelfEditForm(instance=user, initial=init_fields)
+            elif user.userprofile.status in ['librarian', 'admin']:
+                return redirect('/' + str(id))
+            else:  # librarian who changes other users
+                form = EditUserForm(instance=user, initial=init_fields)
+            return render(request, 'UserCards/edit.html', {'form': form})
 
 
 @required_staff
 def delete_user(request, id):
-    User.objects.get(id=id).delete()
-    return redirect('/user/all/?p=on&l=on')
+    user = User.objects.get(id=id)
+    if request.user.is_superuser or user == request.user or not user.is_staff:
+        logging.info('deleted user {}({}) by: {}({});'.format(user.username, user.userprofile.status,
+                            request.user.username, request.user.userprofile.status))
+        user.delete()
+        return redirect('/user/all/?p=on&l=on')
+    return redirect('/user?id=' + str(id))
 
 
 @need_logged_in

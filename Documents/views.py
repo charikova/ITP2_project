@@ -1,4 +1,3 @@
-from django.views.generic import ListView
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from Documents.librarian_view import *
@@ -104,6 +103,18 @@ def document_detail(request, pk):
         if key not in excess_fields:
             context['fields'].append((key.replace('is', '').replace('_', " ").capitalize(), value))
     return render(request, 'Documents/doc_inf.html', context)
+
+
+@required_admin
+def get_logging(request):
+    return render(request, 'Documents/logging.html', {'data': open('data.log', 'r').readlines()})
+
+
+@required_admin
+def clear_logging(request):
+    with open('data.log', 'w') as data:
+        data.write('')
+    return redirect('/logging')
 
 
 def determine_model(type):

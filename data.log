@@ -1,0 +1,42 @@
+ERROR:django.request:Internal Server Error: /requests/
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/core/handlers/exception.py", line 35, in inner
+    response = get_response(request)
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/core/handlers/base.py", line 128, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/core/handlers/base.py", line 126, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/views/generic/base.py", line 69, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/views/generic/base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/Users/danilginzburg/Projects/innopolka/BookRequests/views.py", line 29, in get
+    return super().get(request, *args, **kwargs)
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/views/generic/list.py", line 142, in get
+    self.object_list = self.get_queryset()
+  File "/Users/danilginzburg/Projects/innopolka/BookRequests/views.py", line 39, in get_queryset
+    users = [(status_priorities.index(u.userprofile.status), u) for u in list(req.users.all())]
+  File "/Users/danilginzburg/Projects/innopolka/BookRequests/views.py", line 39, in <listcomp>
+    users = [(status_priorities.index(u.userprofile.status), u) for u in list(req.users.all())]
+ValueError: 'librarian' is not in list
+ERROR:django.request:Internal Server Error: /requests/
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/core/handlers/exception.py", line 35, in inner
+    response = get_response(request)
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/core/handlers/base.py", line 128, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/core/handlers/base.py", line 126, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/views/generic/base.py", line 69, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/views/generic/base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/Users/danilginzburg/Projects/innopolka/BookRequests/views.py", line 29, in get
+    return super().get(request, *args, **kwargs)
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/views/generic/list.py", line 142, in get
+    self.object_list = self.get_queryset()
+  File "/Users/danilginzburg/Projects/innopolka/BookRequests/views.py", line 39, in get_queryset
+    users = [(status_priorities.index(u.userprofile.status), u) for u in list(req.users.all())]
+  File "/Users/danilginzburg/Projects/innopolka/BookRequests/views.py", line 39, in <listcomp>
+    users = [(status_priorities.index(u.userprofile.status), u) for u in list(req.users.all())]
+ValueError: 'librarian' is not in list

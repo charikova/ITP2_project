@@ -10,6 +10,7 @@ from django.contrib import auth
 class AdminProfile(admin.ModelAdmin):
     list_display = ['user', 'status', 'phone_number', 'address', 'privileges']
 
-#admin.site.unregister(Group)
+# admin.site.unregister(Group)
+
 
 admin.site.register(UserProfile, AdminProfile)
