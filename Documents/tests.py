@@ -2,6 +2,7 @@ from django.core import mail
 from django.test import TestCase, Client
 
 from BookRequests.models import Request
+from Documents.librarian_view import update_doc
 from UserCards.models import UserProfile
 from django.http import HttpRequest, Http404, QueryDict
 from .models import *
@@ -1416,8 +1417,8 @@ class Delivery4(TestCase):
 
     def test_TC2(self):
         self.l1 = User.objects.create_user('librarian1', 'exampl2@mail.ru', '12356qwerty',
-                                               first_name='Librarian',
-                                               last_name='One')
+                                           first_name='Librarian',
+                                           last_name='One')
         UserProfile.objects.create(user=self.l1,
                                    phone_number=10001,
                                    status='librarian',
@@ -1433,7 +1434,7 @@ class Delivery4(TestCase):
                                    privileges='priv2')
 
         self.l3 = User.objects.create_user('librarian3', 'exampl2@mail.ru', '12356qwerty', first_name='Librarian',
-                                               last_name='Three')
+                                           last_name='Three')
         UserProfile.objects.create(user=self.l3,
                                    phone_number=10003,
                                    status='librarian',
@@ -1441,3 +1442,60 @@ class Delivery4(TestCase):
                                    privileges='priv3')
 
         self.assertEqual(len(UserProfile.objects.filter(status='librarian')), 3)
+
+    def test_TC3(self):
+
+        self.test_init_db()
+        self.test_TC2()
+
+        try:
+            request = HttpRequest()
+            request.method = "POST"
+            request.user = self.l1
+            update_doc(request, self.d1.id)
+            self.d1.copies += 3
+            self.d1.save()
+
+            request.user = self.l1
+            update_doc(request, self.d2.id)
+            self.d2.copies += 3
+            self.d2.save()
+
+            request.user = self.l1
+            update_doc(request, self.d3.id)
+            self.d3.copies += 3
+            self.d3.save()
+
+
+        except:
+            pass
+
+        # response = RequestsView.as_view()(request)
+        # response = response.render()
+
+        self.assertEqual(self.d1.copies, 0)
+        self.assertEqual(self.d2.copies, 0)
+        self.assertEqual(self.d3.copies, 0)
+
+    def test_TC4(self):
+
+        self.test_init_db()
+        self.test_TC2()
+
+    def test_TC5(self):
+        pass
+
+    def test_TC6(self):
+        pass
+
+    def test_TC7(self):
+        pass
+
+    def test_TC10(self):
+        pass
+
+    def test_TC11(self):
+        pass
+
+    def test_TC12(self):
+        pass
