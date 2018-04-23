@@ -27,8 +27,12 @@ class CreateUserView(View):
                                                                                             request.user.is_staff):
                 form = AdminCreateUserForm(request.POST) if \
                     request.user.is_superuser else CreateUserForm(request.POST)
+
                 if form.is_valid():
+                    print('valid')
                     form.save()
+                    if form.cleaned_data['status'] == 'admin':
+                        raise Http404('Permission denied')
                     username = form.cleaned_data['username']
                     password = form.cleaned_data['password1']
                     user = authenticate(username=username, password=password)
@@ -37,6 +41,7 @@ class CreateUserView(View):
                                                                           request.user.username,
                                                                           request.user.userprofile.status))
                     return redirect("/user/all/?p=on&l=on")
+                print('not valid')
                 return redirect('/user/create_user/')
             else:
                 return redirect('/user/create_user/')

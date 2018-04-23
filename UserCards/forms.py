@@ -54,11 +54,6 @@ class CreateUserForm(UserCreationForm):
             user.save(True)
             UserProfile.objects.create(user=user, address=address, phone_number=phone_number, status=status,
                                        privileges=privileges)
-            if status == "librarian":
-                user.is_staff = True
-                lib_group = Group.objects.get(name='Librarian')
-                lib_group.user_set.add(user)
-                lib_group.save()
 
 
 class AdminCreateUserForm(CreateUserForm):

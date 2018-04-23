@@ -43,3 +43,25 @@ ValueError: 'librarian' is not in list
 WARNING:django.request:Not Found: /favicon.ico
 INFO:root:2018-04-23 deleted user danilgin(student) by: danil(librarian);
 INFO:root:2018-04-23 updated user danilgin(librarian) by: danil(librarian);
+ERROR:django.request:Internal Server Error: /user/create_user/
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/core/handlers/exception.py", line 35, in inner
+    response = get_response(request)
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/core/handlers/base.py", line 128, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/core/handlers/base.py", line 126, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/views/generic/base.py", line 69, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/views/generic/base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/Users/danilginzburg/Projects/innopolka/UserCards/views.py", line 31, in post
+    form.save()
+  File "/Users/danilginzburg/Projects/innopolka/UserCards/forms.py", line 59, in save
+    lib_group = Group.objects.get(name='Librarian')
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/db/models/manager.py", line 82, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/db/models/query.py", line 403, in get
+    self.model._meta.object_name
+django.contrib.auth.models.DoesNotExist: Group matching query does not exist.
+INFO:root:2018-04-23 created user useruser2(librarian) by: danilgin(librarian);
