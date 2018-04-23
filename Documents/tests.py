@@ -1414,32 +1414,30 @@ class Delivery4(TestCase):
                                    status='visiting professor',
                                    address='Stret Atocha, 27')
 
-        def test_TC2(self):
-            self.l1 = User.objects.create_user('librarian1', 'exampl2@mail.ru', '12356qwerty',
+    def test_TC2(self):
+        self.l1 = User.objects.create_user('librarian1', 'exampl2@mail.ru', '12356qwerty',
                                                first_name='Librarian',
                                                last_name='One')
-            UserProfile.objects.create(user=self.l1,
-                                       phone_number=10001,
-                                       status='librarian',
-                                       address='Innopolis',
-                                       privileges='priv1')
+        UserProfile.objects.create(user=self.l1,
+                                   phone_number=10001,
+                                   status='librarian',
+                                   address='Innopolis',
+                                   privileges='priv1')
 
-            self.l2 = User.objects.create_user('librarian2', 'exampl2@mail.ru', '12356qwerty',
-                                               first_name='Librarian',
-                                               last_name='Two')
-            UserProfile.objects.create(user=self.l2,
-                                       phone_number=10002,
-                                       status='librarian',
-                                       address='Innopolis',
-                                       privileges='priv2')
+        self.l2 = User.objects.create_user('librarian2', 'exampl2@mail.ru', '12356qwerty', first_name='Librarian',
+                                           last_name='Two')
+        UserProfile.objects.create(user=self.l2,
+                                   phone_number=10002,
+                                   status='librarian',
+                                   address='Innopolis',
+                                   privileges='priv2')
 
-            self.l3 = User.objects.create_user('librarian3', 'exampl2@mail.ru', '12356qwerty',
-                                               first_name='Librarian',
+        self.l3 = User.objects.create_user('librarian3', 'exampl2@mail.ru', '12356qwerty', first_name='Librarian',
                                                last_name='Three')
-            UserProfile.objects.create(user=self.l3,
-                                       phone_number=10003,
-                                       status='librarian',
-                                       address='Innopolis',
-                                       privileges='priv3')
+        UserProfile.objects.create(user=self.l3,
+                                   phone_number=10003,
+                                   status='librarian',
+                                   address='Innopolis',
+                                   privileges='priv3')
 
-            self.assertEqual(len(User.objects.filter(status='librarian')), 3)
+        self.assertEqual(len(UserProfile.objects.filter(status='librarian')), 3)

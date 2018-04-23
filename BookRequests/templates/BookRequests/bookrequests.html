@@ -92,7 +92,7 @@
 
                                 {% endif %}
                                 <td>{% for u in req.users %}{% if user.is_staff or user == u %}<a class="btn button"
-                                                               href="/requests/cancel/?user_id={{ u.id }}&req_id={{ req.id }}">cancel</a>
+                                                                                                  href="/requests/cancel/?user_id={{ u.id }}&req_id={{ req.id }}">cancel</a>
                                     <br>{% endif %}{% endfor %}</td>
 
                                 </tr>

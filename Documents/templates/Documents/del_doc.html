@@ -1,51 +1,51 @@
-{% extends 'Documents/base.html'  %}
+{% extends 'Documents/base.html' %}
 
 {% load staticfiles %}
-{% block body  %}
+{% block body %}
 
 
-<style>
-    .container {
-        background-color: rgba(214, 184, 150, 0.8);
-        color: saddlebrown;
-        font-size: 15px;
-        margin:0 auto;
-        overflow:visible;
-        position:absolute;
-        left: 38%;
-        top: 25%;
-        width: 24%;
-        border-radius: 10px;
-    }
+    <style>
+        .container {
+            background-color: rgba(214, 184, 150, 0.8);
+            color: saddlebrown;
+            font-size: 15px;
+            margin: 0 auto;
+            overflow: visible;
+            position: absolute;
+            left: 38%;
+            top: 25%;
+            width: 24%;
+            border-radius: 10px;
+        }
 
-    form {
-        padding: 5px;
-        color: black;
-        font-size: 15px;
-        margin: 5px;
-    }
+        form {
+            padding: 5px;
+            color: black;
+            font-size: 15px;
+            margin: 5px;
+        }
 
-    input {
-        background-color: floralwhite;
-        border: 2px solid saddlebrown;
-        border-radius: 5px;
-        margin: 0 0 0 10px;
-        left: 50%;
-    }
+        input {
+            background-color: floralwhite;
+            border: 2px solid saddlebrown;
+            border-radius: 5px;
+            margin: 0 0 0 10px;
+            left: 50%;
+        }
 
-    h2 {
-        color: black;
-        font-size: 40px;
-        text-align: center;
-    }
+        h2 {
+            color: black;
+            font-size: 40px;
+            text-align: center;
+        }
 
     </style>
     <div class="container">
-<form action="" method="post">
-    <h2>Are you sure you want delete this document?<br></h2>
-    <input class="button" type="submit" value="Submit">
-    {% csrf_token %}
-</form>
+    <form action="" method="post">
+        <h2>Are you sure you want delete this document?<br></h2>
+        <input class="button" type="submit" value="Submit">
+        {% csrf_token %}
+    </form>
 
-{% endblock  %}
+{% endblock %}
 </div>
