@@ -33,7 +33,7 @@ class CreateUserView(View):
                     password = form.cleaned_data['password1']
                     user = authenticate(username=username, password=password)
                     user.save()
-                    logging.info('created user {}({}) by: {}({});'.format(user.username, user.userprofile.status,
+                    logging.info('{} created user {}({}) by: {}({});'.format(str(datetime.date.today()), user.username, user.userprofile.status,
                                                                           request.user.username,
                                                                           request.user.userprofile.status))
                     return redirect("/user/all/?p=on&l=on")
@@ -65,7 +65,7 @@ class EditCardView(View):
                     user.is_staff = False
                 user.userprofile.save()
                 user.save()
-                logging.info('updated user {}({}) by: {}({});'.format(user.username, user.userprofile.status,
+                logging.info('{} updated user {}({}) by: {}({});'.format(str(datetime.date.today()), user.username, user.userprofile.status,
                                                                       request.user.username,
                                                                       request.user.userprofile.status))
                 return redirect('/user/?id=' + str(id))
@@ -96,7 +96,7 @@ class EditCardView(View):
 def delete_user(request, id):
     user = User.objects.get(id=id)
     if request.user.is_superuser or user == request.user or not user.is_staff:
-        logging.info('deleted user {}({}) by: {}({});'.format(user.username, user.userprofile.status,
+        logging.info('{} deleted user {}({}) by: {}({});'.format(str(datetime.date.today()), user.username, user.userprofile.status,
                             request.user.username, request.user.userprofile.status))
         user.delete()
         return redirect('/user/all/?p=on&l=on')

@@ -107,7 +107,7 @@ def document_detail(request, pk):
 
 @required_admin
 def get_logging(request):
-    return render(request, 'Documents/logging.html', {'data': open('data.log', 'r').readlines()})
+    return render(request, 'Documents/logging.html', {'data': open('data.log', 'r').readlines()[::-1]})
 
 
 @required_admin

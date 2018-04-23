@@ -40,3 +40,6 @@ Traceback (most recent call last):
   File "/Users/danilginzburg/Projects/innopolka/BookRequests/views.py", line 39, in <listcomp>
     users = [(status_priorities.index(u.userprofile.status), u) for u in list(req.users.all())]
 ValueError: 'librarian' is not in list
+WARNING:django.request:Not Found: /favicon.ico
+INFO:root:2018-04-23 deleted user danilgin(student) by: danil(librarian);
+INFO:root:2018-04-23 updated user danilgin(librarian) by: danil(librarian);
