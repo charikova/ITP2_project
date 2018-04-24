@@ -8,7 +8,7 @@ from django.http import HttpRequest, Http404, QueryDict
 from .models import *
 from BookRequests.views import *
 import BookRequests
-from Documents.views import get_logging
+from Documents.views import get_logging, document_detail
 import datetime
 from UserCards.forms import AdminCreateUserForm
 from UserCards.views import user_card_info, CreateUserView
@@ -1420,13 +1420,14 @@ class Delivery4(TestCase):
         self.test_init_db()
         self.test_TC2()
 
-        # #all requered copies created by l2
-        request = HttpRequest()
-        request.method = "GET"
-        request.user = self.l1
+        # #all requered copies created by l1
+
 
         try:
             # for d1
+            request = HttpRequest()
+            request.method = "GET"
+            request.user = self.l1
             doc = get_doc(request, self.d1.id)
 
             fields = get_fields_of(doc)
@@ -1443,6 +1444,9 @@ class Delivery4(TestCase):
             update_doc(request, self.d1.id)
 
             # for d2
+            request = HttpRequest()
+            request.method = "GET"
+            request.user = self.l1
             doc = get_doc(request, self.d2.id)
 
             fields = get_fields_of(doc)
@@ -1459,6 +1463,9 @@ class Delivery4(TestCase):
             update_doc(request, self.d2.id)
 
             # for d3
+            request = HttpRequest()
+            request.method = "GET"
+            request.user = self.l1
             doc = get_doc(request, self.d3.id)
 
             fields = get_fields_of(doc)
@@ -1515,6 +1522,8 @@ class Delivery4(TestCase):
         update_doc(request, self.d1.id)
 
         # for d2
+        request.method = "GET"
+        request.user = self.l2
         doc = get_doc(request, self.d2.id)
 
         fields = get_fields_of(doc)
@@ -1531,6 +1540,8 @@ class Delivery4(TestCase):
         update_doc(request, self.d2.id)
 
         # for d3
+        request.method = "GET"
+        request.user = self.l2
         doc = get_doc(request, self.d3.id)
 
         fields = get_fields_of(doc)
@@ -1647,30 +1658,45 @@ class Delivery4(TestCase):
         v = setup_view(CreateUserView, request)
         v.post(v, request)
 
-        self.assertEqual(len(User.objects.all()), 9)
+        self.assertEqual(len(User.objects.all()), 8)
 
 
-    # def test_TC5(self):
-    #     self.test_TC4()
-    #
-    #     request = HttpRequest
-    #     request.method = "POST"
-    #     request.user = self.l3
-    #     doc = get_doc(request, self.d1.id)
-    #
-    #     fields = get_fields_of(doc)
-    #     fields = dict(fields)
-    #
-    #     num_of_copies = int(fields['copies'])
-    #     num_of_copies -= 1
-    #     fields['copies'] = str(num_of_copies)
-    #     fields['submit'] = 'Submit'
-    #
-    #     request.method = "POST"
-    #     request.POST = fields
-    #     response = update_doc(request, self.d1.id)
-    #
-    #     self.assertEqual(self.d1.copies, 2)
+    def test_TC5(self):
+        self.test_TC4()
+
+        # #l3 delete 1 copy of d1
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.l2
+
+        # for d1
+        doc = get_doc(request, self.d1.id)
+
+        fields = get_fields_of(doc)
+        fields = dict(fields)
+
+        fields['copies'] = '2'
+        fields['submit'] = 'Submit'
+
+        qdict = QueryDict('', mutable=True)
+        qdict.update(fields)
+
+        request.method = "POST"
+        request.POST = qdict
+        update_doc(request, self.d1.id)
+
+        self.assertEqual(Document.objects.get(id=self.d1.id).copies, 2)
+
+
+        request.method = "GET"
+        request.user = self.l1
+        response = document_detail(request, self.d1.id)
+
+        #check if l1 can see that there are only 2 copies of d1
+        self.assertTrue(
+            all([word in response.content for word in
+                 [b'Copies: 2']]))
+
 
     # def test_TC6(self):
     #     self.test_TC4()
