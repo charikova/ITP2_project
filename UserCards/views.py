@@ -24,7 +24,7 @@ class CreateUserView(View):
 
     def post(self, request):
             if request.user.is_superuser or (not request.POST['privileges'].startswith('priv') and
-                                                                                            request.user.is_staу):
+                                                                                            request.user.is_staff):
                 form = AdminCreateUserForm(request.POST) if \
                     request.user.is_superuser else CreateUserForm(request.POST)
 
