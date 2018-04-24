@@ -116,6 +116,9 @@ def approve_request(request):
                     datetime.date.today() + datetime.timedelta(days=days)).strftime("%Y-%m-%d %H:%M"))
         copy.save()
 
+        logging.info('{} approved request by: {}; User: {}'
+                     'Doc:{}'.format(str(datetime.date.today()), request.user.username, user.username, doc.title))
+
         returning_date = (
                 datetime.date.today() + datetime.timedelta(days=days)).strftime("%Y-%m-%d %H:%M")
 
@@ -273,14 +276,16 @@ def outstanding_request(request):
     out_request = OutStandingRequest(doc=doc)
     out_request.save()
 
+    logging.info(' {} outstanding request by: {};'
+                 'Doc:{}'.format(str(datetime.date.today()), request.user.username, doc.title))
+
     for req in Request.objects.filter(doc=doc):
         for user in req.users.all():
             to = user.email
             send_mail('Outstanding request', message_for_req, settings.EMAIL_HOST_USER, [to])
+        logging.info(' {} waiting list deleted by: {};'
+                     'Doc:{}'.format(str(datetime.date.today()), request.user.username, doc.title))
         req.delete()
-
-    logging.info(' {} outstanding request by: {};'
-                 'Doc:{}'.format(str(datetime.date.today()), request.user.username, doc.title))
 
     message_for_checked = "Hello! due to an outstanding request from {} (librarian) document {} should" \
                           "be returned during 1 day".format(request.user.username, doc.title)

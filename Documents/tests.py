@@ -1341,7 +1341,7 @@ class Delivery3(TestCase):
 class Delivery4(TestCase):
 
     def test_init_db(self):
-        self.admin = User.objects.create('admin', 'ad@mail.ru', '12356qwerty',
+        self.admin = User.objects.create('admin1', 'ad@mail.ru', '12356qwerty',
                                            first_name='admin',
                                            last_name='admin', is_superuser=True)
         UserProfile.objects.create(user=self.admin,
@@ -1378,7 +1378,7 @@ class Delivery4(TestCase):
                                       publisher='Addison Wesley Longman Publishing Co., Inc.',
                                       keywords='Algorithms, Combinatorial Algorithms, Recursion')
 
-        self.p1 = User.objects.create_user('patron1', 'p1@mail.ru', '12356qwerty',
+        self.p1 = User.objects.create_user('p1', 'p1@mail.ru', '12356qwerty',
                                            first_name='Sergey',
                                            last_name='Afonso')
         UserProfile.objects.create(user=self.p1,
@@ -1386,7 +1386,7 @@ class Delivery4(TestCase):
                                    status='professor',
                                    address='Via Margutta, 3')
 
-        self.p2 = User.objects.create_user('patron2', 'p2@mail.ru', '12456qwerty',
+        self.p2 = User.objects.create_user('p2', 'p2@mail.ru', '12456qwerty',
                                            first_name='Nadia',
                                            last_name='Teixeira')
         UserProfile.objects.create(user=self.p2,
@@ -1394,7 +1394,7 @@ class Delivery4(TestCase):
                                    status='professor',
                                    address='Via Sacra, 13')
 
-        self.p3 = User.objects.create_user('patron3', 'p3@mail.ru', '23456qwerty',
+        self.p3 = User.objects.create_user('p3', 'p3@mail.ru', '23456qwerty',
                                            first_name='Elvira',
                                            last_name='Espindola')
         UserProfile.objects.create(user=self.p3,
@@ -1402,7 +1402,7 @@ class Delivery4(TestCase):
                                    status='professor',
                                    address='Via del Corso, 22')
 
-        self.s = User.objects.create_user('patron4', 's@mail.ru', '23456qwerty',
+        self.s = User.objects.create_user('s', 's@mail.ru', '23456qwerty',
                                           first_name='Andrey',
                                           last_name='Velo')
         UserProfile.objects.create(user=self.s,
@@ -1410,7 +1410,7 @@ class Delivery4(TestCase):
                                    status='student',
                                    address='Avenida Mazatlan 250')
 
-        self.v = User.objects.create_user('patron5', 'v@mail.ru', '23456qwerty',
+        self.v = User.objects.create_user('v', 'v@mail.ru', '23456qwerty',
                                           first_name='Veronika',
                                           last_name='Rama')
         UserProfile.objects.create(user=self.v,
@@ -1495,14 +1495,54 @@ class Delivery4(TestCase):
         pass
 
     def test_TC8(self):
+        datafile = open('data.log', 'r')
+        datafile.write('')  # clear all logs before making changes in system
         self.test_TC6()
+        data = datafile.readlines()
+        datafile.close()
+        all_in = lambda x, y: all([item in y for item in x])  # check that all items of x are in y
+        self.assertTrue(all_in(['admin1', 'created', 'l1'], data[0]))
+        self.assertTrue(all_in(['admin1', 'created', 'l2'], data[1]))
+        self.assertTrue(all_in(['admin1', 'created', 'l3'], data[2]))
+        self.assertTrue(all_in(['l2', 'updated', self.d1.title], data[3]))
+        self.assertTrue(all_in(['l2', 'updated', self.d2.title], data[4]))
+        self.assertTrue(all_in(['l2', 'updated', self.d3.title], data[5]))
+        self.assertTrue(all_in(['l2', 'created', 's'], data[6]))
+        self.assertTrue(all_in(['l2', 'created', 'p1'], data[7]))
+        self.assertTrue(all_in(['l2', 'created', 'p2'], data[8]))
+        self.assertTrue(all_in(['l2', 'created', 'p3'], data[9]))
+        self.assertTrue(all_in(['l2', 'created', 'v'], data[10]))
+        self.assertTrue(all_in(['p1', 'approved request', self.d3.title], data[11]))
+        self.assertTrue(all_in(['p2', 'approved request', self.d3.title], data[12]))
+        self.assertTrue(all_in(['s', 'approved request', self.d3.title], data[13]))
+        self.assertTrue(all_in(['v', 'approved request', self.d3.title], data[14]))
+        self.assertTrue(all_in(['p3', 'approved request', self.d3.title], data[15]))
 
-        request = HttpRequest()
-        request.method = "GET"
-        request.user = self.admin
-
-        # admin checks logs
-        response = get_logging(request)
+    def test_TC9(self):
+        datafile = open('data.log', 'r')
+        datafile.write('')  # clear all logs before making changes in system
+        self.test_TC7()
+        data = datafile.readlines()
+        datafile.close()
+        all_in = lambda x, y: all([item in y for item in x])  # check that all items of x are in y
+        self.assertTrue(all_in(['admin1', 'created', 'l1'], data[0]))
+        self.assertTrue(all_in(['admin1', 'created', 'l2'], data[1]))
+        self.assertTrue(all_in(['admin1', 'created', 'l3'], data[2]))
+        self.assertTrue(all_in(['l2', 'updated', self.d1.title], data[3]))
+        self.assertTrue(all_in(['l2', 'updated', self.d2.title], data[4]))
+        self.assertTrue(all_in(['l2', 'updated', self.d3.title], data[5]))
+        self.assertTrue(all_in(['l2', 'created', 's'], data[6]))
+        self.assertTrue(all_in(['l2', 'created', 'p1'], data[7]))
+        self.assertTrue(all_in(['l2', 'created', 'p2'], data[8]))
+        self.assertTrue(all_in(['l2', 'created', 'p3'], data[9]))
+        self.assertTrue(all_in(['l2', 'created', 'v'], data[10]))
+        self.assertTrue(all_in(['p1', 'approved request', self.d3.title], data[11]))
+        self.assertTrue(all_in(['p2', 'approved request', self.d3.title], data[12]))
+        self.assertTrue(all_in(['s', 'approved request', self.d3.title], data[13]))
+        self.assertTrue(all_in(['v', 'approved request', self.d3.title], data[14]))
+        self.assertTrue(all_in(['p3', 'approved request', self.d3.title], data[15]))
+        self.assertTrue(all_in(['l3', 'outstanding request', self.d3.title], data[16]))
+        self.assertTrue(all_in(['l3', 'waiting list deleted', self.d3.title], data[17]))
 
     def test_TC10(self):
         pass
