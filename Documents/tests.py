@@ -8,7 +8,7 @@ from django.http import HttpRequest, Http404, QueryDict
 from .models import *
 from BookRequests.views import *
 import BookRequests
-from Documents.views import get_logging, document_detail
+from Documents.views import get_logging, document_detail, IndexView
 import datetime
 from UserCards.forms import AdminCreateUserForm
 from UserCards.views import user_card_info, CreateUserView
@@ -1819,3 +1819,31 @@ class Delivery4(TestCase):
     def test_TC12(self):
         pass
 
+    def test_TC13(self):
+        self.test_TC4()
+
+        # Make request with such parameters
+        request = HttpRequest()
+        request.method = 'GET'
+        request.GET['title'] = 'Algorithms Programming'
+        request.GET['type'] = 'All'
+        request.GET['match'] = 'on'
+
+        # Get IndexView by using request and after check that this sentence exist in render  content of index_view
+        index_view = IndexView.as_view()(request)
+        self.assertIn(member='Sorry, no results according to your query', container=index_view.rendered_content)
+
+    def test_TC14(self):
+        self.test_TC4()
+
+        # Make request with such parameters
+        request = HttpRequest()
+        request.method = 'GET'
+        request.GET['type'] = 'All'
+        request.GET['title'] = 'Algorithms Programming'
+        index_view = IndexView.as_view()(request)
+
+        # Get IndexView by using request and after check that this sentence exist in render  content of index_view
+        self.assertIn(member='Introduction to Algorithms', container=index_view.rendered_content)
+        self.assertIn(member='Algorithms + Data Structures = Programs', container=index_view.rendered_content)
+        self.assertIn(member='The Art of Computer Programming', container=index_view.rendered_content)
