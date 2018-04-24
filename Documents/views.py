@@ -10,7 +10,7 @@ class IndexView(ListView):
     template_name = 'Documents/index.html'
     model = Document
     context_object_name = 'documents'
-    paginate_by = 15
+    paginate_by = 10
 
     def get_queryset(self):
         get_request = self.request.GET

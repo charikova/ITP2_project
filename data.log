@@ -18,3 +18,5 @@ INFO:root:2018-04-24 updated user gnomer(librarian) by: admin(admin);
 INFO:root:2018-04-24 updated user gnomer(librarian) by: admin(admin);
 INFO:root:2018-04-24 updated user instructor_user(instructor) by: admin(admin);
 INFO:root:2018-04-24 updated user instructor_user(instructor) by: admin(admin);
+INFO:root:2018-04-24 approved request by: masha_admin; User: TA_userDoc:Origin
+INFO:root:2018-04-24 canceled request by: masha_admin; User: TA_userDoc:L

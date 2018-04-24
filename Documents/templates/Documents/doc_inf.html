@@ -62,8 +62,9 @@
 
         td {
             border: none;
-            text-align: left;
+            text-align: center;
             padding: 3%;
+
         }
 
         img {
@@ -73,18 +74,12 @@
             border-radius: 5px;
         }
 
-        .button {
-            margin-left: 43%;
-        }
-
-        .upd_del {
-            margin-left: 30%;
-            width: 20%;
-            background-color: rgba(214, 184, 150, 0);
-        }
-
         .up {
             vertical-align: top;
+        }
+
+        .buttons {
+            background-color: rgba(1, 1, 1, 0);
         }
 
 
@@ -111,19 +106,22 @@
     </table>
 
     {% if user.is_staff %}
-        <table class="upd_del">
+
+        <table class="buttons">
             <tr>
                 {% if user.is_superuser or user.userprofile.privileges == 'priv3' %}
                     <td><a class="button button_del" href="delete/" onclick="return confirm('Delete {{ doc.title }}?')">Delete</a>
+
+                {% endif %}
+                <a class="button" href="update/">Update</a>
+                {% if user.userprofile.privileges == 'priv2' or user.userprofile.privileges == 'priv3' or user.is_superuser %}
+                    <a class="button" href="/requests/outstanding_request/?doc_id={{ doc.id }}">Outstanding request</a>
                     </td>
                 {% endif %}
-                <td><a class="button" href="update/">Update</a></td>
             </tr>
         </table>
-        </br>
-        {% if user.userprofile.privileges == 'priv2' or user.userprofile.privileges == 'priv3' or user.is_superuser %}
-            <a class="button" href="/requests/outstanding_request/?doc_id={{ doc.id }}">Outstanding request</a>
-        {% endif %}
+
+
     {% elif user.is_authenticated and not doc.is_reference %}
         <button class="button" onclick="
                 var response = httpGet('/requests/make_new/?doc={{ doc.id }}');
