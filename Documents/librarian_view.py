@@ -167,7 +167,10 @@ def update_doc(request, pk):
         n_of_copies = 0
         if int(request.POST['copies']) > doc.copies:
             n_of_copies = int(request.POST['copies']) - doc.copies
-
+        # for changing copies required 2 or 3 privileges
+        print(fields)
+        if request.POST['copies'] != doc.copies and request.user.userprofile.privileges == 'priv1':
+            del fields[fields.index(('copies', str(doc.copies)))]
         for field in fields:
             exec('doc.{0} = request.POST["{0}"]'.format(field[0]))
         doc.save()

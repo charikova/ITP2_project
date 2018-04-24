@@ -7,8 +7,9 @@ from django.http import HttpRequest, Http404, QueryDict
 from .models import *
 from BookRequests.views import *
 import BookRequests
-from Documents import librarian_view
+from Documents.views import get_logging
 import datetime
+from UserCards.forms import AdminCreateUserForm
 from UserCards.views import user_card_info
 from django.utils import timezone
 
@@ -1334,3 +1335,99 @@ class Delivery3(TestCase):
         should_be_today_p1 = self.p1.documentcopy_set.get(doc=self.d1).returning_date == '2018-04-26 00:00'
         should_be_today_v = self.v.documentcopy_set.get(doc=self.d1).returning_date == '2018-04-05 00:00'
         self.assertEqual(should_be_today_p1, should_be_today_v)
+
+
+class Delivery4(TestCase):
+
+    def test_init_db(self):
+        self.admin = User.objects.create('admin', 'ad@mail.ru', '12356qwerty',
+                                           first_name='admin',
+                                           last_name='admin', is_superuser=True)
+        UserProfile.objects.create(user=self.admin,
+                                   phone_number=30001,
+                                   status='admin',
+                                   address='Via Margutta, 3')
+        self.d1 = Book.objects.create(title='Introduction to Algorithms',
+                                      price=5000,
+                                      publication_date=datetime.date(year=2009, month=1, day=1),
+                                      edition=3,
+                                      copies=0,
+                                      authors='Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and Clifford '
+                                              'Stein',
+                                      cover='cover',
+                                      publisher='MIT Press',
+                                      keywords='Algorithms, Data Structures, Complexity, Computational Theory')
+        self.d2 = Book.objects.create(title='Algorithms + Data Structures = Programs',
+                                      price=5000,
+                                      publication_date=datetime.date(year=1978, month=1, day=1),
+                                      edition=1,
+                                      copies=0,
+                                      is_bestseller=True,
+                                      authors='Niklaus Wirth',
+                                      cover='cover',
+                                      publisher='Prentice Hall PTR',
+                                      keywords='Algorithms, Data Structures, Search Algorithms, Pascal')
+        self.d3 = Book.objects.create(title='The Art of Computer Programming',
+                                      price=5000,
+                                      publication_date=datetime.date(year=1997, month=1, day=1),
+                                      edition=3,
+                                      copies=0,
+                                      authors='Donald E. Knuth',
+                                      cover='cover',
+                                      publisher='Addison Wesley Longman Publishing Co., Inc.',
+                                      keywords='Algorithms, Combinatorial Algorithms, Recursion')
+
+        self.p1 = User.objects.create_user('patron1', 'p1@mail.ru', '12356qwerty',
+                                           first_name='Sergey',
+                                           last_name='Afonso')
+        UserProfile.objects.create(user=self.p1,
+                                   phone_number=30001,
+                                   status='professor',
+                                   address='Via Margutta, 3')
+
+        self.p2 = User.objects.create_user('patron2', 'p2@mail.ru', '12456qwerty',
+                                           first_name='Nadia',
+                                           last_name='Teixeira')
+        UserProfile.objects.create(user=self.p2,
+                                   phone_number=30002,
+                                   status='professor',
+                                   address='Via Sacra, 13')
+
+        self.p3 = User.objects.create_user('patron3', 'p3@mail.ru', '23456qwerty',
+                                           first_name='Elvira',
+                                           last_name='Espindola')
+        UserProfile.objects.create(user=self.p3,
+                                   phone_number=30003,
+                                   status='professor',
+                                   address='Via del Corso, 22')
+
+        self.s = User.objects.create_user('patron4', 's@mail.ru', '23456qwerty',
+                                          first_name='Andrey',
+                                          last_name='Velo')
+        UserProfile.objects.create(user=self.s,
+                                   phone_number=30004,
+                                   status='student',
+                                   address='Avenida Mazatlan 250')
+
+        self.v = User.objects.create_user('patron5', 'v@mail.ru', '23456qwerty',
+                                          first_name='Veronika',
+                                          last_name='Rama')
+        UserProfile.objects.create(user=self.v,
+                                   phone_number=30005,
+                                   status='visiting professor',
+                                   address='Stret Atocha, 27')
+
+    def test_TC6(self):
+        CreateNew
+
+    def test_TC8(self):
+        self.test_TC6()
+
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.admin
+
+        # admin checks logs
+        response = get_logging(request)
+
+

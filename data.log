@@ -65,3 +65,50 @@ Traceback (most recent call last):
     self.model._meta.object_name
 django.contrib.auth.models.DoesNotExist: Group matching query does not exist.
 INFO:root:2018-04-23 created user useruser2(librarian) by: danilgin(librarian);
+INFO:root:2018-04-24 created user useruser3(professor) by: gnomer(librarian);
+INFO:root:2018-04-24 deleted user useruser3(professor) by: gnomer(librarian);
+INFO:root:2018-04-24 created doc nature audio by: gnomer(librarian);
+INFO:root:2018-04-24 updated user gnomer(librarian) by: danilgin(librarian);
+INFO:root:2018-04-24 updated doc Deception Point by: gnomer(librarian);
+INFO:root:2018-04-24 updated doc Deception Point by: gnomer(librarian);
+ERROR:django.request:Internal Server Error: /3/update/
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/core/handlers/exception.py", line 35, in inner
+    response = get_response(request)
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/core/handlers/base.py", line 128, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/core/handlers/base.py", line 126, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/danilginzburg/Projects/innopolka/Documents/librarian_view.py", line 53, in inner2
+    return func(request, *args, **kwargs)
+  File "/Users/danilginzburg/Projects/innopolka/Documents/librarian_view.py", line 172, in update_doc
+    del fields[fields.index('copies')]
+ValueError: 'copies' is not in list
+ERROR:django.request:Internal Server Error: /3/update/
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/core/handlers/exception.py", line 35, in inner
+    response = get_response(request)
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/core/handlers/base.py", line 128, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/core/handlers/base.py", line 126, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/danilginzburg/Projects/innopolka/Documents/librarian_view.py", line 53, in inner2
+    return func(request, *args, **kwargs)
+  File "/Users/danilginzburg/Projects/innopolka/Documents/librarian_view.py", line 173, in update_doc
+    del fields[fields.index('copies')]
+ValueError: 'copies' is not in list
+ERROR:django.request:Internal Server Error: /3/update/
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/core/handlers/exception.py", line 35, in inner
+    response = get_response(request)
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/core/handlers/base.py", line 128, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/site-packages/django/core/handlers/base.py", line 126, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/danilginzburg/Projects/innopolka/Documents/librarian_view.py", line 53, in inner2
+    return func(request, *args, **kwargs)
+  File "/Users/danilginzburg/Projects/innopolka/Documents/librarian_view.py", line 173, in update_doc
+    del fields[fields.index('copies')]
+ValueError: 'copies' is not in list
+INFO:root:2018-04-24 updated doc Deception Point by: gnomer(librarian);
+INFO:root:2018-04-24 updated doc Deception Point by: gnomer(librarian);
