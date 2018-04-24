@@ -61,8 +61,8 @@ def make_new(request):
     elif doc.is_reference:
         return HttpResponse('Sorry, but this document is reference')
     else:
-        logging.info('{} new request: <a href="{0}"> {1} </a>; <a href="{2}"> {3} </a>'.format(
-            str(datetime.date.today()), request.user.id, request.user.username, doc.id, doc.title))
+        logging.info('{} new request by: {}({}); Doc: {}'.format(
+            str(datetime.date.today()), request.user.username, request.user.userprofile.status, doc.title))
         for req in Request.objects.all():  # find requests with requested doc
             if req.doc == doc:  # exist request for this doc
                 req.users.add(request.user)

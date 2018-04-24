@@ -1341,7 +1341,7 @@ class Delivery3(TestCase):
 class Delivery4(TestCase):
 
     def test_init_db(self):
-        self.admin = User.objects.create('admin1', 'ad@mail.ru', '12356qwerty',
+        self.admin = User.objects.create_user('admin1', 'ad@mail.ru', '12356qwerty',
                                            first_name='admin',
                                            last_name='admin', is_superuser=True)
         UserProfile.objects.create(user=self.admin,
@@ -1417,6 +1417,9 @@ class Delivery4(TestCase):
                                    phone_number=30005,
                                    status='visiting professor',
                                    address='Stret Atocha, 27')
+
+    def test_TC1(self):
+        pass
 
     def test_TC2(self):
         self.l1 = User.objects.create_user('librarian1', 'exampl2@mail.ru', '12356qwerty',
