@@ -149,7 +149,7 @@
     </p>
 
     <div>
-
+        {% if status != 'librarian' and status != 'admin' %}
         <table class="used-docs">
             <th colspan="3"><h3>Documents in use:</h3></th>
             {% for copy in copies %}
@@ -176,6 +176,7 @@
             {% endfor %}
             {% csrf_token %}
         </table>
+        {% endif %}
         {% csrf_token %}
 
         {% if user.is_staff %}

@@ -1,6 +1,6 @@
 from django.shortcuts import redirect
 from django.http import Http404, HttpResponse
-from Documents.librarian_view import required_staff, need_logged_in
+from Documents.librarian_view import *
 from UserCards.forms import USER_STATUSES
 from django.contrib.auth.models import User
 from django.views.generic import ListView
@@ -259,7 +259,7 @@ def renew(request):
                                                                                    str(days_for_checking_out)))
 
 
-@required_staff
+@required_priv('priv2')
 def outstanding_request(request):
     try:
         id = request.GET.get('doc_id')

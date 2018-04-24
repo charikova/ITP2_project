@@ -1382,7 +1382,6 @@ class Delivery4(TestCase):
                                       publisher='Addison Wesley Longman Publishing Co., Inc.',
                                       keywords='Algorithms, Combinatorial Algorithms, Recursion')
 
-
     def test_TC1(self):
         pass
 
@@ -1663,7 +1662,6 @@ class Delivery4(TestCase):
 
         self.assertEqual(len(User.objects.all()), 9)
 
-
     def test_TC5(self):
         self.test_TC4()
 
@@ -1699,7 +1697,6 @@ class Delivery4(TestCase):
         self.assertTrue(
             all([word in response.content for word in
                  [b'Copies: 2']]))
-
 
     def test_TC6(self):
         self.test_TC4()
@@ -1759,9 +1756,6 @@ class Delivery4(TestCase):
         # librarian places an outstanding request on d3
         request.GET['doc_id'] = self.d2.id
         outstanding_request(request)
-
-
-
 
     def test_TC7(self):
         pass

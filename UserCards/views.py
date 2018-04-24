@@ -170,6 +170,7 @@ def user_card_info(request):
         document_copy.save()
 
     context['fields'] = fields
+    context['status'] = user.userprofile.status
     context['copies'] = user.documentcopy_set.all()
     return render(request, 'UserCards/index.html', context)
 
