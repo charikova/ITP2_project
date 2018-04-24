@@ -1,17 +1,17 @@
 from django.core import mail
-from django.test import TestCase, Client
+from django.test import TestCase, Client, RequestFactory
 
 from BookRequests.models import Request
-from Documents.librarian_view import update_doc
+from Documents.librarian_view import update_doc, get_doc, get_fields_of
 from UserCards.models import UserProfile
 from django.http import HttpRequest, Http404, QueryDict
 from .models import *
 from BookRequests.views import *
 import BookRequests
-from Documents.views import get_logging
+from Documents.views import get_logging, document_detail
 import datetime
 from UserCards.forms import AdminCreateUserForm
-from UserCards.views import user_card_info
+from UserCards.views import user_card_info, CreateUserView
 from django.utils import timezone
 
 
@@ -1343,11 +1343,14 @@ class Delivery4(TestCase):
     def test_init_db(self):
         self.admin = User.objects.create_user('admin1', 'ad@mail.ru', '12356qwerty',
                                            first_name='admin',
-                                           last_name='admin', is_superuser=True)
+                                           last_name='admin',
+                                           is_superuser=True)
+
         UserProfile.objects.create(user=self.admin,
                                    phone_number=30001,
                                    status='admin',
                                    address='Via Margutta, 3')
+
         self.d1 = Book.objects.create(title='Introduction to Algorithms',
                                       price=5000,
                                       publication_date=datetime.date(year=2009, month=1, day=1),
@@ -1358,6 +1361,7 @@ class Delivery4(TestCase):
                                       cover='cover',
                                       publisher='MIT Press',
                                       keywords='Algorithms, Data Structures, Complexity, Computational Theory')
+
         self.d2 = Book.objects.create(title='Algorithms + Data Structures = Programs',
                                       price=5000,
                                       publication_date=datetime.date(year=1978, month=1, day=1),
@@ -1378,53 +1382,16 @@ class Delivery4(TestCase):
                                       publisher='Addison Wesley Longman Publishing Co., Inc.',
                                       keywords='Algorithms, Combinatorial Algorithms, Recursion')
 
-        self.p1 = User.objects.create_user('p1', 'p1@mail.ru', '12356qwerty',
-                                           first_name='Sergey',
-                                           last_name='Afonso')
-        UserProfile.objects.create(user=self.p1,
-                                   phone_number=30001,
-                                   status='professor',
-                                   address='Via Margutta, 3')
-
-        self.p2 = User.objects.create_user('p2', 'p2@mail.ru', '12456qwerty',
-                                           first_name='Nadia',
-                                           last_name='Teixeira')
-        UserProfile.objects.create(user=self.p2,
-                                   phone_number=30002,
-                                   status='professor',
-                                   address='Via Sacra, 13')
-
-        self.p3 = User.objects.create_user('p3', 'p3@mail.ru', '23456qwerty',
-                                           first_name='Elvira',
-                                           last_name='Espindola')
-        UserProfile.objects.create(user=self.p3,
-                                   phone_number=30003,
-                                   status='professor',
-                                   address='Via del Corso, 22')
-
-        self.s = User.objects.create_user('s', 's@mail.ru', '23456qwerty',
-                                          first_name='Andrey',
-                                          last_name='Velo')
-        UserProfile.objects.create(user=self.s,
-                                   phone_number=30004,
-                                   status='student',
-                                   address='Avenida Mazatlan 250')
-
-        self.v = User.objects.create_user('v', 'v@mail.ru', '23456qwerty',
-                                          first_name='Veronika',
-                                          last_name='Rama')
-        UserProfile.objects.create(user=self.v,
-                                   phone_number=30005,
-                                   status='visiting professor',
-                                   address='Stret Atocha, 27')
 
     def test_TC1(self):
         pass
 
     def test_TC2(self):
+
         self.l1 = User.objects.create_user('librarian1', 'exampl2@mail.ru', '12356qwerty',
                                            first_name='Librarian',
-                                           last_name='One')
+                                           last_name='One',
+                                           is_staff=True)
         UserProfile.objects.create(user=self.l1,
                                    phone_number=10001,
                                    status='librarian',
@@ -1432,7 +1399,8 @@ class Delivery4(TestCase):
                                    privileges='priv1')
 
         self.l2 = User.objects.create_user('librarian2', 'exampl2@mail.ru', '12356qwerty', first_name='Librarian',
-                                           last_name='Two')
+                                           last_name='Two',
+                                           is_staff=True)
         UserProfile.objects.create(user=self.l2,
                                    phone_number=10002,
                                    status='librarian',
@@ -1440,7 +1408,8 @@ class Delivery4(TestCase):
                                    privileges='priv2')
 
         self.l3 = User.objects.create_user('librarian3', 'exampl2@mail.ru', '12356qwerty', first_name='Librarian',
-                                           last_name='Three')
+                                           last_name='Three',
+                                           is_staff=True)
         UserProfile.objects.create(user=self.l3,
                                    phone_number=10003,
                                    status='librarian',
@@ -1454,98 +1423,398 @@ class Delivery4(TestCase):
         self.test_init_db()
         self.test_TC2()
 
+        # #all requered copies created by l1
+
+
         try:
+            # for d1
             request = HttpRequest()
+            request.method = "GET"
+            request.user = self.l1
+            doc = get_doc(request, self.d1.id)
+
+            fields = get_fields_of(doc)
+            fields = dict(fields)
+
+            fields['copies'] = '3'
+            fields['submit'] = 'Submit'
+
+            qdict = QueryDict('', mutable=True)
+            qdict.update(fields)
+
             request.method = "POST"
-            request.user = self.l1
+            request.POST = qdict
             update_doc(request, self.d1.id)
-            self.d1.copies += 3
-            self.d1.save()
 
+            # for d2
+            request = HttpRequest()
+            request.method = "GET"
             request.user = self.l1
+            doc = get_doc(request, self.d2.id)
+
+            fields = get_fields_of(doc)
+            fields = dict(fields)
+
+            fields['copies'] = '3'
+            fields['submit'] = 'Submit'
+
+            qdict = QueryDict('', mutable=True)
+            qdict.update(fields)
+
+            request.method = "POST"
+            request.POST = qdict
             update_doc(request, self.d2.id)
-            self.d2.copies += 3
-            self.d2.save()
 
+            # for d3
+            request = HttpRequest()
+            request.method = "GET"
             request.user = self.l1
-            update_doc(request, self.d3.id)
-            self.d3.copies += 3
-            self.d3.save()
+            doc = get_doc(request, self.d3.id)
 
+            fields = get_fields_of(doc)
+            fields = dict(fields)
+
+            fields['copies'] = '3'
+            fields['submit'] = 'Submit'
+
+            qdict = QueryDict('', mutable=True)
+            qdict.update(fields)
+
+            request.method = "POST"
+            request.POST = qdict
+            update_doc(request, self.d3.id)
 
         except:
             pass
 
-        # response = RequestsView.as_view()(request)
-        # response = response.render()
-
-        self.assertEqual(self.d1.copies, 0)
-        self.assertEqual(self.d2.copies, 0)
-        self.assertEqual(self.d3.copies, 0)
+        self.assertEqual(Document.objects.get(id=self.d1.id).copies, 0)
+        self.assertEqual(Document.objects.get(id=self.d2.id).copies, 0)
+        self.assertEqual(Document.objects.get(id=self.d3.id).copies, 0)
 
     def test_TC4(self):
 
         self.test_init_db()
+
+        def setup_view(view, request, *args, **kwargs):
+            view.request = request
+            view.args = args
+            view.kwargs = kwargs
+            return view
+
         self.test_TC2()
 
+        # #all requered copies created by l2
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.l2
+
+        # for d1
+        doc = get_doc(request, self.d1.id)
+
+        fields = get_fields_of(doc)
+        fields = dict(fields)
+
+        fields['copies'] = '3'
+        fields['submit'] = 'Submit'
+
+        qdict = QueryDict('', mutable=True)
+        qdict.update(fields)
+
+        request.method = "POST"
+        request.POST = qdict
+        update_doc(request, self.d1.id)
+
+        # for d2
+        request.method = "GET"
+        request.user = self.l2
+        doc = get_doc(request, self.d2.id)
+
+        fields = get_fields_of(doc)
+        fields = dict(fields)
+
+        fields['copies'] = '3'
+        fields['submit'] = 'Submit'
+
+        qdict = QueryDict('', mutable=True)
+        qdict.update(fields)
+
+        request.method = "POST"
+        request.POST = qdict
+        update_doc(request, self.d2.id)
+
+        # for d3
+        request.method = "GET"
+        request.user = self.l2
+        doc = get_doc(request, self.d3.id)
+
+        fields = get_fields_of(doc)
+        fields = dict(fields)
+
+        fields['copies'] = '3'
+        fields['submit'] = 'Submit'
+
+        qdict = QueryDict('', mutable=True)
+        qdict.update(fields)
+
+        request.method = "POST"
+        request.POST = qdict
+        update_doc(request, self.d3.id)
+
+        self.assertEqual(Document.objects.get(id=self.d1.id).copies, 3)
+        self.assertEqual(Document.objects.get(id=self.d2.id).copies, 3)
+        self.assertEqual(Document.objects.get(id=self.d3.id).copies, 3)
+
+        # Creating requestFactory for work with creation user forms
+        factory = RequestFactory()
+        request = factory.post('/user/create_user')
+        request.user = self.l2
+
+        # now l2 will create users using forms
+
+        # create s1
+        form_data_s = {'username': 's',
+                       'status': "student",
+                       'privileges': "no privileges",
+                       'email': 's@mail.ru',
+                       'address': 'Avenida Mazatlan 250',
+                       'phone_number': '30004',
+                       'first_name': 'Andrey',
+                       'last_name': 'Velo',
+                       'password1': '23456qwerty',
+                       'password2': '23456qwerty',
+                       'submit': 'Submit'
+                       }
+
+        request.POST = form_data_s
+        v = setup_view(CreateUserView, request)
+        v.post(v, request)
+
+        # create p1
+        form_data_p1 = {'username': 'p1',
+                        'status': "professor",
+                        'privileges': "no privileges",
+                        'email': 'p1@mail.ru',
+                        'address': 'Via Margutta, 3',
+                        'phone_number': '30001',
+                        'first_name': 'Sergey',
+                        'last_name': 'Afonso',
+                        'password1': '12356qwerty',
+                        'password2': '12356qwerty',
+                        'submit': 'Submit'
+                        }
+
+        request.POST = form_data_p1
+        v = setup_view(CreateUserView, request)
+        v.post(v, request)
+
+        # create p2
+        form_data_p2 = {'username': 'p2',
+                        'status': "professor",
+                        'privileges': "no privileges",
+                        'email': 'p2@mail.ru',
+                        'address': 'Via Sacra, 13',
+                        'phone_number': '30002',
+                        'first_name': 'Nadia',
+                        'last_name': 'Teixeira',
+                        'password1': '12356qwerty',
+                        'password2': '12356qwerty',
+                        'submit': 'Submit'
+                        }
+
+        request.POST = form_data_p2
+        v = setup_view(CreateUserView, request)
+        v.post(v, request)
+
+        # create p3
+        form_data_p3 = {'username': 'p3',
+                        'status': "professor",
+                        'privileges': "no privileges",
+                        'email': 'p3@mail.ru',
+                        'address': 'Via del Corso, 22',
+                        'phone_number': '30003',
+                        'first_name': 'Elvira',
+                        'last_name': 'Espindola',
+                        'password1': '2356qwerty',
+                        'password2': '2356qwerty',
+                        'submit': 'Submit'
+                        }
+
+        request.POST = form_data_p3
+        v = setup_view(CreateUserView, request)
+        v.post(v, request)
+
+        # create v
+        form_data_v = {'username': 'v',
+                       'status': "visiting professor",
+                       'privileges': "no privileges",
+                       'email': 'v@mail.ru',
+                       'address': 'Stret Atocha, 27',
+                       'phone_number': '30005',
+                       'first_name': 'Veronika',
+                       'last_name': 'Rama',
+                       'password1': '2356qwerty',
+                       'password2': '2356qwerty',
+                       'submit': 'Submit'
+                       }
+
+        request.POST = form_data_v
+        v = setup_view(CreateUserView, request)
+        v.post(v, request)
+
+        self.assertEqual(len(User.objects.all()), 9)
+
+
     def test_TC5(self):
-        pass
+        self.test_TC4()
+
+        # #l3 delete 1 copy of d1
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.l2
+
+        # for d1
+        doc = get_doc(request, self.d1.id)
+
+        fields = get_fields_of(doc)
+        fields = dict(fields)
+
+        fields['copies'] = '2'
+        fields['submit'] = 'Submit'
+
+        qdict = QueryDict('', mutable=True)
+        qdict.update(fields)
+
+        request.method = "POST"
+        request.POST = qdict
+        update_doc(request, self.d1.id)
+
+        self.assertEqual(Document.objects.get(id=self.d1.id).copies, 2)
+
+
+        request.method = "GET"
+        request.user = self.l1
+        response = document_detail(request, self.d1.id)
+
+        #check if l1 can see that there are only 2 copies of d1
+        self.assertTrue(
+            all([word in response.content for word in
+                 [b'Copies: 2']]))
+
 
     def test_TC6(self):
-        pass
+        self.test_TC4()
+
+        # p1 leaves a request for a book d3
+        request = HttpRequest()
+        request.method = "GET"
+        p1 = User.objects.get(username='p1')
+        request.user = p1
+        request.GET['doc'] = self.d3.id
+        make_new(request)
+
+        # p2 leaves a request for a book d3
+        p2 = User.objects.get(username='p2')
+        request.user = p2
+        request.GET['doc'] = self.d3.id
+        make_new(request)
+
+        # s leaves a request for a book d3
+        s = User.objects.get(username='s')
+        request.user = s
+        request.GET['doc'] = self.d3.id
+        make_new(request)
+
+        # v leaves a request for a book d3
+        v = User.objects.get(username='v')
+        request.user = v
+        request.GET['doc'] = self.d3.id
+        make_new(request)
+
+        # p3 leaves a request for a book d3
+        p3 = User.objects.get(username='p3')
+        request.user = p3
+        request.GET['doc'] = self.d3.id
+        make_new(request)
+
+        # now librarian should approve requests
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.l1
+
+        # approve 1st (p1 d3)
+        request.GET['req_id'] = p1.request_set.get(doc=self.d3).id
+        request.GET['user_id'] = p1.id
+        approve_request(request)
+
+        # approve 2nd (p2 d3)
+        request.GET['req_id'] = p2.request_set.get(doc=self.d3).id
+        request.GET['user_id'] = p2.id
+        approve_request(request)
+
+        # approve 3rd (s d3)
+        request.GET['req_id'] = s.request_set.get(doc=self.d3).id
+        request.GET['user_id'] = s.id
+        approve_request(request)
+
+        # librarian places an outstanding request on d3
+        request.GET['doc_id'] = self.d2.id
+        outstanding_request(request)
+
+
+
 
     def test_TC7(self):
         pass
 
-    def test_TC8(self):
-        datafile = open('data.log', 'r')
-        datafile.write('')  # clear all logs before making changes in system
-        self.test_TC6()
-        data = datafile.readlines()
-        datafile.close()
-        all_in = lambda x, y: all([item in y for item in x])  # check that all items of x are in y
-        self.assertTrue(all_in(['admin1', 'created', 'l1'], data[0]))
-        self.assertTrue(all_in(['admin1', 'created', 'l2'], data[1]))
-        self.assertTrue(all_in(['admin1', 'created', 'l3'], data[2]))
-        self.assertTrue(all_in(['l2', 'updated', self.d1.title], data[3]))
-        self.assertTrue(all_in(['l2', 'updated', self.d2.title], data[4]))
-        self.assertTrue(all_in(['l2', 'updated', self.d3.title], data[5]))
-        self.assertTrue(all_in(['l2', 'created', 's'], data[6]))
-        self.assertTrue(all_in(['l2', 'created', 'p1'], data[7]))
-        self.assertTrue(all_in(['l2', 'created', 'p2'], data[8]))
-        self.assertTrue(all_in(['l2', 'created', 'p3'], data[9]))
-        self.assertTrue(all_in(['l2', 'created', 'v'], data[10]))
-        self.assertTrue(all_in(['p1', 'approved request', self.d3.title], data[11]))
-        self.assertTrue(all_in(['p2', 'approved request', self.d3.title], data[12]))
-        self.assertTrue(all_in(['s', 'approved request', self.d3.title], data[13]))
-        self.assertTrue(all_in(['v', 'approved request', self.d3.title], data[14]))
-        self.assertTrue(all_in(['p3', 'approved request', self.d3.title], data[15]))
-
-    def test_TC9(self):
-        datafile = open('data.log', 'r')
-        datafile.write('')  # clear all logs before making changes in system
-        self.test_TC7()
-        data = datafile.readlines()
-        datafile.close()
-        all_in = lambda x, y: all([item in y for item in x])  # check that all items of x are in y
-        self.assertTrue(all_in(['admin1', 'created', 'l1'], data[0]))
-        self.assertTrue(all_in(['admin1', 'created', 'l2'], data[1]))
-        self.assertTrue(all_in(['admin1', 'created', 'l3'], data[2]))
-        self.assertTrue(all_in(['l2', 'updated', self.d1.title], data[3]))
-        self.assertTrue(all_in(['l2', 'updated', self.d2.title], data[4]))
-        self.assertTrue(all_in(['l2', 'updated', self.d3.title], data[5]))
-        self.assertTrue(all_in(['l2', 'created', 's'], data[6]))
-        self.assertTrue(all_in(['l2', 'created', 'p1'], data[7]))
-        self.assertTrue(all_in(['l2', 'created', 'p2'], data[8]))
-        self.assertTrue(all_in(['l2', 'created', 'p3'], data[9]))
-        self.assertTrue(all_in(['l2', 'created', 'v'], data[10]))
-        self.assertTrue(all_in(['p1', 'approved request', self.d3.title], data[11]))
-        self.assertTrue(all_in(['p2', 'approved request', self.d3.title], data[12]))
-        self.assertTrue(all_in(['s', 'approved request', self.d3.title], data[13]))
-        self.assertTrue(all_in(['v', 'approved request', self.d3.title], data[14]))
-        self.assertTrue(all_in(['p3', 'approved request', self.d3.title], data[15]))
-        self.assertTrue(all_in(['l3', 'outstanding request', self.d3.title], data[16]))
-        self.assertTrue(all_in(['l3', 'waiting list deleted', self.d3.title], data[17]))
+    # def test_TC8(self):
+    #     datafile = open('data.log', 'r')
+    #     datafile.write('')  # clear all logs before making changes in system
+    #     self.test_TC6()
+    #     data = datafile.readlines()
+    #     datafile.close()
+    #     all_in = lambda x, y: all([item in y for item in x])  # check that all items of x are in y
+    #     self.assertTrue(all_in(['admin1', 'created', 'l1'], data[0]))
+    #     self.assertTrue(all_in(['admin1', 'created', 'l2'], data[1]))
+    #     self.assertTrue(all_in(['admin1', 'created', 'l3'], data[2]))
+    #     self.assertTrue(all_in(['l2', 'updated', self.d1.title], data[3]))
+    #     self.assertTrue(all_in(['l2', 'updated', self.d2.title], data[4]))
+    #     self.assertTrue(all_in(['l2', 'updated', self.d3.title], data[5]))
+    #     self.assertTrue(all_in(['l2', 'created', 's'], data[6]))
+    #     self.assertTrue(all_in(['l2', 'created', 'p1'], data[7]))
+    #     self.assertTrue(all_in(['l2', 'created', 'p2'], data[8]))
+    #     self.assertTrue(all_in(['l2', 'created', 'p3'], data[9]))
+    #     self.assertTrue(all_in(['l2', 'created', 'v'], data[10]))
+    #     self.assertTrue(all_in(['p1', 'approved request', self.d3.title], data[11]))
+    #     self.assertTrue(all_in(['p2', 'approved request', self.d3.title], data[12]))
+    #     self.assertTrue(all_in(['s', 'approved request', self.d3.title], data[13]))
+    #     self.assertTrue(all_in(['v', 'approved request', self.d3.title], data[14]))
+    #     self.assertTrue(all_in(['p3', 'approved request', self.d3.title], data[15]))
+    #
+    # def test_TC9(self):
+    #     datafile = open('data.log', 'r')
+    #     datafile.write('')  # clear all logs before making changes in system
+    #     self.test_TC7()
+    #     data = datafile.readlines()
+    #     datafile.close()
+    #     all_in = lambda x, y: all([item in y for item in x])  # check that all items of x are in y
+    #     self.assertTrue(all_in(['admin1', 'created', 'l1'], data[0]))
+    #     self.assertTrue(all_in(['admin1', 'created', 'l2'], data[1]))
+    #     self.assertTrue(all_in(['admin1', 'created', 'l3'], data[2]))
+    #     self.assertTrue(all_in(['l2', 'updated', self.d1.title], data[3]))
+    #     self.assertTrue(all_in(['l2', 'updated', self.d2.title], data[4]))
+    #     self.assertTrue(all_in(['l2', 'updated', self.d3.title], data[5]))
+    #     self.assertTrue(all_in(['l2', 'created', 's'], data[6]))
+    #     self.assertTrue(all_in(['l2', 'created', 'p1'], data[7]))
+    #     self.assertTrue(all_in(['l2', 'created', 'p2'], data[8]))
+    #     self.assertTrue(all_in(['l2', 'created', 'p3'], data[9]))
+    #     self.assertTrue(all_in(['l2', 'created', 'v'], data[10]))
+    #     self.assertTrue(all_in(['p1', 'approved request', self.d3.title], data[11]))
+    #     self.assertTrue(all_in(['p2', 'approved request', self.d3.title], data[12]))
+    #     self.assertTrue(all_in(['s', 'approved request', self.d3.title], data[13]))
+    #     self.assertTrue(all_in(['v', 'approved request', self.d3.title], data[14]))
+    #     self.assertTrue(all_in(['p3', 'approved request', self.d3.title], data[15]))
+    #     self.assertTrue(all_in(['l3', 'outstanding request', self.d3.title], data[16]))
+    #     self.assertTrue(all_in(['l3', 'waiting list deleted', self.d3.title], data[17]))
 
     def test_TC10(self):
         pass
