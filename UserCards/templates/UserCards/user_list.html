@@ -90,27 +90,28 @@
                                                                                                   name="l"
                                                                                                   class="btn btn-default"
                             {% if l %}
-                                                                                                  checked {% endif %} ></td>
+                                                                                                  checked {% endif %} >
+                    </td>
                     <td><input type="submit" class="button" value="Search"></td>
                 </tr>
             </table>
 
         </form>
         {% if object_list|length == 0 %}
-                <h3 align="center">Sorry, no users according to your query</h3>
+            <h3 align="center">Sorry, no users according to your query</h3>
         {% else %}
-        <form>
-            <ul>
+            <form>
+                <ul>
 
-                {% for user in object_list %}
-                    <li>
-                        <a class="users" href="/user/?id={{ user.id }}">{{ user.username }}</a> <br>
-                    </li>
+                    {% for user in object_list %}
+                        <li>
+                            <a class="users" href="/user/?id={{ user.id }}">{{ user.username }}</a> <br>
+                        </li>
 
-                {% endfor %}
-                {% csrf_token %}
-            </ul>
-        </form>
+                    {% endfor %}
+                    {% csrf_token %}
+                </ul>
+            </form>
         {% endif %}
     </div>
 

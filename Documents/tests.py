@@ -2,6 +2,7 @@ from django.core import mail
 from django.test import TestCase, Client
 
 from BookRequests.models import Request
+from Documents.librarian_view import update_doc
 from UserCards.models import UserProfile
 from django.http import HttpRequest, Http404, QueryDict
 from .models import *
@@ -985,7 +986,6 @@ class Delivery3(TestCase):
         request.GET['user_id'] = self.v.id
         approve_request(request)
 
-
         # p1 renews d1
         request.user = self.p1
         request.GET['copy_id'] = self.p1.documentcopy_set.get(doc=self.d1).id
@@ -1002,17 +1002,20 @@ class Delivery3(TestCase):
         renew(request)
 
         # librarian checks the information of p1
-        should_be_today = self.p1.documentcopy_set.get(doc=self.d1).returning_date - datetime.timedelta(days=28)  # he renewed d1, so 28 days left
+        should_be_today = self.p1.documentcopy_set.get(doc=self.d1).returning_date - datetime.timedelta(
+            days=28)  # he renewed d1, so 28 days left
         should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
         self.assertEqual(should_be_today, datetime.date.today())
 
         # librarian checks the information of s
-        should_be_today = self.s.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=14)  # he renewed d1, so 14 days left
+        should_be_today = self.s.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(
+            days=14)  # he renewed d1, so 14 days left
         should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
         self.assertEqual(should_be_today, datetime.date.today())
 
         # librarian checks the information of v
-        should_be_today = self.v.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(days=7)  # he renewed d1, so 7 days left
+        should_be_today = self.v.documentcopy_set.get(doc=self.d2).returning_date - datetime.timedelta(
+            days=7)  # he renewed d1, so 7 days left
         should_be_today = datetime.date(year=should_be_today.year, month=should_be_today.month, day=should_be_today.day)
         self.assertEqual(should_be_today, datetime.date.today())
 
@@ -1201,8 +1204,6 @@ class Delivery3(TestCase):
 
         self.assertTrue(not all([word in response.content for word in
                                  [b'patron5', b'patron4', b'patron3']]))
-
-
 
         # 12 because:
         # 5 for coming to library for doc approving to p1, p2, p3, s, v
@@ -1417,8 +1418,81 @@ class Delivery4(TestCase):
                                    status='visiting professor',
                                    address='Stret Atocha, 27')
 
+    def test_TC2(self):
+        self.l1 = User.objects.create_user('librarian1', 'exampl2@mail.ru', '12356qwerty',
+                                           first_name='Librarian',
+                                           last_name='One')
+        UserProfile.objects.create(user=self.l1,
+                                   phone_number=10001,
+                                   status='librarian',
+                                   address='Innopolis',
+                                   privileges='priv1')
+
+        self.l2 = User.objects.create_user('librarian2', 'exampl2@mail.ru', '12356qwerty', first_name='Librarian',
+                                           last_name='Two')
+        UserProfile.objects.create(user=self.l2,
+                                   phone_number=10002,
+                                   status='librarian',
+                                   address='Innopolis',
+                                   privileges='priv2')
+
+        self.l3 = User.objects.create_user('librarian3', 'exampl2@mail.ru', '12356qwerty', first_name='Librarian',
+                                           last_name='Three')
+        UserProfile.objects.create(user=self.l3,
+                                   phone_number=10003,
+                                   status='librarian',
+                                   address='Innopolis',
+                                   privileges='priv3')
+
+        self.assertEqual(len(UserProfile.objects.filter(status='librarian')), 3)
+
+    def test_TC3(self):
+
+        self.test_init_db()
+        self.test_TC2()
+
+        try:
+            request = HttpRequest()
+            request.method = "POST"
+            request.user = self.l1
+            update_doc(request, self.d1.id)
+            self.d1.copies += 3
+            self.d1.save()
+
+            request.user = self.l1
+            update_doc(request, self.d2.id)
+            self.d2.copies += 3
+            self.d2.save()
+
+            request.user = self.l1
+            update_doc(request, self.d3.id)
+            self.d3.copies += 3
+            self.d3.save()
+
+
+        except:
+            pass
+
+        # response = RequestsView.as_view()(request)
+        # response = response.render()
+
+        self.assertEqual(self.d1.copies, 0)
+        self.assertEqual(self.d2.copies, 0)
+        self.assertEqual(self.d3.copies, 0)
+
+    def test_TC4(self):
+
+        self.test_init_db()
+        self.test_TC2()
+
+    def test_TC5(self):
+        pass
+
     def test_TC6(self):
-        CreateNew
+        pass
+
+    def test_TC7(self):
+        pass
 
     def test_TC8(self):
         self.test_TC6()
@@ -1430,4 +1504,12 @@ class Delivery4(TestCase):
         # admin checks logs
         response = get_logging(request)
 
+    def test_TC10(self):
+        pass
+
+    def test_TC11(self):
+        pass
+
+    def test_TC12(self):
+        pass
 

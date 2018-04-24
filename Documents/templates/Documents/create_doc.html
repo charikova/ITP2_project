@@ -54,21 +54,21 @@
 
     </style>
 
-<form action="" method="post">
-    <div class="container">
-        <h2>{{model}} Creation</h2>
+    <form action="" method="post">
+        <div class="container">
+            <h2>{{ model }} Creation</h2>
             {% for field in fields %}
                 {% if field == 'type' %}
-        <input type="text" class="black" name='type' value='{{model}}' hidden="hidden">
-        {% else %}
-            <input class="black" type="text" name="{{field}}" placeholder=" {{field}}" required>
-        {% endif %}
-        {%endfor%}
-        <input class="button" type="submit" name="submit" value="Submit">
-        {% csrf_token %}
-    </div>
+                    <input type="text" class="black" name='type' value='{{ model }}' hidden="hidden">
+                {% else %}
+                    <input class="black" type="text" name="{{ field }}" placeholder=" {{ field }}" required>
+                {% endif %}
+            {% endfor %}
+            <input class="button" type="submit" name="submit" value="Submit">
+            {% csrf_token %}
+        </div>
 
-</form>
+    </form>
 
 {% endblock %}
 

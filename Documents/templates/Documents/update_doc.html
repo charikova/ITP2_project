@@ -81,7 +81,8 @@
                 <tr>
                     {% if key == 'publication_date' %}
                         <td class="right">{{ key }}:</td>
-                        <td><input class="mar" type="date" name="{{ key }}" value="{{ value }}" placeholder="YYYY-MM-DD"></td>
+                        <td><input class="mar" type="date" name="{{ key }}" value="{{ value }}"
+                                   placeholder="YYYY-MM-DD"></td>
                         </tr>
 
                         <tr>
@@ -92,7 +93,8 @@
                     {% endif %}
             {% endfor %}
             <tr>
-                <td><input id="submit" class="button" type="submit" name="submit" value="Submit" onclick="myFunction()"></td>
+                <td><input id="submit" class="button" type="submit" name="submit" value="Submit" onclick="myFunction()">
+                </td>
                 <td><input type="checkbox" name="need_to_notify" value="">Notify users about new copies in library</td>
             </tr>
 

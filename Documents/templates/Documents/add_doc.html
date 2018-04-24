@@ -1,95 +1,92 @@
-
-{% extends 'Documents/base.html'  %}
+{% extends 'Documents/base.html' %}
 
 {% load staticfiles %}
-{% block body  %}
-<link rel="stylesheet" type="text/css" href="{% static 'Documents/doc_inf_style.css' %}" />
+{% block body %}
+    <link rel="stylesheet" type="text/css" href="{% static 'Documents/doc_inf_style.css' %}"/>
 
     <style>
-    .container {
-        background-color: rgba(214, 184, 150, 0.8);
-        color: saddlebrown;
-        font-size: 15px;
-        overflow:visible;
-        position:absolute;
-        left: 30%;
-        top: 35%;
-        width: 40%;
-        border: 0;
-        border-radius: 10px;
-        margin: 0 auto 60px;
-    }
+        .container {
+            background-color: rgba(214, 184, 150, 0.8);
+            color: saddlebrown;
+            font-size: 15px;
+            overflow: visible;
+            position: absolute;
+            left: 30%;
+            top: 35%;
+            width: 40%;
+            border: 0;
+            border-radius: 10px;
+            margin: 0 auto 60px;
+        }
 
-    h2 {
-        color: black;
-        font-size: 40px;
-        text-align: center;
-    }
+        h2 {
+            color: black;
+            font-size: 40px;
+            text-align: center;
+        }
 
-    form {
-        padding: 5px;
-        color: black;
-        font-size: 15px;
-        margin: 5px;
-    }
+        form {
+            padding: 5px;
+            color: black;
+            font-size: 15px;
+            margin: 5px;
+        }
 
-    input {
-        background-color: floralwhite;
-        border: 2px solid saddlebrown;
-        border-radius: 5px;
-        margin: 0 0 0 10px;
-        left: 50%;
-    }
+        input {
+            background-color: floralwhite;
+            border: 2px solid saddlebrown;
+            border-radius: 5px;
+            margin: 0 0 0 10px;
+            left: 50%;
+        }
 
+        p {
+            color: black;
+            margin: 15px;
+            font-size: 20px;
+        }
 
-    p {
-        color: black;
-        margin: 15px;
-        font-size: 20px;
-    }
+        a {
+            color: black;
+        }
 
+        table {
+            background: none;
+            border: none;
+            table-layout: fixed;
+            width: 100%;
+        }
 
-    a {
-        color: black;
-    }
+        tr {
+            border: none;
+            text-align: left;
+        }
 
-    table {
-        background: none;
-        border: none;
-        table-layout: fixed;
-        width: 100%;
-    }
+        td {
+            border: none;
+            text-align: left;
+            width: 50%;
+        }
 
-    tr {
-        border: none;
-        text-align: left;
-    }
+        img {
+            height: 300px;
+            margin: auto;
+        }
 
-    td {
-        border: none;
-        text-align: left;
-        width: 50%;
-    }
+        li {
+            font-size: 20px;
+        }
 
-    img {
-        height: 300px;
-        margin: auto;
-    }
-
-    li {
-        font-size: 20px;
-    }
-
-</style>
-<div class="container">
+    </style>
+    <div class="container">
 
     <h2>Select the type of document you want to add:<br></h2>
     <ul>
-    {% for cls in clss %}
+        {% for cls in clss %}
 
-        <li><a href="/create/?type={{cls}}">{{cls}}</a><br></li>
-    {% endfor %}
+            <li><a href="/create/?type={{ cls }}">{{ cls }}</a><br></li>
+        {% endfor %}
     </ul>
 
-{% endblock  %}
+{% endblock %}
 </div>

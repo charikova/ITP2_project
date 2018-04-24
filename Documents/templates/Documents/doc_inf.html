@@ -1,136 +1,137 @@
-{% extends 'Documents/base.html'  %}
+{% extends 'Documents/base.html' %}
 
 {% load staticfiles %}
-{% block body  %}
-<link rel="stylesheet" type="text/css" href="{% static 'Documents/doc_inf_style.css' %}"/>
+{% block body %}
+    <link rel="stylesheet" type="text/css" href="{% static 'Documents/doc_inf_style.css' %}"/>
 
-<style>
-    .container {
-        background-color: rgba(214, 184, 150, 0);
-        color: saddlebrown;
-        font-size: 15px;
-        overflow: visible;
-        position: absolute;
-        left: 25%;
-        top: 10%;
-        width: 50%;
-        border: 0;
-        border-radius: 10px;
-        margin: 0 auto 60px;
-    }
+    <style>
+        .container {
+            background-color: rgba(214, 184, 150, 0);
+            color: saddlebrown;
+            font-size: 15px;
+            overflow: visible;
+            position: absolute;
+            left: 25%;
+            top: 10%;
+            width: 50%;
+            border: 0;
+            border-radius: 10px;
+            margin: 0 auto 60px;
+        }
 
-    h2 {
-        color: white;
-        font-size: 40px;
-        text-align: center;
-    }
+        h2 {
+            color: white;
+            font-size: 40px;
+            text-align: center;
+        }
 
-    form {
-        padding: 5px;
-        color: black;
-        font-size: 15px;
-        margin: 5px;
-    }
+        form {
+            padding: 5px;
+            color: black;
+            font-size: 15px;
+            margin: 5px;
+        }
 
-    input {
-        background-color: floralwhite;
-        border: 2px solid saddlebrown;
-        border-radius: 5px;
-        margin: 0 0 0 10px;
-        left: 50%;
-    }
+        input {
+            background-color: floralwhite;
+            border: 2px solid saddlebrown;
+            border-radius: 5px;
+            margin: 0 0 0 10px;
+            left: 50%;
+        }
 
-    p {
-        color: black;
-        margin: 15px;
-        font-size: 20px;
-    }
+        p {
+            color: black;
+            margin: 15px;
+            font-size: 20px;
+        }
 
-    table {
-        border: none;
-        border-radius: 10px;
-        width: 100%;
-        background-color: rgba(214, 184, 150, 0.8);
-        margin: 10px;
-        table-layout: auto;
-    }
+        table {
+            border: none;
+            border-radius: 10px;
+            width: 100%;
+            background-color: rgba(214, 184, 150, 0.8);
+            margin: 10px;
+            table-layout: auto;
+        }
 
-    tr {
-        border: none;
-        text-align: left;
-    }
+        tr {
+            border: none;
+            text-align: left;
+        }
 
-    td {
-        border: none;
-        text-align: left;
-        padding: 3%;
-    }
+        td {
+            border: none;
+            text-align: left;
+            padding: 3%;
+        }
 
-    img {
-        width: 250px;
-        height: auto;
-        margin: 1%;
-        border-radius: 5px;
-    }
+        img {
+            width: 250px;
+            height: auto;
+            margin: 1%;
+            border-radius: 5px;
+        }
 
-    .button {
-        margin-left: 43%;
-    }
+        .button {
+            margin-left: 43%;
+        }
 
-    .upd_del {
-        margin-left: 30%;
-        width: 20%;
-        background-color: rgba(214, 184, 150, 0);
-    }
+        .upd_del {
+            margin-left: 30%;
+            width: 20%;
+            background-color: rgba(214, 184, 150, 0);
+        }
 
-    .up {
-        vertical-align: top;
-    }
+        .up {
+            vertical-align: top;
+        }
 
 
-</style>
+    </style>
 
-<script type="text/javascript">
-    function httpGet(theUrl) {
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("GET", theUrl, false); // false for synchronous request
-        xmlHttp.send(null);
-        return xmlHttp.responseText;
-    }
-</script>
+    <script type="text/javascript">
+        function httpGet(theUrl) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", theUrl, false); // false for synchronous request
+            xmlHttp.send(null);
+            return xmlHttp.responseText;
+        }
+    </script>
 
-<div class="container">
+    <div class="container">
     <h2>Document information</h2>
     <table>
         <tr>
             <td>{% for key, value in fields %}<p>
-                    {{key}}: {{value}}
-                </p>{%endfor%}</td>
-            <td class="up"><img src="{{cover}}" align="center"></td>
+                {{ key }}: {{ value }}
+            </p>{% endfor %}</td>
+            <td class="up"><img src="{{ cover }}" align="center"></td>
         </tr>
     </table>
 
     {% if user.is_staff %}
         <table class="upd_del">
-        <tr>
-            {% if user.is_superuser or user.userprofile.privileges == 'priv3' %}
-            <td><a class="button button_del" href="delete/" onclick="return confirm('Delete {{doc.title}}?')">Delete</a></td>
+            <tr>
+                {% if user.is_superuser or user.userprofile.privileges == 'priv3' %}
+                    <td><a class="button button_del" href="delete/" onclick="return confirm('Delete {{ doc.title }}?')">Delete</a>
+                    </td>
                 {% endif %}
-            <td><a class="button" href="update/">Update</a></td>
-        </tr>
+                <td><a class="button" href="update/">Update</a></td>
+            </tr>
         </table>
         </br>
-{% if user.userprofile.privileges == 'priv2' or user.userprofile.privileges == 'priv3' or user.is_superuser %}
-            <a class="button" href="/requests/outstanding_request/?doc_id={{doc.id}}">Outstanding request</a>
-                {% endif %}
+        {% if user.userprofile.privileges == 'priv2' or user.userprofile.privileges == 'priv3' or user.is_superuser %}
+            <a class="button" href="/requests/outstanding_request/?doc_id={{ doc.id }}">Outstanding request</a>
+        {% endif %}
     {% elif user.is_authenticated and not doc.is_reference %}
-    <button class="button" onclick="
-        var response = httpGet('/requests/make_new/?doc={{doc.id}}');
-        alert(response);
-        ">Request
-    </button>
+        <button class="button" onclick="
+                var response = httpGet('/requests/make_new/?doc={{ doc.id }}');
+                alert(response);
+                ">Request
+        </button>
     {% endif %}
-    {% endblock %}
+{% endblock %}
 
 </div>
 
