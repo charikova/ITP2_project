@@ -1341,15 +1341,15 @@ class Delivery3(TestCase):
 class Delivery4(TestCase):
 
     def test_init_db(self):
-        # self.admin = User.objects.create('admin1', 'ad@mail.ru', '12356qwerty',
-        #                                    first_name='admin',
-        #                                    last_name='admin',
-        #                                    is_superuser=True)
-        #
-        # UserProfile.objects.create(user=self.admin,
-        #                            phone_number=30001,
-        #                            status='admin',
-        #                            address='Via Margutta, 3')
+        self.admin = User.objects.create_user('admin1', 'ad@mail.ru', '12356qwerty',
+                                           first_name='admin',
+                                           last_name='admin',
+                                           is_superuser=True)
+
+        UserProfile.objects.create(user=self.admin,
+                                   phone_number=30001,
+                                   status='admin',
+                                   address='Via Margutta, 3')
 
         self.d1 = Book.objects.create(title='Introduction to Algorithms',
                                       price=5000,
@@ -1658,7 +1658,7 @@ class Delivery4(TestCase):
         v = setup_view(CreateUserView, request)
         v.post(v, request)
 
-        self.assertEqual(len(User.objects.all()), 8)
+        self.assertEqual(len(User.objects.all()), 9)
 
 
     def test_TC5(self):
@@ -1698,57 +1698,68 @@ class Delivery4(TestCase):
                  [b'Copies: 2']]))
 
 
-    # def test_TC6(self):
-    #     self.test_TC4()
-    #
-    #     # p1 leaves a request for a book d3
-    #     request = HttpRequest()
-    #     request.method = "GET"
-    #     request.user = self.p1
-    #     request.GET['doc'] = self.d3.id
-    #     make_new(request)
-    #
-    #     # p2 leaves a request for a book d3
-    #     request.user = self.p2
-    #     request.GET['doc'] = self.d3.id
-    #     make_new(request)
-    #
-    #     # s leaves a request for a book d3
-    #     request.user = self.s
-    #     request.GET['doc'] = self.d3.id
-    #     make_new(request)
-    #
-    #     # v leaves a request for a book d3
-    #     request.user = self.v
-    #     request.GET['doc'] = self.d3.id
-    #     make_new(request)
-    #
-    #     # p3 leaves a request for a book d3
-    #     request.user = self.p3
-    #     request.GET['doc'] = self.d3.id
-    #     make_new(request)
-    #
-    #     # now librarian should approve requests
-    #     request = HttpRequest()
-    #     request.method = "GET"
-    #     request.user = self.librarian
-    #
-    #     # approve 1st (p1 d3)
-    #     request.GET['req_id'] = self.p1.request_set.get(doc=self.d3).id
-    #     request.GET['user_id'] = self.p1.id
-    #     approve_request(request)
-    #
-    #     # approve 2nd (p2 d3)
-    #     request.GET['req_id'] = self.p2.request_set.get(doc=self.d3).id
-    #     request.GET['user_id'] = self.p2.id
-    #     approve_request(request)
-    #
-    #     # approve 3rd (s d3)
-    #     request.GET['req_id'] = self.s.request_set.get(doc=self.d3).id
-    #     request.GET['user_id'] = self.s.id
-    #     approve_request(request)
-    #
-    #     # librarian places an outstanding request on d3
+    def test_TC6(self):
+        self.test_TC4()
+
+        # p1 leaves a request for a book d3
+        request = HttpRequest()
+        request.method = "GET"
+        p1 = User.objects.get(username='p1')
+        request.user = p1
+        request.GET['doc'] = self.d3.id
+        make_new(request)
+
+        # p2 leaves a request for a book d3
+        p2 = User.objects.get(username='p2')
+        request.user = p2
+        request.GET['doc'] = self.d3.id
+        make_new(request)
+
+        # s leaves a request for a book d3
+        s = User.objects.get(username='s')
+        request.user = s
+        request.GET['doc'] = self.d3.id
+        make_new(request)
+
+        # v leaves a request for a book d3
+        v = User.objects.get(username='v')
+        request.user = v
+        request.GET['doc'] = self.d3.id
+        make_new(request)
+
+        # p3 leaves a request for a book d3
+        p3 = User.objects.get(username='p3')
+        request.user = p3
+        request.GET['doc'] = self.d3.id
+        make_new(request)
+
+        # now librarian should approve requests
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.l1
+
+        # approve 1st (p1 d3)
+        request.GET['req_id'] = p1.request_set.get(doc=self.d3).id
+        request.GET['user_id'] = p1.id
+        approve_request(request)
+
+        # approve 2nd (p2 d3)
+        request.GET['req_id'] = p2.request_set.get(doc=self.d3).id
+        request.GET['user_id'] = p2.id
+        approve_request(request)
+
+        # approve 3rd (s d3)
+        request.GET['req_id'] = s.request_set.get(doc=self.d3).id
+        request.GET['user_id'] = s.id
+        approve_request(request)
+
+        # librarian places an outstanding request on d3
+        request.GET['doc_id'] = self.d2.id
+        outstanding_request(request)
+
+
+
+
     def test_TC7(self):
         pass
 
