@@ -1341,14 +1341,15 @@ class Delivery3(TestCase):
 class Delivery4(TestCase):
 
     def test_init_db(self):
-        self.admin = User.objects.create('admin1', 'ad@mail.ru', '12356qwerty',
-                                           first_name='admin',
-                                           last_name='admin', is_superuser=True)
-
-        UserProfile.objects.create(user=self.admin,
-                                   phone_number=30001,
-                                   status='admin',
-                                   address='Via Margutta, 3')
+        # self.admin = User.objects.create('admin1', 'ad@mail.ru', '12356qwerty',
+        #                                    first_name='admin',
+        #                                    last_name='admin',
+        #                                    is_superuser=True)
+        #
+        # UserProfile.objects.create(user=self.admin,
+        #                            phone_number=30001,
+        #                            status='admin',
+        #                            address='Via Margutta, 3')
 
         self.d1 = Book.objects.create(title='Introduction to Algorithms',
                                       price=5000,
@@ -1419,7 +1420,66 @@ class Delivery4(TestCase):
         self.test_init_db()
         self.test_TC2()
 
+        # #all requered copies created by l2
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.l1
 
+        try:
+            # for d1
+            doc = get_doc(request, self.d1.id)
+
+            fields = get_fields_of(doc)
+            fields = dict(fields)
+
+            fields['copies'] = '3'
+            fields['submit'] = 'Submit'
+
+            qdict = QueryDict('', mutable=True)
+            qdict.update(fields)
+
+            request.method = "POST"
+            request.POST = qdict
+            update_doc(request, self.d1.id)
+
+            # for d2
+            doc = get_doc(request, self.d2.id)
+
+            fields = get_fields_of(doc)
+            fields = dict(fields)
+
+            fields['copies'] = '3'
+            fields['submit'] = 'Submit'
+
+            qdict = QueryDict('', mutable=True)
+            qdict.update(fields)
+
+            request.method = "POST"
+            request.POST = qdict
+            update_doc(request, self.d2.id)
+
+            # for d3
+            doc = get_doc(request, self.d3.id)
+
+            fields = get_fields_of(doc)
+            fields = dict(fields)
+
+            fields['copies'] = '3'
+            fields['submit'] = 'Submit'
+
+            qdict = QueryDict('', mutable=True)
+            qdict.update(fields)
+
+            request.method = "POST"
+            request.POST = qdict
+            update_doc(request, self.d3.id)
+
+        except:
+            pass
+
+        self.assertEqual(Document.objects.get(id=self.d1.id).copies, 0)
+        self.assertEqual(Document.objects.get(id=self.d2.id).copies, 0)
+        self.assertEqual(Document.objects.get(id=self.d3.id).copies, 0)
 
     def test_TC4(self):
 
@@ -1498,7 +1558,7 @@ class Delivery4(TestCase):
         # now l2 will create users using forms
 
         # create s1
-        form_data_s = {'username': 'patron4',
+        form_data_s = {'username': 's',
                        'status': "student",
                        'privileges': "no privileges",
                        'email': 's@mail.ru',
@@ -1516,7 +1576,7 @@ class Delivery4(TestCase):
         v.post(v, request)
 
         # create p1
-        form_data_p1 = {'username': 'patron1',
+        form_data_p1 = {'username': 'p1',
                         'status': "professor",
                         'privileges': "no privileges",
                         'email': 'p1@mail.ru',
@@ -1534,7 +1594,7 @@ class Delivery4(TestCase):
         v.post(v, request)
 
         # create p2
-        form_data_p2 = {'username': 'patron2',
+        form_data_p2 = {'username': 'p2',
                         'status': "professor",
                         'privileges': "no privileges",
                         'email': 'p2@mail.ru',
@@ -1552,7 +1612,7 @@ class Delivery4(TestCase):
         v.post(v, request)
 
         # create p3
-        form_data_p3 = {'username': 'patron3',
+        form_data_p3 = {'username': 'p3',
                         'status': "professor",
                         'privileges': "no privileges",
                         'email': 'p3@mail.ru',
@@ -1570,7 +1630,7 @@ class Delivery4(TestCase):
         v.post(v, request)
 
         # create v
-        form_data_v = {'username': 'patron5',
+        form_data_v = {'username': 'v',
                        'status': "visiting professor",
                        'privileges': "no privileges",
                        'email': 'v@mail.ru',
@@ -1587,13 +1647,8 @@ class Delivery4(TestCase):
         v = setup_view(CreateUserView, request)
         v.post(v, request)
 
-        for i in User.objects.all():
-            print(i)
         self.assertEqual(len(User.objects.all()), 9)
 
-
-        # l2 checks information of the system
-        # -----------------------------------
 
     # def test_TC5(self):
     #     self.test_TC4()
