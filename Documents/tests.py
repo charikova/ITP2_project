@@ -1,8 +1,8 @@
 from django.core import mail
-from django.test import TestCase, Client
+from django.test import TestCase, Client, RequestFactory
 
 from BookRequests.models import Request
-from Documents.librarian_view import update_doc
+from Documents.librarian_view import update_doc, get_doc, get_fields_of
 from UserCards.models import UserProfile
 from django.http import HttpRequest, Http404, QueryDict
 from .models import *
@@ -11,7 +11,7 @@ import BookRequests
 from Documents.views import get_logging
 import datetime
 from UserCards.forms import AdminCreateUserForm
-from UserCards.views import user_card_info
+from UserCards.views import user_card_info, CreateUserView
 from django.utils import timezone
 
 
@@ -1378,50 +1378,12 @@ class Delivery4(TestCase):
                                       publisher='Addison Wesley Longman Publishing Co., Inc.',
                                       keywords='Algorithms, Combinatorial Algorithms, Recursion')
 
-        self.p1 = User.objects.create_user('p1', 'p1@mail.ru', '12356qwerty',
-                                           first_name='Sergey',
-                                           last_name='Afonso')
-        UserProfile.objects.create(user=self.p1,
-                                   phone_number=30001,
-                                   status='professor',
-                                   address='Via Margutta, 3')
-
-        self.p2 = User.objects.create_user('p2', 'p2@mail.ru', '12456qwerty',
-                                           first_name='Nadia',
-                                           last_name='Teixeira')
-        UserProfile.objects.create(user=self.p2,
-                                   phone_number=30002,
-                                   status='professor',
-                                   address='Via Sacra, 13')
-
-        self.p3 = User.objects.create_user('p3', 'p3@mail.ru', '23456qwerty',
-                                           first_name='Elvira',
-                                           last_name='Espindola')
-        UserProfile.objects.create(user=self.p3,
-                                   phone_number=30003,
-                                   status='professor',
-                                   address='Via del Corso, 22')
-
-        self.s = User.objects.create_user('s', 's@mail.ru', '23456qwerty',
-                                          first_name='Andrey',
-                                          last_name='Velo')
-        UserProfile.objects.create(user=self.s,
-                                   phone_number=30004,
-                                   status='student',
-                                   address='Avenida Mazatlan 250')
-
-        self.v = User.objects.create_user('v', 'v@mail.ru', '23456qwerty',
-                                          first_name='Veronika',
-                                          last_name='Rama')
-        UserProfile.objects.create(user=self.v,
-                                   phone_number=30005,
-                                   status='visiting professor',
-                                   address='Stret Atocha, 27')
 
     def test_TC2(self):
         self.l1 = User.objects.create_user('librarian1', 'exampl2@mail.ru', '12356qwerty',
                                            first_name='Librarian',
-                                           last_name='One')
+                                           last_name='One',
+                                           is_staff=True)
         UserProfile.objects.create(user=self.l1,
                                    phone_number=10001,
                                    status='librarian',
@@ -1429,7 +1391,8 @@ class Delivery4(TestCase):
                                    privileges='priv1')
 
         self.l2 = User.objects.create_user('librarian2', 'exampl2@mail.ru', '12356qwerty', first_name='Librarian',
-                                           last_name='Two')
+                                           last_name='Two',
+                                           is_staff=True)
         UserProfile.objects.create(user=self.l2,
                                    phone_number=10002,
                                    status='librarian',
@@ -1437,7 +1400,8 @@ class Delivery4(TestCase):
                                    privileges='priv2')
 
         self.l3 = User.objects.create_user('librarian3', 'exampl2@mail.ru', '12356qwerty', first_name='Librarian',
-                                           last_name='Three')
+                                           last_name='Three',
+                                           is_staff=True)
         UserProfile.objects.create(user=self.l3,
                                    phone_number=10003,
                                    status='librarian',
@@ -1451,46 +1415,250 @@ class Delivery4(TestCase):
         self.test_init_db()
         self.test_TC2()
 
-        try:
-            request = HttpRequest()
-            request.method = "POST"
-            request.user = self.l1
-            update_doc(request, self.d1.id)
-            self.d1.copies += 3
-            self.d1.save()
 
-            request.user = self.l1
-            update_doc(request, self.d2.id)
-            self.d2.copies += 3
-            self.d2.save()
-
-            request.user = self.l1
-            update_doc(request, self.d3.id)
-            self.d3.copies += 3
-            self.d3.save()
-
-
-        except:
-            pass
-
-        # response = RequestsView.as_view()(request)
-        # response = response.render()
-
-        self.assertEqual(self.d1.copies, 0)
-        self.assertEqual(self.d2.copies, 0)
-        self.assertEqual(self.d3.copies, 0)
 
     def test_TC4(self):
 
-        self.test_init_db()
+        def setup_view(view, request, *args, **kwargs):
+            view.request = request
+            view.args = args
+            view.kwargs = kwargs
+            return view
+
         self.test_TC2()
 
-    def test_TC5(self):
-        pass
+        # #all requered copies created by l2
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.l2
 
-    def test_TC6(self):
-        pass
+        # for d1
+        doc = get_doc(request, self.d1.id)
 
+        fields = get_fields_of(doc)
+        fields = dict(fields)
+
+        fields['copies'] = '3'
+        fields['submit'] = 'Submit'
+
+        qdict = QueryDict('', mutable=True)
+        qdict.update(fields)
+
+        request.method = "POST"
+        request.POST = qdict
+        update_doc(request, self.d1.id)
+
+        # for d2
+        doc = get_doc(request, self.d2.id)
+
+        fields = get_fields_of(doc)
+        fields = dict(fields)
+
+        fields['copies'] = '3'
+        fields['submit'] = 'Submit'
+
+        qdict = QueryDict('', mutable=True)
+        qdict.update(fields)
+
+        request.method = "POST"
+        request.POST = qdict
+        update_doc(request, self.d2.id)
+
+        # for d3
+        doc = get_doc(request, self.d3.id)
+
+        fields = get_fields_of(doc)
+        fields = dict(fields)
+
+        fields['copies'] = '3'
+        fields['submit'] = 'Submit'
+
+        qdict = QueryDict('', mutable=True)
+        qdict.update(fields)
+
+        request.method = "POST"
+        request.POST = qdict
+        update_doc(request, self.d3.id)
+
+        self.assertEqual(Document.objects.get(id=self.d1.id).copies, 3)
+        self.assertEqual(Document.objects.get(id=self.d2.id).copies, 3)
+        self.assertEqual(Document.objects.get(id=self.d3.id).copies, 3)
+
+        # Creating requestFactory for work with creation user forms
+        factory = RequestFactory()
+        request = factory.post('/user/create_user')
+        request.user = self.l2
+
+        # now l2 will create users using forms
+
+        # create s1
+        form_data_s = {'username': 'patron4',
+                       'status': "student",
+                       'privileges': "no privileges",
+                       'email': 's@mail.ru',
+                       'address': 'Avenida Mazatlan 250',
+                       'phone_number': '30004',
+                       'first_name': 'Andrey',
+                       'last_name': 'Velo',
+                       'password1': '23456qwerty',
+                       'password2': '23456qwerty',
+                       'submit': 'Submit'
+                       }
+
+        request.POST = form_data_s
+        v = setup_view(CreateUserView, request)
+        v.post(v, request)
+
+        # create p1
+        form_data_p1 = {'username': 'patron1',
+                        'status': "professor",
+                        'privileges': "no privileges",
+                        'email': 'p1@mail.ru',
+                        'address': 'Via Margutta, 3',
+                        'phone_number': '30001',
+                        'first_name': 'Sergey',
+                        'last_name': 'Afonso',
+                        'password1': '12356qwerty',
+                        'password2': '12356qwerty',
+                        'submit': 'Submit'
+                        }
+
+        request.POST = form_data_p1
+        v = setup_view(CreateUserView, request)
+        v.post(v, request)
+
+        # create p2
+        form_data_p2 = {'username': 'patron2',
+                        'status': "professor",
+                        'privileges': "no privileges",
+                        'email': 'p2@mail.ru',
+                        'address': 'Via Sacra, 13',
+                        'phone_number': '30002',
+                        'first_name': 'Nadia',
+                        'last_name': 'Teixeira',
+                        'password1': '12356qwerty',
+                        'password2': '12356qwerty',
+                        'submit': 'Submit'
+                        }
+
+        request.POST = form_data_p2
+        v = setup_view(CreateUserView, request)
+        v.post(v, request)
+
+        # create p3
+        form_data_p3 = {'username': 'patron3',
+                        'status': "professor",
+                        'privileges': "no privileges",
+                        'email': 'p3@mail.ru',
+                        'address': 'Via del Corso, 22',
+                        'phone_number': '30003',
+                        'first_name': 'Elvira',
+                        'last_name': 'Espindola',
+                        'password1': '2356qwerty',
+                        'password2': '2356qwerty',
+                        'submit': 'Submit'
+                        }
+
+        request.POST = form_data_p3
+        v = setup_view(CreateUserView, request)
+        v.post(v, request)
+
+        # create v
+        form_data_v = {'username': 'patron5',
+                       'status': "visiting professor",
+                       'privileges': "no privileges",
+                       'email': 'v@mail.ru',
+                       'address': 'Stret Atocha, 27',
+                       'phone_number': '30005',
+                       'first_name': 'Veronika',
+                       'last_name': 'Rama',
+                       'password1': '2356qwerty',
+                       'password2': '2356qwerty',
+                       'submit': 'Submit'
+                       }
+
+        request.POST = form_data_v
+        v = setup_view(CreateUserView, request)
+        v.post(v, request)
+
+        self.assertEqual(len(User.objects.all()), 9)
+
+        # l2 checks information of the system
+        # -----------------------------------
+
+    # def test_TC5(self):
+    #     self.test_TC4()
+    #
+    #     request = HttpRequest
+    #     request.method = "POST"
+    #     request.user = self.l3
+    #     doc = get_doc(request, self.d1.id)
+    #
+    #     fields = get_fields_of(doc)
+    #     fields = dict(fields)
+    #
+    #     num_of_copies = int(fields['copies'])
+    #     num_of_copies -= 1
+    #     fields['copies'] = str(num_of_copies)
+    #     fields['submit'] = 'Submit'
+    #
+    #     request.method = "POST"
+    #     request.POST = fields
+    #     response = update_doc(request, self.d1.id)
+    #
+    #     self.assertEqual(self.d1.copies, 2)
+
+    # def test_TC6(self):
+    #     self.test_TC4()
+    #
+    #     # p1 leaves a request for a book d3
+    #     request = HttpRequest()
+    #     request.method = "GET"
+    #     request.user = self.p1
+    #     request.GET['doc'] = self.d3.id
+    #     make_new(request)
+    #
+    #     # p2 leaves a request for a book d3
+    #     request.user = self.p2
+    #     request.GET['doc'] = self.d3.id
+    #     make_new(request)
+    #
+    #     # s leaves a request for a book d3
+    #     request.user = self.s
+    #     request.GET['doc'] = self.d3.id
+    #     make_new(request)
+    #
+    #     # v leaves a request for a book d3
+    #     request.user = self.v
+    #     request.GET['doc'] = self.d3.id
+    #     make_new(request)
+    #
+    #     # p3 leaves a request for a book d3
+    #     request.user = self.p3
+    #     request.GET['doc'] = self.d3.id
+    #     make_new(request)
+    #
+    #     # now librarian should approve requests
+    #     request = HttpRequest()
+    #     request.method = "GET"
+    #     request.user = self.librarian
+    #
+    #     # approve 1st (p1 d3)
+    #     request.GET['req_id'] = self.p1.request_set.get(doc=self.d3).id
+    #     request.GET['user_id'] = self.p1.id
+    #     approve_request(request)
+    #
+    #     # approve 2nd (p2 d3)
+    #     request.GET['req_id'] = self.p2.request_set.get(doc=self.d3).id
+    #     request.GET['user_id'] = self.p2.id
+    #     approve_request(request)
+    #
+    #     # approve 3rd (s d3)
+    #     request.GET['req_id'] = self.s.request_set.get(doc=self.d3).id
+    #     request.GET['user_id'] = self.s.id
+    #     approve_request(request)
+    #
+    #     # librarian places an outstanding request on d3
     def test_TC7(self):
         pass
 
