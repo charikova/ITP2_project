@@ -79,7 +79,7 @@
             }
 
             .small {
-                width: 40%;
+                width: 70%;
             }
 
             .paginator {
@@ -127,6 +127,14 @@
                 width: 100%;
             }
 
+            .t5 {
+                width: 10%;
+            }
+
+            .t6 {
+                width: 9%;
+            }
+
 
         </style>
 
@@ -159,7 +167,7 @@
                                               checked {% endif %}> </br>
                             Available <input class='t3' type="checkbox" name="available" {% if available %}
                                              checked {% endif %}> </br>
-                            No ref <input class='t3' type="checkbox" name="noref" {% if noref %}
+                            No reference <input class='t3' type="checkbox" name="noref" {% if noref %}
                                                 checked {% endif %}>
 
                         </div>
@@ -167,11 +175,11 @@
                     {% if user.is_staff %}
                         <td class="t5">Room <input class="small" type="number" name="room" {% if room %}
                                                    value="{{ room }}" {% endif %}></td>
-                        <td class="t5">Level <input class="small" type="number" name="level" {% if level %}
+                        <td class="t6">Level <input class="small" type="number" name="level" {% if level %}
                                                     value="{{ level }}" {% endif %}></td>
                     {% endif %}
 
-{#                    <td class="t2"><input type="reset" class="button" value="Reset"></td>#}
+                    {#                    <td class="t2"><input type="reset" class="button" value="Reset"></td>#}
 
                     <td class="t2"><input type="submit" class="button" value="Search"></td>
 
