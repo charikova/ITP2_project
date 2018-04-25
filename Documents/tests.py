@@ -1829,7 +1829,6 @@ class Delivery4(TestCase):
         response = RequestsView.as_view()(request)
         response = response.render()
 
-        print(OutStandingRequest.objects.filter(doc=self.d3))
         self.assertTrue(not all([word in response.content for word in
                                  [b'v', b'p3']]))
 
