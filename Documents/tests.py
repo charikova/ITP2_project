@@ -1693,7 +1693,7 @@ class Delivery4(TestCase):
         request.user = self.l1
         response = document_detail(request, self.d1.id)
 
-        #check if l1 can see that there are only 2 copies of d1
+        # check if l1 can see that there are only 2 copies of d1
         self.assertTrue(
             all([word in response.content for word in
                  [b'Copies: 2']]))
@@ -1753,71 +1753,213 @@ class Delivery4(TestCase):
         request.GET['user_id'] = s.id
         approve_request(request)
 
-        # librarian places an outstanding request on d3
-        request.GET['doc_id'] = self.d2.id
-        outstanding_request(request)
+        # librarian try to place an outstanding request on d3
+        try:
+            request.GET['doc_id'] = self.d3.id
+            request.user = self.l1
+            outstanding_request(request)
+        except:
+            pass
+
+        self.assertEqual(len(OutStandingRequest.objects.filter(doc=self.d3)), 0)
 
     def test_TC7(self):
-        pass
+        self.test_TC4()
 
-    # def test_TC8(self):
-    #     datafile = open('data.log', 'r')
-    #     datafile.write('')  # clear all logs before making changes in system
-    #     self.test_TC6()
-    #     data = datafile.readlines()
-    #     datafile.close()
-    #     all_in = lambda x, y: all([item in y for item in x])  # check that all items of x are in y
-    #     self.assertTrue(all_in(['admin1', 'created', 'l1'], data[0]))
-    #     self.assertTrue(all_in(['admin1', 'created', 'l2'], data[1]))
-    #     self.assertTrue(all_in(['admin1', 'created', 'l3'], data[2]))
-    #     self.assertTrue(all_in(['l2', 'updated', self.d1.title], data[3]))
-    #     self.assertTrue(all_in(['l2', 'updated', self.d2.title], data[4]))
-    #     self.assertTrue(all_in(['l2', 'updated', self.d3.title], data[5]))
-    #     self.assertTrue(all_in(['l2', 'created', 's'], data[6]))
-    #     self.assertTrue(all_in(['l2', 'created', 'p1'], data[7]))
-    #     self.assertTrue(all_in(['l2', 'created', 'p2'], data[8]))
-    #     self.assertTrue(all_in(['l2', 'created', 'p3'], data[9]))
-    #     self.assertTrue(all_in(['l2', 'created', 'v'], data[10]))
-    #     self.assertTrue(all_in(['p1', 'approved request', self.d3.title], data[11]))
-    #     self.assertTrue(all_in(['p2', 'approved request', self.d3.title], data[12]))
-    #     self.assertTrue(all_in(['s', 'approved request', self.d3.title], data[13]))
-    #     self.assertTrue(all_in(['v', 'approved request', self.d3.title], data[14]))
-    #     self.assertTrue(all_in(['p3', 'approved request', self.d3.title], data[15]))
-    #
-    # def test_TC9(self):
-    #     datafile = open('data.log', 'r')
-    #     datafile.write('')  # clear all logs before making changes in system
-    #     self.test_TC7()
-    #     data = datafile.readlines()
-    #     datafile.close()
-    #     all_in = lambda x, y: all([item in y for item in x])  # check that all items of x are in y
-    #     self.assertTrue(all_in(['admin1', 'created', 'l1'], data[0]))
-    #     self.assertTrue(all_in(['admin1', 'created', 'l2'], data[1]))
-    #     self.assertTrue(all_in(['admin1', 'created', 'l3'], data[2]))
-    #     self.assertTrue(all_in(['l2', 'updated', self.d1.title], data[3]))
-    #     self.assertTrue(all_in(['l2', 'updated', self.d2.title], data[4]))
-    #     self.assertTrue(all_in(['l2', 'updated', self.d3.title], data[5]))
-    #     self.assertTrue(all_in(['l2', 'created', 's'], data[6]))
-    #     self.assertTrue(all_in(['l2', 'created', 'p1'], data[7]))
-    #     self.assertTrue(all_in(['l2', 'created', 'p2'], data[8]))
-    #     self.assertTrue(all_in(['l2', 'created', 'p3'], data[9]))
-    #     self.assertTrue(all_in(['l2', 'created', 'v'], data[10]))
-    #     self.assertTrue(all_in(['p1', 'approved request', self.d3.title], data[11]))
-    #     self.assertTrue(all_in(['p2', 'approved request', self.d3.title], data[12]))
-    #     self.assertTrue(all_in(['s', 'approved request', self.d3.title], data[13]))
-    #     self.assertTrue(all_in(['v', 'approved request', self.d3.title], data[14]))
-    #     self.assertTrue(all_in(['p3', 'approved request', self.d3.title], data[15]))
-    #     self.assertTrue(all_in(['l3', 'outstanding request', self.d3.title], data[16]))
-    #     self.assertTrue(all_in(['l3', 'waiting list deleted', self.d3.title], data[17]))
+        # p1 leaves a request for a book d3
+        request = HttpRequest()
+        request.method = "GET"
+        p1 = User.objects.get(username='p1')
+        request.user = p1
+        request.GET['doc'] = self.d3.id
+        make_new(request)
+
+        # p2 leaves a request for a book d3
+        p2 = User.objects.get(username='p2')
+        request.user = p2
+        request.GET['doc'] = self.d3.id
+        make_new(request)
+
+        # s leaves a request for a book d3
+        s = User.objects.get(username='s')
+        request.user = s
+        request.GET['doc'] = self.d3.id
+        make_new(request)
+
+        # v leaves a request for a book d3
+        v = User.objects.get(username='v')
+        request.user = v
+        request.GET['doc'] = self.d3.id
+        make_new(request)
+
+        # p3 leaves a request for a book d3
+        p3 = User.objects.get(username='p3')
+        request.user = p3
+        request.GET['doc'] = self.d3.id
+        make_new(request)
+
+        # now librarian should approve requests
+        request = HttpRequest()
+        request.method = "GET"
+        request.user = self.l1
+
+        # approve 1st (p1 d3)
+        request.GET['req_id'] = p1.request_set.get(doc=self.d3).id
+        request.GET['user_id'] = p1.id
+        approve_request(request)
+
+        # approve 2nd (p2 d3)
+        request.GET['req_id'] = p2.request_set.get(doc=self.d3).id
+        request.GET['user_id'] = p2.id
+        approve_request(request)
+
+        # approve 3rd (s d3)
+        request.GET['req_id'] = s.request_set.get(doc=self.d3).id
+        request.GET['user_id'] = s.id
+        approve_request(request)
+
+        # librarian places an outstanding request on d3
+        request.GET['doc_id'] = self.d3.id
+        outstanding_request(request)
+
+        # check waiting list
+        request.user = self.l1
+        request.GET['doc_id'] = self.d3.id
+
+        response = RequestsView.as_view()(request)
+        response = response.render()
+
+        print(OutStandingRequest.objects.filter(doc=self.d3))
+        self.assertTrue(not all([word in response.content for word in
+                                 [b'v', b'p3']]))
+
+        # check mail
+        for i in range(0, 4):
+            self.assertEqual(mail.outbox[i].subject, 'Come to library for document approving')
+
+        self.assertEqual(mail.outbox[5].to, ['p1@mail.ru'])
+        self.assertEqual(mail.outbox[6].to, ['p2@mail.ru'])
+        self.assertEqual(mail.outbox[7].to, ['s@mail.ru'])
+        self.assertEqual(mail.outbox[5].subject, 'Approved request')
+        self.assertEqual(mail.outbox[6].subject, 'Approved request')
+        self.assertEqual(mail.outbox[7].subject, 'Approved request')
+
+        self.assertEqual(mail.outbox[8].to, ['p3@mail.ru'])
+        self.assertEqual(mail.outbox[9].to, ['v@mail.ru'])
+        self.assertEqual(mail.outbox[10].to, ['p1@mail.ru'])
+
+        self.assertEqual(mail.outbox[11].to, ['p2@mail.ru'])
+        self.assertEqual(mail.outbox[12].to, ['s@mail.ru'])
+
+        for i in range(8, 12):
+            self.assertEqual(mail.outbox[i].subject, 'Outstanding request')
+
+    def test_TC8(self):
+        datafile = open('data.log', 'r')
+        datafile.write('')  # clear all logs before making changes in system
+        self.test_TC6()
+        data = datafile.readlines()
+        datafile.close()
+        all_in = lambda x, y: all([item in y for item in x])  # check that all items of x are in y
+        self.assertTrue(all_in(['admin1', 'created', 'l1'], data[0]))
+        self.assertTrue(all_in(['admin1', 'created', 'l2'], data[1]))
+        self.assertTrue(all_in(['admin1', 'created', 'l3'], data[2]))
+        self.assertTrue(all_in(['l2', 'updated', self.d1.title], data[3]))
+        self.assertTrue(all_in(['l2', 'updated', self.d2.title], data[4]))
+        self.assertTrue(all_in(['l2', 'updated', self.d3.title], data[5]))
+        self.assertTrue(all_in(['l2', 'created', 's'], data[6]))
+        self.assertTrue(all_in(['l2', 'created', 'p1'], data[7]))
+        self.assertTrue(all_in(['l2', 'created', 'p2'], data[8]))
+        self.assertTrue(all_in(['l2', 'created', 'p3'], data[9]))
+        self.assertTrue(all_in(['l2', 'created', 'v'], data[10]))
+        self.assertTrue(all_in(['p1', 'approved request', self.d3.title], data[11]))
+        self.assertTrue(all_in(['p2', 'approved request', self.d3.title], data[12]))
+        self.assertTrue(all_in(['s', 'approved request', self.d3.title], data[13]))
+        self.assertTrue(all_in(['v', 'approved request', self.d3.title], data[14]))
+        self.assertTrue(all_in(['p3', 'approved request', self.d3.title], data[15]))
+
+    def test_TC9(self):
+        datafile = open('data.log', 'r')
+        datafile.write('')  # clear all logs before making changes in system
+        self.test_TC7()
+        data = datafile.readlines()
+        datafile.close()
+        all_in = lambda x, y: all([item in y for item in x])  # check that all items of x are in y
+        self.assertTrue(all_in(['admin1', 'created', 'l1'], data[0]))
+        self.assertTrue(all_in(['admin1', 'created', 'l2'], data[1]))
+        self.assertTrue(all_in(['admin1', 'created', 'l3'], data[2]))
+        self.assertTrue(all_in(['l2', 'updated', self.d1.title], data[3]))
+        self.assertTrue(all_in(['l2', 'updated', self.d2.title], data[4]))
+        self.assertTrue(all_in(['l2', 'updated', self.d3.title], data[5]))
+        self.assertTrue(all_in(['l2', 'created', 's'], data[6]))
+        self.assertTrue(all_in(['l2', 'created', 'p1'], data[7]))
+        self.assertTrue(all_in(['l2', 'created', 'p2'], data[8]))
+        self.assertTrue(all_in(['l2', 'created', 'p3'], data[9]))
+        self.assertTrue(all_in(['l2', 'created', 'v'], data[10]))
+        self.assertTrue(all_in(['p1', 'approved request', self.d3.title], data[11]))
+        self.assertTrue(all_in(['p2', 'approved request', self.d3.title], data[12]))
+        self.assertTrue(all_in(['s', 'approved request', self.d3.title], data[13]))
+        self.assertTrue(all_in(['v', 'approved request', self.d3.title], data[14]))
+        self.assertTrue(all_in(['p3', 'approved request', self.d3.title], data[15]))
+        self.assertTrue(all_in(['l3', 'outstanding request', self.d3.title], data[16]))
+        self.assertTrue(all_in(['l3', 'waiting list deleted', self.d3.title], data[17]))
 
     def test_TC10(self):
-        pass
+        self.test_TC4()
+
+        def setup_view(view, request, *args, **kwargs):
+            view.request = request
+            view.args = args
+            view.kwargs = kwargs
+            return view
+
+        factory = RequestFactory()
+        request = factory.get('/?type=All&title=Introduction+to+Algorithms&authors=&keywords=')
+        request.user = User.objects.get(username='v')
+
+        v = setup_view(IndexView, request)
+        a = v.get_queryset(v)
+
+        self.assertEqual(len(a.filter(title='Introduction to Algorithms')), 1)
 
     def test_TC11(self):
-        pass
+        self.test_TC4()
+
+        def setup_view(view, request, *args, **kwargs):
+            view.request = request
+            view.args = args
+            view.kwargs = kwargs
+            return view
+
+        factory = RequestFactory()
+        request = factory.get('/?type=All&title=Algorithms&authors=&keywords=')
+        request.user = User.objects.get(username='v')
+
+        v = setup_view(IndexView, request)
+        a = v.get_queryset(v)
+
+        self.assertEqual(len(a.filter(title='Introduction to Algorithms')), 1)
+        self.assertEqual(len(a.filter(title='Algorithms + Data Structures = Programs')), 1)
 
     def test_TC12(self):
-        pass
+        self.test_TC4()
+
+        def setup_view(view, request, *args, **kwargs):
+            view.request = request
+            view.args = args
+            view.kwargs = kwargs
+            return view
+
+        factory = RequestFactory()
+        request = factory.get('/?type=All&title=&authors=&keywords=Algorithms')
+        request.user = User.objects.get(username='v')
+
+        v = setup_view(IndexView, request)
+        a = v.get_queryset(v)
+
+        self.assertEqual(len(a.filter(title='Introduction to Algorithms')), 1)
+        self.assertEqual(len(a.filter(title='Algorithms + Data Structures = Programs')), 1)
+        self.assertEqual(len(a.filter(title='The Art of Computer Programming')), 1)
 
     def test_TC13(self):
         self.test_TC4()

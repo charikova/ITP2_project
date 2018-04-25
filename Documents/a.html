@@ -1,0 +1,336 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <title>MainPage</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Innopolka</title>
+
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+
+    <style>
+        body {
+            font-family: Futura;
+            color: white;
+            background: url("/Documents/static/images/background.jpg") no-repeat fixed center center;
+            background-size: cover;
+        }
+
+        table {
+            border: 3px solid saddlebrown;
+            border-radius: 5px;
+            width: 80%;
+            background-color: rgba(214, 184, 150, 0.8);
+            color: black;
+            empty-cells: hide;
+            text-align: center;
+            margin: 10px;
+
+        }
+
+        tr {
+            border: 1px solid saddlebrown;
+            text-align: center;
+        }
+
+        td {
+            border: 1px solid saddlebrown;
+            padding: 10px;
+            font-size: 20px;
+            color: black;
+        }
+
+        img {
+            height: 100px;
+            position: center;
+            opacity: 1;
+        }
+
+        .container {
+            background-color: rgba(214, 184, 150, 0.8);
+            color: saddlebrown;
+            font-size: 15px;
+            margin: 0 auto;
+            overflow: visible;
+            position: absolute;
+            left: 38%;
+            top: 25%;
+            width: 24%;
+            border-radius: 10px;
+        }
+
+        form {
+            padding: 5px;
+            color: black;
+            font-size: 15px;
+            margin: 5px;
+        }
+
+        input {
+            background-color: floralwhite;
+            border: 2px solid saddlebrown;
+            border-radius: 5px;
+            margin: 0 0 0 10px;
+            left: 50%;
+        }
+
+        h2 {
+            color: black;
+            font-size: 40px;
+            text-align: center;
+        }
+
+        .button {
+            text-decoration: none;
+            text-align: center;
+            padding: 11px 12px;
+            border: solid 2px #6b2c02;
+            -webkit-border-radius: 15px;
+            -moz-border-radius: 15px;
+            border-radius: 15px;
+            font: 14px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+            font-weight: bold;
+            color: #292208;
+            background-color: #ded192;
+            background-image: -moz-linear-gradient(top, #ded192 0%, #c49543 100%);
+            background-image: -webkit-linear-gradient(top, #ded192 0%, #c49543 100%);
+            background-image: -o-linear-gradient(top, #ded192 0%, #c49543 100%);
+            background-image: -ms-linear-gradient(top, #ded192 0%, #c49543 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#c49543', endColorstr='#c49543', GradientType=0);
+            background-image: linear-gradient(top, #ded192 0%, #c49543 100%);
+            -webkit-box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
+            -moz-box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
+            box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
+
+        }
+
+        .button:hover {
+            padding: 11px 12px;
+            border: solid 2px #6b2c02;
+            -webkit-border-radius: 15px;
+            -moz-border-radius: 15px;
+            border-radius: 15px;
+            font: 14px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+            font-weight: bold;
+            color: #000000;
+            background-color: #d4c05b;
+            background-image: -moz-linear-gradient(top, #d4c05b 0%, #a37424 100%);
+            background-image: -webkit-linear-gradient(top, #d4c05b 0%, #a37424 100%);
+            background-image: -o-linear-gradient(top, #d4c05b 0%, #a37424 100%);
+            background-image: -ms-linear-gradient(top, #d4c05b 0%, #a37424 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a37424', endColorstr='#a37424', GradientType=0);
+            background-image: linear-gradient(top, #d4c05b 0%, #a37424 100%);
+            -webkit-box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
+            -moz-box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
+            box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
+
+        }
+
+        .button:active {
+            padding: 11px 12px;
+            border: solid 3px #6b2c02;
+            -webkit-border-radius: 15px;
+            -moz-border-radius: 15px;
+            border-radius: 15px;
+            font: 14px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+            font-weight: bold;
+            color: #292208;
+            background-color: #ffe66b;
+            background-image: -moz-linear-gradient(top, #ffe66b 0%, #b07d25 100%);
+            background-image: -webkit-linear-gradient(top, #ffe66b 0%, #b07d25 100%);
+            background-image: -o-linear-gradient(top, #ffe66b 0%, #b07d25 100%);
+            background-image: -ms-linear-gradient(top, #ffe66b 0%, #b07d25 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#b07d25', endColorstr='#b07d25', GradientType=0);
+            background-image: linear-gradient(top, #ffe66b 0%, #b07d25 100%);
+            -webkit-box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
+            -moz-box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
+            box-shadow: 1px 1px 2px #bababa, inset 0px 0px 1px #969393;
+
+        }
+
+    </style>
+
+</head>
+<body>
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Innopolka</a>
+
+            <ul class="nav navbar-nav navbar-right">
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="/user/" id="dropdown01" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">
+                            Librarian</a>
+                        <div class="dropdown-menu" aria-labelledby="dropdown01">
+
+
+
+
+                            <a class="dropdown-item" href="/requests/">Requests</a> <br>
+                            <a class="dropdown-item" href="/user/all/?l=on&p=on">All users</a> <br>
+                            <a class="dropdown-item" href="/checked_out_docs/">Checked out documents</a>
+                        </div>
+                    </ul>
+
+
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <form class="navbar-form navbar-left" action="/">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="q" placeholder="Search by title" >
+                </div>
+                <input type="submit" class="btn btn-default not_wide" value="Search">
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="nav-item dropdown">
+                            <a class="navbar-brand" href="/user/?id=2" id="dropdown02"
+                               data-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="false">Librarian One</a>
+                            <div class="dropdown-menu" aria-labelledby="dropdown01">
+                                <a class="dropdown-item" href="/user/?id=2">Profile</a> <br>
+
+                                <a class="dropdown-item" href="/user/logout">Log Out</a> <br>
+                            </div>
+                    </ul>
+
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
+
+
+
+        <link rel="stylesheet" type="text/css" href="/Documents/static/Documents/style.css"/>
+
+        <style>
+            h1 {
+                font-size: 50px;
+            }
+
+            .cen {
+                text-align: center;
+                font-size: 20px;
+            }
+
+            table {
+                border: none;
+                border-radius: 10px;
+            }
+
+            tr {
+                border: none;
+                text-align: left;
+            }
+
+            td {
+                border: none;
+                text-align: center;
+                border-top: 1px solid saddlebrown;
+                vertical-align: center;
+            }
+
+            a {
+                color: black;
+            }
+
+            button {
+                vertical-align: center;
+                margin: 1%;
+            }
+
+
+        </style>
+
+
+            <h3 align="center">Document's requests for now:</h3>
+
+
+
+        <form action="" method="post">
+            <div align="center">
+                <table>
+
+                    <tr>
+                        <th class="cen" colspan="1">Document</th>
+
+                            <th class="cen">Users</th>
+
+                    </tr>
+
+                        <tr>
+
+                                <td><a href="/3/">The Art of Computer Programmin...</a>
+                                    <font color="red">(NA)</font> </td>
+
+
+                                    <td><a href="/user/?id=8">p3</a>
+                                        <br><a href="/user/?id=9">v</a>
+                                        <br></td>
+
+                                        <td></td>
+
+
+
+                                <td><a class="btn button"
+                                                                                                  href="/requests/cancel/?user_id=8&req_id=1">cancel</a>
+                                    <br><a class="btn button"
+                                                                                                  href="/requests/cancel/?user_id=9&req_id=1">cancel</a>
+                                    <br></td>
+
+                                </tr>
+
+
+
+
+                </table>
+                <input type='hidden' name='csrfmiddlewaretoken' value='qttGuNSNnbVlgF4HLBNSf0hvjCC607OcOfiXUoZguG1dXAY0adfTIONoPl3vwCXa' />
+            </div>
+        </form>
+
+
+        <div align="center">
+            <div class="paginator">
+         <span class="step-links">
+
+
+             <span class="current">
+                Page  of .
+            </span>
+
+
+        </span>
+            </div>
+        </div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</body>
+</html>
