@@ -116,7 +116,7 @@ def approve_request(request):
                     datetime.date.today() + datetime.timedelta(days=days)).strftime("%Y-%m-%d %H:%M"))
         copy.save()
 
-        logging.info('{} approved request by: {}; User: {}'
+        logging.info('{} approved request by: {}; User: {}; '
                      'Doc:{}'.format(str(datetime.date.today()), request.user.username, user.username, doc.title))
 
         returning_date = (
@@ -155,7 +155,7 @@ def cancel_request(request):
     to = user.email
 
     send_mail('Canceled request', message, settings.EMAIL_HOST_USER, [to])
-    logging.info('{} canceled request by: {}; User: {}'
+    logging.info('{} canceled request by: {}; User: {}; '
                  'Doc:{}'.format(str(datetime.date.today()), request.user.username, user.username, doc.title))
     if len(doc_request.users.all()) == 0:
         doc_request.delete()
