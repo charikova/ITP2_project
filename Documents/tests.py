@@ -1421,42 +1421,87 @@ class Delivery4(TestCase):
         self.assertEqual(len(User.objects.filter(username='admin2')), 0)
 
     def test_TC2(self):
+        self.test_init_db()
 
-        self.l1 = User.objects.create_user('l1', 'exampl2@mail.ru', '12356qwerty',
-                                           first_name='Librarian',
-                                           last_name='One',
-                                           is_staff=True)
-        UserProfile.objects.create(user=self.l1,
-                                   phone_number=10001,
-                                   status='librarian',
-                                   address='Innopolis',
-                                   privileges='priv1')
+        def setup_view(view, request, *args, **kwargs):
+            view.request = request
+            view.args = args
+            view.kwargs = kwargs
+            return view
 
-        self.l2 = User.objects.create_user('l2', 'exampl2@mail.ru', '12356qwerty', first_name='Librarian',
-                                           last_name='Two',
-                                           is_staff=True)
-        UserProfile.objects.create(user=self.l2,
-                                   phone_number=10002,
-                                   status='librarian',
-                                   address='Innopolis',
-                                   privileges='priv2')
+        factory = RequestFactory()
+        request = factory.post('/user/create_user')
+        request.user = self.admin
 
-        self.l3 = User.objects.create_user('l3', 'exampl2@mail.ru', '12356qwerty', first_name='Librarian',
-                                           last_name='Three',
-                                           is_staff=True)
-        UserProfile.objects.create(user=self.l3,
-                                   phone_number=10003,
-                                   status='librarian',
-                                   address='Innopolis',
-                                   privileges='priv3')
+        # now admin create l1
+
+        form_data_l1 = {'username': 'l1',
+                     'status': "librarian",
+                     'privileges': "priv1",
+                     'email': 'examp12@mail.ru',
+                     'address': 'Innopolis',
+                     'phone_number': '10001',
+                     'first_name': 'Librarian',
+                     'last_name': 'One',
+                     'password1': '123456qwerty',
+                     'password2': '123456qwerty',
+                     'submit': 'Submit'
+                     }
+
+        request.POST = form_data_l1
+        v = setup_view(CreateUserView, request)
+        v.post(v, request)
+
+        self.l1 = User.objects.get(username="l1")
+
+        # now admin create l2
+
+        form_data_l2 = {'username': 'l2',
+                        'status': "librarian",
+                        'privileges': "priv2",
+                        'email': 'examp12@mail.ru',
+                        'address': 'Innopolis',
+                        'phone_number': '10002',
+                        'first_name': 'Librarian',
+                        'last_name': 'Two',
+                        'password1': '123456qwerty',
+                        'password2': '123456qwerty',
+                        'submit': 'Submit'
+                        }
+
+        request.POST = form_data_l2
+        v = setup_view(CreateUserView, request)
+        v.post(v, request)
+
+        self.l2 = User.objects.get(username="l2")
+
+        # now l3
+        form_data_l3 = {'username': 'l3',
+                        'status': "librarian",
+                        'privileges': "priv3",
+                        'email': 'examp12@mail.ru',
+                        'address': 'Innopolis',
+                        'phone_number': '10003',
+                        'first_name': 'Librarian',
+                        'last_name': 'Three',
+                        'password1': '123456qwerty',
+                        'password2': '123456qwerty',
+                        'submit': 'Submit'
+                        }
+
+        request.POST = form_data_l3
+        v = setup_view(CreateUserView, request)
+        v.post(v, request)
+
+        self.l3 = User.objects.get(username="l3")
 
         self.assertEqual(len(UserProfile.objects.filter(status='librarian')), 3)
 
     def test_TC3(self):
 
-        self.test_init_db()
         self.test_TC2()
 
+        print(self.l2.username)
         # #all requered copies created by l1
 
 
@@ -1526,8 +1571,6 @@ class Delivery4(TestCase):
         self.assertEqual(Document.objects.get(id=self.d3.id).copies, 0)
 
     def test_TC4(self):
-
-        self.test_init_db()
 
         def setup_view(view, request, *args, **kwargs):
             view.request = request
