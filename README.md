@@ -236,4 +236,11 @@ Every librarian is able to approve any request (whatever it position in a queue)
      Ginzburg Danil: Renew, Priority Queue
      Nigmatullin Nikita: Notifications
 
+
+## Contribution for delivery4
+    
+     Bogachev Roman: TestCases, System testing
+     Charikova Mariia: Front-end & front-end logic
+     Ginzburg Danil: Search System, Logging
+     Nigmatullin Nikita: Librarian's privileges
  
