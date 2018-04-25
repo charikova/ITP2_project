@@ -773,6 +773,8 @@ class Delivery3(TestCase):
         self.librarian = User.objects.create_user('librarian2', 'exampl23@mail.ru', '123456qerty', first_name='F',
                                                   last_name='L',
                                                   is_staff=True)
+        UserProfile.objects.create(user=self.librarian, phone_number=30004, status='librarian', address='Av', privileges='priv3')
+
 
         self.p1 = User.objects.create_user('patron1', 'p1@mail.ru', '12356qwerty', first_name='Sergey',
                                            last_name='Afonso')
@@ -1893,9 +1895,6 @@ class Delivery4(TestCase):
         data = datafile.readlines()
         datafile.close()
         all_in = lambda x, y: all([item in y for item in x])  # check that all items of x are in y
-        # self.assertTrue(all_in(['admin1', 'created', 'l1'], data[0]))
-        # self.assertTrue(all_in(['admin1', 'created', 'l2'], data[1]))
-        # self.assertTrue(all_in(['admin1', 'created', 'l3'], data[2]))
         self.assertTrue(all_in(['l2', 'updated', self.d1.title], data[0]))
         self.assertTrue(all_in(['l2', 'updated', self.d2.title], data[1]))
         self.assertTrue(all_in(['l2', 'updated', self.d3.title], data[2]))
@@ -1922,9 +1921,6 @@ class Delivery4(TestCase):
         data = datafile.readlines()
         datafile.close()
         all_in = lambda x, y: all([item in y for item in x])  # check that all items of x are in y
-        # self.assertTrue(all_in(['admin1', 'created', 'l1'], data[0]))
-        # self.assertTrue(all_in(['admin1', 'created', 'l2'], data[1]))
-        # self.assertTrue(all_in(['admin1', 'created', 'l3'], data[2]))
         self.assertTrue(all_in(['l2', 'updated', self.d1.title], data[0]))
         self.assertTrue(all_in(['l2', 'updated', self.d2.title], data[1]))
         self.assertTrue(all_in(['l2', 'updated', self.d3.title], data[2]))

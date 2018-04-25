@@ -54,12 +54,12 @@ class IndexView(ListView):
             if get_request.get('available') == 'on':  # by availability
                 exkwargs['copies'] = 0
             if get_request.get('noref') == "on":
-                exkwargs['is_reference'] = True
+                kwargs['is_reference'] = False
             if get_request.get('room') and get_request.get('room').isdigit():
                 kwargs['room'] = int(get_request.get('room'))
             if get_request.get('level') and get_request.get('level').isdigit():
                 kwargs['level'] = int(get_request.get('level'))
-            return model.objects.filter(*args, **kwargs).exclude(**exkwargs).order_by('title')
+            return model.objects.filter(*args, **kwargs).exclude(**exkwargs)
 
         return Document.objects.order_by('title')
 

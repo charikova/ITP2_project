@@ -16,3 +16,18 @@ INFO:root:2018-04-25 approved request by: l3; User: p2; Doc:The Art of Computer 
 INFO:root:2018-04-25 approved request by: l3; User: s; Doc:The Art of Computer Programming
 INFO:root: 2018-04-25 outstanding request by: l3;Doc:The Art of Computer Programming
 INFO:root: 2018-04-25 waiting list deleted by: l3;Doc:The Art of Computer Programming
+WARNING:django.request:Not Found: /apple-touch-icon-precomposed.png
+WARNING:django.request:Not Found: /apple-touch-icon.png
+WARNING:django.request:Not Found: /favicon.ico
+WARNING:django.request:Not Found: /apple-touch-icon-precomposed.png
+WARNING:django.request:Not Found: /apple-touch-icon.png
+WARNING:django.request:Not Found: /favicon.ico
+WARNING:django.request:Not Found: /apple-touch-icon-precomposed.png
+WARNING:django.request:Not Found: /apple-touch-icon.png
+WARNING:django.request:Not Found: /favicon.ico
+WARNING:django.request:Not Found: /apple-touch-icon-precomposed.png
+WARNING:django.request:Not Found: /apple-touch-icon.png
+WARNING:django.request:Not Found: /favicon.ico
+WARNING:django.request:Not Found: /apple-touch-icon-precomposed.png
+WARNING:django.request:Not Found: /apple-touch-icon.png
+INFO:root:2018-04-25 updated user TA_user(TA) by: admin(admin);
