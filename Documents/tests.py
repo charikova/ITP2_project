@@ -1976,7 +1976,7 @@ class Delivery4(TestCase):
         request.method = 'GET'
         request.GET['title'] = 'Algorithms Programming'
         request.GET['type'] = 'All'
-        request.GET['match'] = 'on'
+        request.GET['match'] = 'on'  # logical AND
 
         # Get IndexView by using request and after check that this sentence exist in render  content of index_view
         index_view = IndexView.as_view()(request)
