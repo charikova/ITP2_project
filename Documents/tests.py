@@ -1383,7 +1383,40 @@ class Delivery4(TestCase):
                                       keywords='Algorithms, Combinatorial Algorithms, Recursion')
 
     def test_TC1(self):
-        pass
+
+        self.test_init_db()
+
+        def setup_view(view, request, *args, **kwargs):
+            view.request = request
+            view.args = args
+            view.kwargs = kwargs
+            return view
+
+        factory = RequestFactory()
+        request = factory.post('/user/create_user')
+        request.user = self.admin
+
+        # now admin try to create another admin
+
+
+        form_data = {'username': 'admin2',
+                       'status': "admin",
+                       'privileges': "priv3",
+                       'email': 'admin2@mail.ru',
+                       'address': 'place where admins live',
+                       'phone_number': '1337',
+                       'first_name': 'Admin2',
+                       'last_name': 'Admin2',
+                       'password1': '123456qwerty',
+                       'password2': '123456qwerty',
+                       'submit': 'Submit'
+                       }
+
+        request.POST = form_data
+        v = setup_view(CreateUserView, request)
+        v.post(v, request)
+
+        self.assertEqual(len(User.objects.filter(username='admin2')), 0)
 
     def test_TC2(self):
 
