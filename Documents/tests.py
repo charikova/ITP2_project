@@ -11,7 +11,7 @@ import BookRequests
 from Documents.views import get_logging, document_detail, IndexView
 import datetime
 from UserCards.forms import AdminCreateUserForm
-from UserCards.views import user_card_info, CreateUserView
+from UserCards.views import user_card_info, CreateUserView, AllUsersView
 from django.utils import timezone
 
 
@@ -1501,8 +1501,8 @@ class Delivery4(TestCase):
 
         self.test_TC2()
 
-        print(self.l2.username)
-        # #all requered copies created by l1
+
+        # l1 try to create copies of d1, d2, d3
 
 
         try:
@@ -1565,6 +1565,31 @@ class Delivery4(TestCase):
 
         except:
             pass
+
+            # librarian check num of copies d1,d2,d3
+
+            request.method = "GET"
+            request.user = self.l1
+            response = document_detail(request, self.d1.id)
+
+            # check if l1 can see that there are only 0 copies of d1
+            self.assertTrue(
+                all([word in response.content for word in
+                     [b'Copies: 0']]))
+
+            response = document_detail(request, self.d2.id)
+
+            # check if l1 can see that there are only 0 copies of d2
+            self.assertTrue(
+                all([word in response.content for word in
+                     [b'Copies: 0']]))
+
+            response = document_detail(request, self.d2.id)
+
+            # check if l1 can see that there are only 0 copies of d3
+            self.assertTrue(
+                all([word in response.content for word in
+                     [b'Copies: 0']]))
 
         self.assertEqual(Document.objects.get(id=self.d1.id).copies, 0)
         self.assertEqual(Document.objects.get(id=self.d2.id).copies, 0)
@@ -1739,6 +1764,40 @@ class Delivery4(TestCase):
         v.post(v, request)
 
         self.assertEqual(len(User.objects.all()), 9)
+
+        request.method = "GET"
+        request.user = self.l1
+        response = document_detail(request, self.d1.id)
+
+        # check if l2 can see that there are 3 copies of d1
+        self.assertTrue(
+            all([word in response.content for word in
+                 [b'Copies: 3']]))
+
+        response = document_detail(request, self.d2.id)
+
+        # check if l2 can see that there are 3 copies of d2
+        self.assertTrue(
+            all([word in response.content for word in
+                 [b'Copies: 3']]))
+
+        response = document_detail(request, self.d2.id)
+
+        # check if l2 can see that there are 3 copies of d3
+        self.assertTrue(
+            all([word in response.content for word in
+                 [b'Copies: 3']]))
+
+        factory = RequestFactory()
+        request = factory.get('/user/all/?l=on&p=on')
+        request.user = self.l2
+
+        a = AllUsersView.as_view()(request)
+        response = a.render()
+
+        self.assertTrue(
+            all([word in response.content for word in
+                 [b'v', b'p1', b'p2', b'p3', b's' ]]))
 
     def test_TC5(self):
         self.test_TC4()
